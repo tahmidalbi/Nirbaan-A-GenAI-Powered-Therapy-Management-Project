@@ -124,7 +124,7 @@ const LandingPage = () => {
             <span className="logo-text">Nirbaan</span>
           </div>
           <nav className="nav-buttons">
-            <button className="btn-nav btn-login" onClick={() => navigate('/login')}>
+            <button className="btn-nav btn-login" onClick={() => navigate('/select-role')}>
               Login
             </button>
             <button className="btn-nav btn-signup" onClick={() => navigate('/signup')}>
