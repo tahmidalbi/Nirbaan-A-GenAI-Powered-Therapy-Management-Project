@@ -1,25 +1,61 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
+import { loginTherapist, getCurrentTherapist } from '../api/auth.api';
 import './Signup.css';
 
 const Login = () => {
   const navigate = useNavigate();
+  const login = useAuthStore((state) => state.login);
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+    setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Implement login logic
-    console.log('Login data:', formData);
+    setError('');
+    setLoading(true);
+
+    try {
+      // Login and get token
+      const loginResponse = await loginTherapist(formData);
+      
+      // Store token first
+      login({ 
+        email: formData.email,
+        role: 'therapist' 
+      }, loginResponse.access_token);
+      
+      // Now get therapist details with the stored token
+      try {
+        const therapistData = await getCurrentTherapist();
+        // Update with full data
+        login({ 
+          ...therapistData,
+          role: 'therapist' 
+        }, loginResponse.access_token);
+      } catch (err) {
+        console.error('Failed to fetch therapist data:', err);
+      }
+      
+      // Redirect to therapist dashboard
+      navigate('/therapist/dashboard');
+    } catch (err) {
+      setError(typeof err === 'string' ? err : 'Login failed. Please check your credentials.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -29,6 +65,8 @@ const Login = () => {
           <h1>Welcome Back</h1>
           <p>Sign in to continue your journey with Nirbaan</p>
         </div>
+
+        {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit} className="signup-form">
           <div className="form-group">
@@ -57,8 +95,8 @@ const Login = () => {
             />
           </div>
 
-          <button type="submit" className="signup-btn">
-            Login
+          <button type="submit" className="signup-btn" disabled={loading}>
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
 
