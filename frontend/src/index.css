@@ -9,14 +9,16 @@
   line-height: 1.6;
   font-weight: 400;
 
-  /* Nirbaan Color Palette */
-  --gentle-green: #A8D5BA;
-  --light-blue: #B8D4E8;
-  --soft-beige: #F5F1E8;
-  --darker-green: #7FB89A;
-  --accent-blue: #8BB4D0;
+  /* Nirbaan Color Palette - Professional Vintage Green */
+  --sage-green: #8B9D83;
+  --deep-sage: #6B7F63;
+  --muted-green: #A8B5A0;
+  --forest-dark: #3D4F3A;
+  --cream-accent: #F4F1E8;
+  --gold-accent: #C5A572;
   --text-dark: #2C3E50;
   --text-light: #5A6C7D;
+  --background-main: #E8EDE6;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -28,7 +30,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: var(--soft-beige);
+  background-color: var(--background-main);
   color: var(--text-dark);
 }
 

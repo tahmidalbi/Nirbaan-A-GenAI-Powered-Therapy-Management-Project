@@ -5,11 +5,20 @@ import './LandingPage.css';
 const LandingPage = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [animatedSections, setAnimatedSections] = useState(new Set());
+  const [animatedWords, setAnimatedWords] = useState([]);
   const navigate = useNavigate();
   const sectionRefs = useRef([]);
 
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 100);
+
+    // Word-by-word animation for tagline
+    const words = "Human-Centered AI for Therapist-Guided, Safe Mental Health Care".split(' ');
+    words.forEach((_, index) => {
+      setTimeout(() => {
+        setAnimatedWords(prev => [...prev, index]);
+      }, 500 + index * 150);
+    });
 
     // Scroll animation observer
     const observer = new IntersectionObserver(
@@ -41,53 +50,79 @@ const LandingPage = () => {
 
   const features = [
     {
-      icon: '🧠',
-      title: 'AI-Powered Therapy Support',
-      description: 'Advanced AI agents trained on therapist knowledge bases to provide personalized, safe assistance grounded in professional expertise.'
+      icon: 'I',
+      title: 'Comprehensive Practice Management',
+      description: 'Manage multiple patients, create personalized treatment plans, and organize group therapy sessions. Complete control over your therapeutic practice.',
+      gradient: 'linear-gradient(135deg, #8BA89C 0%, #A0BDB1 100%)'
     },
     {
-      icon: '👥',
-      title: 'Multi-Therapist Platform',
-      description: 'Connect multiple therapists with their patients in a secure, HIPAA-compliant environment designed for collaborative care.'
+      icon: 'II',
+      title: 'AI-Powered Patient Support',
+      description: 'Your knowledge base powers an AI assistant that helps patients with therapy homework between sessions. You define the protocols, AI executes them.',
+      gradient: 'linear-gradient(135deg, #93B0A4 0%, #A8C5B9 100%)'
     },
     {
-      icon: '📊',
-      title: 'Progress Tracking',
-      description: 'Comprehensive patient progress monitoring with RAG-powered analysis of therapy sessions, homework completion, and manual updates.'
+      icon: 'III',
+      title: 'Integrated Knowledge Base',
+      description: 'Upload your scripts, research papers, blog links, and treatment protocols. Build a comprehensive therapeutic knowledge system tailored to your practice.',
+      gradient: 'linear-gradient(135deg, #9BB8AC 0%, #B0CFC3 100%)'
     },
     {
-      icon: '🎯',
-      title: 'Specialized Care Modules',
-      description: 'Tailored interventions for ADHD, OCD, and other conditions with evidence-based games, exposure therapy tools, and cognitive worksheets.'
-    },
-    {
-      icon: '🔒',
-      title: 'Safety First',
-      description: 'Built-in crisis detection with uncertainty scoring. Automatic human escalation when AI detects self-harm or suicide risk.'
-    },
-    {
-      icon: '🌐',
-      title: 'Multilingual Support',
-      description: 'Full support for Banglish and multiple languages, making mental health care accessible to diverse communities.'
-    },
-    {
-      icon: '📹',
+      icon: 'IV',
       title: 'Video Therapy Sessions',
-      description: 'Integrated video calling with automatic transcription and secure storage for continuity of care and progress analysis.'
+      description: 'Conduct secure teletherapy sessions with automatic transcription. Track patient progress with recorded session analytics and searchable transcripts.',
+      gradient: 'linear-gradient(135deg, #8DAB9F 0%, #A2C0B4 100%)'
     },
     {
-      icon: '🤖',
-      title: 'Federated Learning',
-      description: 'Privacy-preserving AI personalization that adapts to each patient while maintaining data security and confidentiality.'
+      icon: 'V',
+      title: 'Crisis Intervention System',
+      description: 'AI detects risk indicators and automatically alerts emergency personnel. Safety protocols you configure, automated vigilance you can trust.',
+      gradient: 'linear-gradient(135deg, #95B3A7 0%, #AAC8BC 100%)'
+    },
+    {
+      icon: 'VI',
+      title: 'Specialized Treatment Protocols',
+      description: 'ADHD task management, OCD exposure response prevention, cognitive behavioral worksheets. Evidence-based tools for specialized care.',
+      gradient: 'linear-gradient(135deg, #8FAF9E 0%, #A4C4B3 100%)'
+    },
+    {
+      icon: 'VII',
+      title: 'Intelligent Progress Analytics',
+      description: 'Advanced analytics examine patient progress, session transcripts, and treatment protocols. Transform data into actionable insights for better outcomes.',
+      gradient: 'linear-gradient(135deg, #91B1A5 0%, #A6C6BA 100%)'
+    },
+    {
+      icon: 'VIII',
+      title: 'Multilingual Support',
+      description: 'Conduct therapy in Bangla, English, or Banglish. Cultural sensitivity meets professional care with adaptive learning technology.',
+      gradient: 'linear-gradient(135deg, #97B5A9 0%, #ACCABE 100%)'
+    },
+    {
+      icon: 'IX',
+      title: 'Guided Meditation Resources',
+      description: 'Provide patients with mindfulness meditation sessions in their preferred language. Enhance therapy with evidence-based relaxation techniques.',
+      gradient: 'linear-gradient(135deg, #9DB7AB 0%, #B2CCBF 100%)'
     }
   ];
 
+  const taglineWords = "AI Powered Practice Management for Modern Therapists".split(' ');
+
   return (
     <div className="landing-container">
+      {/* Vintage Geometric Background Patterns */}
+      <div className="vintage-background">
+        <div className="geometric-pattern"></div>
+        <div className="art-deco-lines"></div>
+        <div className="botanical-accent left-botanical"></div>
+        <div className="botanical-accent right-botanical"></div>
+      </div>
+
       {/* Header Navigation */}
       <header className="landing-header">
         <div className="header-content">
-          <div className="logo">Nirbaan</div>
+          <div className="logo">
+            <span className="logo-text">Nirbaan</span>
+          </div>
           <nav className="nav-buttons">
             <button className="btn-nav btn-login" onClick={() => navigate('/login')}>
               Login
@@ -104,15 +139,23 @@ const LandingPage = () => {
         <div className="hero-content">
           <h1 className="hero-title">Nirbaan</h1>
           <p className="hero-tagline">
-            Human-Centered AI for Therapist-Guided, Safe Mental Health Care
+            {taglineWords.map((word, index) => (
+              <span
+                key={index}
+                className={`tagline-word ${animatedWords.includes(index) ? 'visible' : ''}`}
+                style={{ animationDelay: `${index * 0.15}s` }}
+              >
+                {word}{' '}
+              </span>
+            ))}
           </p>
           <p className="hero-description">
-            Empowering therapists with AI-driven tools to deliver personalized, 
-            evidence-based care while maintaining the critical human connection.
+            Elevate your therapeutic practice with intelligent patient management, AI-powered support systems, 
+            and comprehensive tools designed for multi-patient care. Your expertise, amplified by technology.
           </p>
           <div className="hero-cta">
             <button className="btn-primary-large" onClick={() => navigate('/signup')}>
-              Get Started Today
+              Join as a Therapist
             </button>
           </div>
         </div>
@@ -125,16 +168,19 @@ const LandingPage = () => {
         data-section="features"
       >
         <div className="section-container">
-          <h2 className="section-title">Comprehensive Mental Health Care Platform</h2>
+          <h2 className="section-title">Comprehensive Tools for Your Practice</h2>
           <p className="section-subtitle">
-            Everything therapists need to provide exceptional, technology-enhanced care
+            Everything you need to manage patients, deliver care, and enhance outcomes
           </p>
           <div className="features-grid">
             {features.map((feature, index) => (
               <div 
                 key={index} 
                 className={`feature-card ${animatedSections.has('features') ? 'animate-in' : ''}`}
-                style={{ animationDelay: `${index * 0.1}s` }}
+                style={{ 
+                  animationDelay: `${index * 0.1}s`,
+                  background: feature.gradient
+                }}
               >
                 <div className="feature-icon">{feature.icon}</div>
                 <h3 className="feature-title">{feature.title}</h3>
@@ -153,32 +199,31 @@ const LandingPage = () => {
       >
         <div className="cta-container">
           <div className="cta-content">
-            <h2 className="cta-title">Join Our Growing Network of Therapists</h2>
+            <h2 className="cta-title">Transform Your Practice</h2>
             <p className="cta-description">
-              Transform your practice with AI-powered tools that enhance, not replace, your expertise. 
-              Manage patients, track progress, conduct video sessions, and leverage your knowledge base 
-              with cutting-edge technology designed specifically for mental health professionals.
+              Join a platform designed for therapists who want to scale their impact. Manage multiple patients, 
+              leverage AI for administrative tasks, and focus on what matters most—delivering exceptional care.
             </p>
             <div className="cta-benefits">
               <div className="benefit-item">
                 <span className="check-icon">✓</span>
-                <span>Upload your entire knowledge base and treatment protocols</span>
+                <span>Add and manage unlimited patients with personalized treatment plans</span>
               </div>
               <div className="benefit-item">
                 <span className="check-icon">✓</span>
-                <span>Create custom AI agents tailored to each patient</span>
+                <span>Upload your knowledge base to power AI-assisted patient support</span>
               </div>
               <div className="benefit-item">
                 <span className="check-icon">✓</span>
-                <span>Video therapy with automatic transcription and analysis</span>
+                <span>Organize group therapy sessions and track collective progress</span>
               </div>
               <div className="benefit-item">
                 <span className="check-icon">✓</span>
-                <span>24/7 patient support grounded in your expertise</span>
+                <span>Automatic crisis detection with emergency intervention protocols</span>
               </div>
             </div>
             <button className="btn-join-platform" onClick={() => navigate('/signup')}>
-              Join the Platform
+              Start Your Practice Today
             </button>
           </div>
         </div>
@@ -186,7 +231,7 @@ const LandingPage = () => {
 
       {/* Footer */}
       <footer className="landing-footer">
-        <p>© 2026 Nirbaan - A sanctuary for healing and growth</p>
+        <p>© 2026 Nirbaan - Empowering Therapists to Transform Lives</p>
       </footer>
     </div>
   );
