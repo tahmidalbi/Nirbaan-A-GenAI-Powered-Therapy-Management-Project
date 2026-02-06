@@ -90,8 +90,20 @@ async def login_therapist(
         Therapist.email == login_data.email
     ).first()
     
-    # Verify therapist exists and password is correct
-    if not therapist or not verify_password(login_data.password, therapist.hashed_password):
+    if not therapist:
+        print(f"[THERAPIST LOGIN FAILED] Therapist not found with email: {login_data.email}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    # Verify password
+    password_valid = verify_password(login_data.password, therapist.hashed_password)
+    print(f"[THERAPIST LOGIN ATTEMPT] Email: {login_data.email}, Therapist: {therapist.name}, Password Valid: {password_valid}")
+    
+    if not password_valid:
+        print(f"[THERAPIST LOGIN FAILED] Invalid password for therapist: {therapist.name} ({therapist.email})")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
@@ -102,6 +114,7 @@ async def login_therapist(
     access_token = create_access_token(
         data={"sub": therapist.email, "id": therapist.id}
     )
+    print(f"[THERAPIST LOGIN SUCCESS] Therapist: {therapist.name} ({therapist.email})")
     
     return {
         "access_token": access_token,

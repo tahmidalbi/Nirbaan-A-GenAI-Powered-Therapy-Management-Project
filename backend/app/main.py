@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.auth.router import router as auth_router
+from app.patients.router import router as patients_router
 
 app = FastAPI(
     title="Nirbaan - Therapy Management Backend",
@@ -19,6 +20,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(auth_router)
+app.include_router(patients_router)
 
 @app.get("/")
 def health_check():

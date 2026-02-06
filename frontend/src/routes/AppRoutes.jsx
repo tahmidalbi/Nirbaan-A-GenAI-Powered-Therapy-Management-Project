@@ -1,9 +1,12 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import LandingPage from '../pages/LandingPage';
+import RoleSelection from '../pages/RoleSelection';
 import Login from '../auth/Login';
 import Signup from '../auth/Signup';
+import PatientLogin from '../auth/PatientLogin';
 import ProtectedRoute from '../auth/ProtectedRoute';
 import PatientDashboard from '../dashboards/PatientDashboard';
+import PatientDetail from '../pages/PatientDetail';
 import TherapistDashboard from '../dashboards/TherapistDashboard';
 import EmergencyDashboard from '../dashboards/EmergencyDashboard';
 
@@ -12,8 +15,10 @@ const AppRoutes = () => {
     <Routes>
       {/* Public Routes */}
       <Route path="/" element={<LandingPage />} />
+      <Route path="/select-role" element={<RoleSelection />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/patient/login" element={<PatientLogin />} />
       
       {/* Protected Routes - Patient */}
       <Route
@@ -31,6 +36,16 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['therapist']}>
             <TherapistDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist Patient Detail */}
+      <Route
+        path="/therapist/patients/:patientId"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <PatientDetail />
           </ProtectedRoute>
         }
       />
