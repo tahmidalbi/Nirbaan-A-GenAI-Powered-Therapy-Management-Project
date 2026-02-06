@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Signup.css';
 
-const Login = () => {
+const Signup = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: '',
+    role: 'patient'
   });
 
   const handleChange = (e) => {
@@ -18,16 +20,16 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Implement login logic
-    console.log('Login data:', formData);
+    // TODO: Implement signup logic
+    console.log('Signup data:', formData);
   };
 
   return (
     <div className="signup-container">
       <div className="signup-card">
         <div className="signup-header">
-          <h1>Welcome Back</h1>
-          <p>Sign in to continue your journey with Nirbaan</p>
+          <h1>Create Account</h1>
+          <p>Join Nirbaan for guided mental health support</p>
         </div>
 
         <form onSubmit={handleSubmit} className="signup-form">
@@ -53,20 +55,47 @@ const Login = () => {
               value={formData.password}
               onChange={handleChange}
               required
-              placeholder="Enter your password"
+              placeholder="Create a password"
             />
           </div>
 
+          <div className="form-group">
+            <label htmlFor="confirmPassword">Confirm Password</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+              placeholder="Confirm your password"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="role">I am a</label>
+            <select
+              id="role"
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              required
+            >
+              <option value="patient">Patient</option>
+              <option value="therapist">Therapist</option>
+            </select>
+          </div>
+
           <button type="submit" className="signup-btn">
-            Login
+            Sign Up
           </button>
         </form>
 
         <div className="signup-footer">
           <p>
-            Don't have an account?{' '}
-            <span onClick={() => navigate('/signup')} className="link">
-              Sign up here
+            Already have an account?{' '}
+            <span onClick={() => navigate('/login')} className="link">
+              Login here
             </span>
           </p>
         </div>
@@ -79,4 +108,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;
