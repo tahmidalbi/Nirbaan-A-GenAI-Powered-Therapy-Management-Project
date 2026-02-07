@@ -12,11 +12,13 @@ const TherapistDashboard = () => {
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [showPatients, setShowPatients] = useState(false);
+  const [activeSection, setActiveSection] = useState(null);
 
   useEffect(() => {
-    fetchPatients();
-  }, []);
+    if (activeSection === 'patients') {
+      fetchPatients();
+    }
+  }, [activeSection]);
 
   const fetchPatients = async () => {
     try {
@@ -59,31 +61,58 @@ const TherapistDashboard = () => {
           <h1 className="logo">Nirbaan</h1>
           <nav className="nav-menu">
             <button 
-              className={`nav-btn ${showPatients ? 'active' : ''}`}
-              onClick={() => setShowPatients(!showPatients)}
+              className={`nav-btn ${activeSection === 'patients' ? 'active' : ''}`}
+              onClick={() => setActiveSection('patients')}
             >
               Patients
+            </button>
+            <button 
+              className={`nav-btn ${activeSection === 'emergency' ? 'active' : ''}`}
+              onClick={() => setActiveSection('emergency')}
+            >
+              Emergency Personnel
+            </button>
+            <button 
+              className={`nav-btn ${activeSection === 'community' ? 'active' : ''}`}
+              onClick={() => setActiveSection('community')}
+            >
+              Community
+            </button>
+            <button 
+              className={`nav-btn ${activeSection === 'resources' ? 'active' : ''}`}
+              onClick={() => setActiveSection('resources')}
+            >
+              Resources
+            </button>
+            <button 
+              className={`nav-btn ${activeSection === 'history' ? 'active' : ''}`}
+              onClick={() => setActiveSection('history')}
+            >
+              History
+            </button>
+            <button 
+              className={`nav-btn ${activeSection === 'ai' ? 'active' : ''}`}
+              onClick={() => setActiveSection('ai')}
+            >
+              Nirbaan AI
             </button>
           </nav>
           <button onClick={handleLogout} className="logout-btn">Logout</button>
         </div>
       </header>
 
+      {/* Video Call Button - Only on landing page */}
+      {!activeSection && (
+        <button className="video-call-btn" title="Start Video Call">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+          </svg>
+        </button>
+      )}
+
       {/* Main Content */}
       <main className="dashboard-main">
-        {!showPatients ? (
-          <div className="welcome-section">
-            <h2>Welcome, Dr. {user?.name}</h2>
-            <p className="subtitle">Manage your patients and therapy sessions</p>
-            <div className="quick-actions">
-              <button className="action-card" onClick={() => setShowPatients(true)}>
-                <span className="action-icon">👥</span>
-                <h3>View Patients</h3>
-                <p>Access your patient list</p>
-              </button>
-            </div>
-          </div>
-        ) : (
+        {activeSection === 'patients' && (
           <div className="patients-section">
             <div className="section-header">
               <h2>Your Patients</h2>
@@ -129,10 +158,40 @@ const TherapistDashboard = () => {
             )}
           </div>
         )}
+
+        {activeSection === 'emergency' && (
+          <div className="section-content-blank">
+            {/* Emergency Personnel section - to be implemented */}
+          </div>
+        )}
+
+        {activeSection === 'community' && (
+          <div className="section-content-blank">
+            {/* Community section - to be implemented */}
+          </div>
+        )}
+
+        {activeSection === 'resources' && (
+          <div className="section-content-blank">
+            {/* Resources section - to be implemented */}
+          </div>
+        )}
+
+        {activeSection === 'history' && (
+          <div className="section-content-blank">
+            {/* History section - to be implemented */}
+          </div>
+        )}
+
+        {activeSection === 'ai' && (
+          <div className="section-content-blank">
+            {/* Nirbaan AI section - to be implemented */}
+          </div>
+        )}
       </main>
 
       {/* Floating Add Patient Button */}
-      {showPatients && (
+      {activeSection === 'patients' && (
         <div className="floating-add-patient">
           <AddPatient onPatientAdded={handlePatientAdded} />
         </div>
