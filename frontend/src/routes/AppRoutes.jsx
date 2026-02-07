@@ -7,6 +7,8 @@ import PatientLogin from '../auth/PatientLogin';
 import EmergencyPersonnelLogin from '../auth/EmergencyPersonnelLogin';
 import ProtectedRoute from '../auth/ProtectedRoute';
 import PatientDashboard from '../dashboards/PatientDashboard';
+import OCDPatientDashboard from '../dashboards/OCDPatientDashboard';
+import ADHDPatientDashboard from '../dashboards/ADHDPatientDashboard';
 import PatientDetail from '../pages/PatientDetail';
 import TherapistDashboard from '../dashboards/TherapistDashboard';
 import EmergencyPersonnelDashboard from '../dashboards/EmergencyPersonnelDashboard';
@@ -29,6 +31,26 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['patient']}>
             <PatientDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Patient OCD Dashboard */}
+      <Route
+        path="/patient/dashboard/ocd"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <OCDPatientDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Patient ADHD Dashboard */}
+      <Route
+        path="/patient/dashboard/adhd"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <ADHDPatientDashboard />
           </ProtectedRoute>
         }
       />

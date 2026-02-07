@@ -5,55 +5,61 @@ import './PatientDashboard.css';
 const PatientDashboard = () => {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
-  const user = useAuthStore((state) => state.user);
 
   const handleLogout = () => {
     logout();
     navigate('/');
   };
 
+  const handleOCDClick = () => {
+    navigate('/patient/dashboard/ocd');
+  };
+
+  const handleADHDClick = () => {
+    navigate('/patient/dashboard/adhd');
+  };
+
   return (
     <div className="patient-dashboard-container">
-      {/* Vintage background similar to therapist dashboard */}
+      {/* Vintage background */}
       <div className="dashboard-background">
         <div className="geometric-pattern"></div>
-        <div className="art-deco-lines"></div>
+        <div className="art-deco-line art-deco-line-top"></div>
+        <div className="art-deco-line art-deco-line-bottom"></div>
       </div>
 
-      {/* Header with logout */}
+      {/* Header with Navigation */}
       <header className="dashboard-header">
         <div className="header-content">
-          <div className="logo">
-            <span className="logo-text">Nirbaan</span>
-          </div>
-          <button className="logout-btn" onClick={handleLogout}>
-            Logout
-          </button>
+          <h1 className="logo">Nirbaan</h1>
+          <nav className="nav-menu">
+            <button 
+              className="nav-btn"
+              onClick={handleOCDClick}
+            >
+              OCD
+            </button>
+            <button 
+              className="nav-btn"
+              onClick={handleADHDClick}
+            >
+              ADHD
+            </button>
+          </nav>
+          <button onClick={handleLogout} className="logout-btn">Logout</button>
         </div>
       </header>
 
-      {/* Main content */}
-      <div className="dashboard-content">
-        <div className="welcome-section">
-          <h1>Welcome, {user?.name || 'Patient'}</h1>
-          <p className="subtitle">Your personalized therapy dashboard</p>
-        </div>
+      {/* Video Call Button - Only on landing page */}
+      <button className="video-call-btn" title="Start Video Call">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+        </svg>
+      </button>
 
-        <div className="content-card">
-          <div className="coming-soon">
-            <div className="icon">🌿</div>
-            <h2>Your Dashboard is Being Prepared</h2>
-            <p>We\'re working on creating an amazing experience for you. Soon you\'ll be able to:</p>
-            <ul className="features-list">
-              <li>View your therapy sessions</li>
-              <li>Access personalized resources</li>
-              <li>Track your progress</li>
-              <li>Communicate with your therapist</li>
-              <li>Complete assigned exercises</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      {/* Main Content - Empty */}
+      <main className="dashboard-main">
+      </main>
     </div>
   );
 };
