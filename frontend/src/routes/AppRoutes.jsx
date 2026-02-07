@@ -4,11 +4,13 @@ import RoleSelection from '../pages/RoleSelection';
 import Login from '../auth/Login';
 import Signup from '../auth/Signup';
 import PatientLogin from '../auth/PatientLogin';
+import EmergencyPersonnelLogin from '../auth/EmergencyPersonnelLogin';
 import ProtectedRoute from '../auth/ProtectedRoute';
 import PatientDashboard from '../dashboards/PatientDashboard';
 import PatientDetail from '../pages/PatientDetail';
 import TherapistDashboard from '../dashboards/TherapistDashboard';
-import EmergencyDashboard from '../dashboards/EmergencyDashboard';
+import EmergencyPersonnelDashboard from '../dashboards/EmergencyPersonnelDashboard';
+import EmergencyPersonnelDetail from '../pages/EmergencyPersonnelDetail';
 
 const AppRoutes = () => {
   return (
@@ -19,6 +21,7 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/patient/login" element={<PatientLogin />} />
+      <Route path="/emergency-personnel/login" element={<EmergencyPersonnelLogin />} />
       
       {/* Protected Routes - Patient */}
       <Route
@@ -50,12 +53,22 @@ const AppRoutes = () => {
         }
       />
 
-      {/* Protected Routes - Emergency Handler */}
+      {/* Protected Routes - Therapist Emergency Personnel Detail */}
       <Route
-        path="/emergency/dashboard"
+        path="/therapist/emergency-personnel/:personnelId"
         element={
-          <ProtectedRoute allowedRoles={['emergency']}>
-            <EmergencyDashboard />
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <EmergencyPersonnelDetail />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Emergency Personnel */}
+      <Route
+        path="/emergency-personnel/dashboard"
+        element={
+          <ProtectedRoute allowedRoles={['emergency_personnel']}>
+            <EmergencyPersonnelDashboard />
           </ProtectedRoute>
         }
       />
