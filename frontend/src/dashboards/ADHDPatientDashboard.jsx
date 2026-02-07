@@ -1,12 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
 import { useAuthStore } from '../store/authStore';
 import './ConditionDashboard.css';
 
-const ADHDPatientDashboard = () => {
+const ADHDTools = () => {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
-  const [activeSection, setActiveSection] = useState(null);
 
   const handleLogout = () => {
     logout();
@@ -26,42 +24,10 @@ const ADHDPatientDashboard = () => {
         <div className="art-deco-line art-deco-line-bottom"></div>
       </div>
 
-      {/* Header with Navigation */}
+      {/* Header */}
       <header className="dashboard-header">
         <div className="header-content">
-          <h1 className="logo">ADHD Dashboard</h1>
-          <nav className="nav-menu">
-            <button 
-              className={`nav-btn ${activeSection === 'progress' ? 'active' : ''}`}
-              onClick={() => setActiveSection('progress')}
-            >
-              Progress
-            </button>
-            <button 
-              className={`nav-btn ${activeSection === 'homework' ? 'active' : ''}`}
-              onClick={() => setActiveSection('homework')}
-            >
-              Homework
-            </button>
-            <button 
-              className={`nav-btn ${activeSection === 'resources' ? 'active' : ''}`}
-              onClick={() => setActiveSection('resources')}
-            >
-              Resources
-            </button>
-            <button 
-              className={`nav-btn ${activeSection === 'tools' ? 'active' : ''}`}
-              onClick={() => setActiveSection('tools')}
-            >
-              Tools
-            </button>
-            <button 
-              className={`nav-btn ${activeSection === 'mindfulness' ? 'active' : ''}`}
-              onClick={() => setActiveSection('mindfulness')}
-            >
-              Mindfulness
-            </button>
-          </nav>
+          <h1 className="logo">ADHD Tools</h1>
           <div className="header-actions">
             <button onClick={handleBack} className="back-btn">← Back</button>
             <button onClick={handleLogout} className="logout-btn">Logout</button>
@@ -69,40 +35,14 @@ const ADHDPatientDashboard = () => {
         </div>
       </header>
 
-      {/* Main Content - Empty sections */}
+      {/* Main Content - Empty */}
       <main className="dashboard-main">
-        {activeSection === 'progress' && (
-          <div className="empty-section">
-            {/* Empty Progress section */}
-          </div>
-        )}
-
-        {activeSection === 'homework' && (
-          <div className="empty-section">
-            {/* Empty Homework section */}
-          </div>
-        )}
-
-        {activeSection === 'resources' && (
-          <div className="empty-section">
-            {/* Empty Resources section */}
-          </div>
-        )}
-
-        {activeSection === 'tools' && (
-          <div className="empty-section">
-            {/* Empty Tools section */}
-          </div>
-        )}
-
-        {activeSection === 'mindfulness' && (
-          <div className="empty-section">
-            {/* Empty Mindfulness section */}
-          </div>
-        )}
+        <div className="empty-section">
+          {/* Empty ADHD Tools section */}
+        </div>
       </main>
     </div>
   );
 };
 
-export default ADHDPatientDashboard;
+export default ADHDTools;

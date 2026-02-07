@@ -98,10 +98,14 @@
 /* Navigation Menu */
 .nav-menu {
   display: flex;
-  gap: 2.5rem;
+  gap: 1.8rem;
   flex: 1;
   justify-content: center;
   align-items: center;
+}
+
+.nav-btn-wrapper {
+  position: relative;
 }
 
 .nav-btn {
@@ -146,6 +150,50 @@
 
 .nav-btn.active::after {
   transform: scaleX(1);
+}
+
+/* Tools Dropdown */
+.tools-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 0.5rem;
+  background: rgba(120, 160, 148, 0.98);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+  min-width: 120px;
+}
+
+.tools-dropdown button {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: 'Georgia', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.tools-dropdown button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+}
+
+.tools-dropdown button:first-child {
+  border-radius: 2px 2px 0 0;
+}
+
+.tools-dropdown button:last-child {
+  border-radius: 0 0 2px 2px;
 }
 
 .logout-btn {
@@ -227,7 +275,11 @@
   }
 
   .nav-menu {
-    gap: 2rem;
+    gap: 1.5rem;
+  }
+
+  .nav-btn {
+    font-size: 0.85rem;
   }
 
   .dashboard-main {
@@ -251,11 +303,11 @@
   }
 
   .nav-menu {
-    gap: 1.5rem;
+    gap: 1rem;
   }
 
   .nav-btn {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
 
   .logout-btn {
@@ -286,11 +338,11 @@
   }
 
   .nav-menu {
-    gap: 1rem;
+    gap: 0.6rem;
   }
 
   .nav-btn {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
   }
 
   .logout-btn {

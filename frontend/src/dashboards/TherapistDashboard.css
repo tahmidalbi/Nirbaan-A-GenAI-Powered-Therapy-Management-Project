@@ -106,7 +106,7 @@
 /* Navigation Menu */
 .nav-menu {
   display: flex;
-  gap: 2.5rem;
+  gap: 2rem;
   flex: 1;
   justify-content: center;
   align-items: center;
