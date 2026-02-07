@@ -2,7 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { getPatients } from '../api/patient.api';
-import AddPatient from '../components/AddPatient';
+import { getEmergencyPersonnel } from '../api/emergency-personnel.api';
+import AddPatient from'../components/AddPatient';
+import AddEmergencyPersonnel from '../components/AddEmergencyPersonnel';
 import './TherapistDashboard.css';
 
 const TherapistDashboard = () => {
@@ -10,6 +12,7 @@ const TherapistDashboard = () => {
   const logout = useAuthStore((state) => state.logout);
   const user = useAuthStore((state) => state.user);
   const [patients, setPatients] = useState([]);
+  const [emergencyPersonnel, setEmergencyPersonnel] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeSection, setActiveSection] = useState(null);
@@ -17,6 +20,8 @@ const TherapistDashboard = () => {
   useEffect(() => {
     if (activeSection === 'patients') {
       fetchPatients();
+    } else if (activeSection === 'emergency') {
+      fetchEmergencyPersonnel();
     }
   }, [activeSection]);
 
@@ -33,8 +38,25 @@ const TherapistDashboard = () => {
     }
   };
 
+  const fetchEmergencyPersonnel = async () => {
+    try {
+      setLoading(true);
+      const data = await getEmergencyPersonnel();
+      setEmergencyPersonnel(data);
+    } catch (err) {
+      console.error('Failed to fetch emergency personnel:', err);
+      setError(typeof err === 'string' ? err : 'Failed to load emergency personnel');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handlePatientAdded = (newPatient) => {
     setPatients([...patients, newPatient]);
+  };
+
+  const handleEmergencyPersonnelAdded = (newPersonnel) => {
+    setEmergencyPersonnel([...emergencyPersonnel, newPersonnel]);
   };
 
   const handleLogout = () => {
@@ -44,6 +66,10 @@ const TherapistDashboard = () => {
 
   const handlePatientClick = (patientId) => {
     navigate(`/therapist/patients/${patientId}`);
+  };
+
+  const handleEmergencyPersonnelClick = (personnelId) => {
+    navigate(`/therapist/emergency-personnel/${personnelId}`);
   };
 
   return (
@@ -160,8 +186,49 @@ const TherapistDashboard = () => {
         )}
 
         {activeSection === 'emergency' && (
-          <div className="section-content-blank">
-            {/* Emergency Personnel section - to be implemented */}
+          <div className="patients-section">
+            <div className="section-header">
+              <h2>Emergency Personnel</h2>
+            </div>
+
+            {error && <div className="error-banner">{error}</div>}
+
+            {loading ? (
+              <div className="loading-state">
+                <div className="spinner"></div>
+                <p>Loading emergency personnel...</p>
+              </div>
+            ) : emergencyPersonnel.length === 0 ? (
+              <div className="empty-state">
+                <div className="empty-icon">🚨</div>
+                <h3>No Emergency Personnel Yet</h3>
+                <p>Add your first emergency personnel to build your crisis response team</p>
+              </div>
+            ) : (
+              <div className="patients-grid">
+                {emergencyPersonnel.map((personnel) => (
+                  <div 
+                    key={personnel.id} 
+                    className="patient-card"
+                    onClick={() => handleEmergencyPersonnelClick(personnel.id)}
+                  >
+                    <div className="patient-avatar">
+                      {personnel.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="patient-info">
+                      <h3>{personnel.name}</h3>
+                      <p className="patient-email">{personnel.email}</p>
+                      <p className="patient-conditions">{personnel.education}</p>
+                    </div>
+                    <div className="patient-meta">
+                      <span className="patient-date">
+                        Added {new Date(personnel.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -194,6 +261,13 @@ const TherapistDashboard = () => {
       {activeSection === 'patients' && (
         <div className="floating-add-patient">
           <AddPatient onPatientAdded={handlePatientAdded} />
+        </div>
+      )}
+
+      {/* Floating Add Emergency Personnel Button */}
+      {activeSection === 'emergency' && (
+        <div className="floating-add-patient">
+          <AddEmergencyPersonnel onPersonnelAdded={handleEmergencyPersonnelAdded} />
         </div>
       )}
     </div>

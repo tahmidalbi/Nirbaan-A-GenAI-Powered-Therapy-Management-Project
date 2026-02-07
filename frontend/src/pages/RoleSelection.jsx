@@ -32,6 +32,13 @@ const RoleSelection = () => {
             <p>Access your personalized therapy and wellness dashboard</p>
             <button className="role-btn">Continue as Patient</button>
           </div>
+
+          <div className="role-card" onClick={() => navigate('/emergency-personnel/login')}>
+            <div className="role-icon">🚨</div>
+            <h2>Login as Emergency Personnel</h2>
+            <p>Access crisis response and emergency management tools</p>
+            <button className="role-btn">Continue as Personnel</button>
+          </div>
         </div>
 
         <div className="back-link">

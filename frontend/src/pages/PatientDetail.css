@@ -69,7 +69,8 @@
   bottom: 25%;
 }
 
-.detail-content {
+.detail-content,
+.patient-detail-content {
   position: relative;
   z-index: 1;
   max-width: 1200px;
@@ -83,6 +84,19 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  gap: 1.5rem;
+}
+
+.detail-header .page-title {
+  font-size: 2rem;
+  color: #FFFFFF;
+  margin: 0;
+  font-weight: 300;
+  font-family: 'Garamond', serif;
+  letter-spacing: 0.08em;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+  flex-grow: 1;
+  text-align: center;
 }
 
 .back-btn,
