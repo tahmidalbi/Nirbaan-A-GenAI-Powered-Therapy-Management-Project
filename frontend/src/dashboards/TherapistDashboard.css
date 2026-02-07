@@ -94,44 +94,66 @@
 }
 
 .logo {
-  display: flex;
-  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  font-family: 'Garamond', serif;
   color: #FFFFFF;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  margin: 0;
 }
 
 /* Navigation Menu */
 .nav-menu {
   display: flex;
-  gap: 1rem;
+  gap: 2.5rem;
   flex: 1;
   justify-content: center;
+  align-items: center;
 }
 
 .nav-btn {
-  background: transparent;
-  color: #FFFFFF;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  padding: 0.7rem 2rem;
-  font-size: 1rem;
-  font-family: 'Garamond', 'Georgia', serif;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
+  background: none;
+  color: rgba(255, 255, 255, 0.85);
+  border: none;
+  padding: 0.25rem 0;
+  font-size: 0.9rem;
+  font-family: 'Georgia', serif;
+  letter-spacing: 0.05em;
   cursor: pointer;
   transition: all 0.3s ease;
-  border-radius: 0;
-  font-weight: 600;
+  font-weight: 400;
+  position: relative;
+  text-transform: none;
 }
 
 .nav-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.6);
-  transform: translateY(-2px);
+  color: #FFFFFF;
 }
 
 .nav-btn.active {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: #FFFFFF;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  color: #FFFFFF;
+}
+
+.nav-btn::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.35rem;
+  height: 2px;
+  background: #FFFFFF;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.3s ease;
+}
+
+.nav-btn:hover::after {
+  transform: scaleX(1);
+}
+
+.nav-btn.active::after {
+  transform: scaleX(1);
 }
 
 .logo-text {
@@ -164,7 +186,43 @@
   transform: translateY(-1px);
 }
 
+/* Video Call Button */
+.video-call-btn {
+  position: fixed;
+  top: 5.5rem;
+  right: 3rem;
+  z-index: 999;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  color: #FFFFFF;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.video-call-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.video-call-btn svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
 /* Main content */
+.section-content-blank {
+  min-height: calc(100vh - 10rem);
+}
 .dashboard-main {
   position: relative;
   z-index: 1;
