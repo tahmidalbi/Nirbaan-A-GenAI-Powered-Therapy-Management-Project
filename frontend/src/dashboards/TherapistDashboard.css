@@ -223,6 +223,12 @@
 .section-content-blank {
   min-height: calc(100vh - 10rem);
 }
+
+.section-content {
+  min-height: calc(100vh - 10rem);
+  width: 100%;
+}
+
 .dashboard-main {
   position: relative;
   z-index: 1;

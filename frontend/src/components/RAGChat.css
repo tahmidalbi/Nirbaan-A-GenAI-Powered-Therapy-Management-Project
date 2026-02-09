@@ -1,0 +1,146 @@
+.rag-chat {
+  display: flex;
+  flex-direction: column;
+  height: 70vh;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 4px;
+  padding: 1.5rem;
+}
+
+.chat-header {
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #6B9B8D;
+  padding-bottom: 1rem;
+}
+
+.chat-header h3 {
+  margin: 0 0 0.5rem 0;
+  color: #2C3E3A;
+}
+
+.chat-header p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.empty-chat {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.example {
+  font-style: italic;
+  color: #999;
+}
+
+.message {
+  margin-bottom: 1rem;
+  display: flex;
+}
+
+.message-user {
+  justify-content: flex-end;
+}
+
+.message-user .message-content {
+  background: #6B9B8D;
+  color: white;
+  padding: 1rem;
+  border-radius: 12px 12px 0 12px;
+  max-width: 70%;
+}
+
+.message-ai .message-content {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 12px 12px 12px 0;
+  max-width: 80%;
+}
+
+.sources-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #f0f0f0;
+}
+
+.sources-section strong {
+  display: block;
+  margin-bottom: 1rem;
+  color: #2C3E3A;
+  font-size: 0.9rem;
+}
+
+.source-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.source-card {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 3px solid #6B9B8D;
+}
+
+.source-title {
+  font-weight: 600;
+  color: #2C3E3A;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.source-preview {
+  font-size: 0.8rem;
+  color: #666;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.chat-input-form {
+  display: flex;
+  gap: 1rem;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 24px;
+  font-size: 1rem;
+}
+
+.send-btn {
+  padding: 0.75rem 2rem;
+  background: #6B9B8D;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.send-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.loading {
+  font-style: italic;
+  color: #999;
+}
