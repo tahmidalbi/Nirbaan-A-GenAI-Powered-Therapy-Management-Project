@@ -97,3 +97,16 @@ export const generateAnswer = async (query, topK = 6) => {
     throw error.response?.data?.detail || 'Failed to generate answer';
   }
 };
+
+export const uploadFromUrl = async (url, title, resourceType = 'webpage') => {
+  try {
+    const response = await axiosInstance.post('/resources/from-url', {
+      url,
+      title,
+      resource_type: resourceType,
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to add URL resource';
+  }
+};
