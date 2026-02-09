@@ -5,6 +5,8 @@ import { getPatients } from '../api/patient.api';
 import { getEmergencyPersonnel } from '../api/emergency-personnel.api';
 import AddPatient from'../components/AddPatient';
 import AddEmergencyPersonnel from '../components/AddEmergencyPersonnel';
+import ResourceManager from '../components/ResourceManager';
+import RAGChat from '../components/RAGChat';
 import './TherapistDashboard.css';
 
 const TherapistDashboard = () => {
@@ -245,8 +247,8 @@ const TherapistDashboard = () => {
         )}
 
         {activeSection === 'resources' && (
-          <div className="section-content-blank">
-            {/* Resources section - to be implemented */}
+          <div className="section-content">
+            <ResourceManager />
           </div>
         )}
 
@@ -257,8 +259,8 @@ const TherapistDashboard = () => {
         )}
 
         {activeSection === 'ai' && (
-          <div className="section-content-blank">
-            {/* Nirbaan AI section - to be implemented */}
+          <div className="section-content">
+            <RAGChat />
           </div>
         )}
 
