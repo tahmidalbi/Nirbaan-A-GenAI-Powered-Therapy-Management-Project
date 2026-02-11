@@ -5,6 +5,8 @@ from app.auth.router import router as auth_router
 from app.patients.router import router as patients_router
 from app.emergency_personnel.router import router as emergency_personnel_router
 from app.resources.router import router as resources_router  # NEW
+from app.progress.router import router as progress_router
+from app.sessions.router import router as sessions_router
 
 app = FastAPI(
     title="Nirbaan - Therapy Management Backend",
@@ -33,6 +35,8 @@ app.include_router(auth_router)
 app.include_router(patients_router)
 app.include_router(emergency_personnel_router)
 app.include_router(resources_router)  # --> /resources/*
+app.include_router(progress_router)  # --> /progress/*
+app.include_router(sessions_router)  # --> /sessions/*
 
 @app.get("/")
 def health_check():

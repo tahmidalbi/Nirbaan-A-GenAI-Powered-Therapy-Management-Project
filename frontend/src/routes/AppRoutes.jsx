@@ -11,6 +11,8 @@ import OCDTools from '../dashboards/OCDPatientDashboard';
 import ADHDTools from '../dashboards/ADHDPatientDashboard';
 import PatientDetail from '../pages/PatientDetail';
 import TherapistDashboard from '../dashboards/TherapistDashboard';
+import TherapistProgressDetail from '../components/TherapistProgressDetail';
+import TherapistSessionDetail from '../components/TherapistSessionDetail';
 import EmergencyPersonnelDashboard from '../dashboards/EmergencyPersonnelDashboard';
 import EmergencyPersonnelDetail from '../pages/EmergencyPersonnelDetail';
 
@@ -71,6 +73,26 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['therapist']}>
             <PatientDetail />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist Progress History */}
+      <Route
+        path="/therapist/history/:patientId"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistProgressDetail />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist Session Transcripts */}
+      <Route
+        path="/therapist/sessions/:patientId"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistSessionDetail />
           </ProtectedRoute>
         }
       />

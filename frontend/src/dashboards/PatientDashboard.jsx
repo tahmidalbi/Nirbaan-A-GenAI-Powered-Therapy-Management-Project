@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuthStore } from '../store/authStore';
+import ProgressTracker from '../components/ProgressTracker';
+import SessionTracker from '../components/SessionTracker';
 import './PatientDashboard.css';
 
 const PatientDashboard = () => {
@@ -47,6 +49,12 @@ const PatientDashboard = () => {
               Progress
             </button>
             <button 
+              className={`nav-btn ${activeSection === 'sessions' ? 'active' : ''}`}
+              onClick={() => setActiveSection('sessions')}
+            >
+              Sessions
+            </button>
+            <button 
               className={`nav-btn ${activeSection === 'homework' ? 'active' : ''}`}
               onClick={() => setActiveSection('homework')}
             >
@@ -79,12 +87,6 @@ const PatientDashboard = () => {
               Mindfulness
             </button>
             <button 
-              className={`nav-btn ${activeSection === 'sessions' ? 'active' : ''}`}
-              onClick={() => setActiveSection('sessions')}
-            >
-              Sessions
-            </button>
-            <button 
               className={`nav-btn ${activeSection === 'chat' ? 'active' : ''}`}
               onClick={() => setActiveSection('chat')}
             >
@@ -107,9 +109,11 @@ const PatientDashboard = () => {
       {/* Main Content - Empty sections */}
       <main className="dashboard-main">
         {activeSection === 'progress' && (
-          <div className="empty-section">
-            {/* Empty Progress section */}
-          </div>
+          <ProgressTracker />
+        )}
+
+        {activeSection === 'sessions' && (
+          <SessionTracker />
         )}
 
         {activeSection === 'homework' && (
@@ -127,12 +131,6 @@ const PatientDashboard = () => {
         {activeSection === 'mindfulness' && (
           <div className="empty-section">
             {/* Empty Mindfulness section */}
-          </div>
-        )}
-
-        {activeSection === 'sessions' && (
-          <div className="empty-section">
-            {/* Empty Sessions section */}
           </div>
         )}
 

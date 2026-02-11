@@ -117,3 +117,40 @@ async def get_current_emergency_personnel(
             headers={"WWW-Authenticate": "Bearer"},
         )
     return personnel
+
+async def get_current_user(
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db)
+) -> dict:
+    """Get the current authenticated user (any type) - returns dict with user info"""
+    token_data = decode_access_token(token)
+    
+    # Determine user type and get user from database
+    user_type = token_data.role
+    
+    if user_type == "therapist":
+        user = db.query(Therapist).filter(Therapist.email == token_data.email).first()
+    elif user_type == "patient":
+        user = db.query(Patient).filter(Patient.email == token_data.email).first()
+    elif user_type == "emergency_personnel":
+        user = db.query(EmergencyPersonnel).filter(EmergencyPersonnel.email == token_data.email).first()
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid user type",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    return {
+        "user_id": user.id,
+        "email": user.email,
+        "user_type": user_type,
+        "name": user.name
+    }
