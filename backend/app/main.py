@@ -1,12 +1,17 @@
+# Load environment variables FIRST before any other imports
+from dotenv import load_dotenv
+load_dotenv()
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.auth.router import router as auth_router
 from app.patients.router import router as patients_router
 from app.emergency_personnel.router import router as emergency_personnel_router
-from app.resources.router import router as resources_router  # NEW
+from app.resources.router import router as resources_router  # RAG Resources
 from app.progress.router import router as progress_router
 from app.sessions.router import router as sessions_router
+from app.ai_agents.router import router as nirbaan_ai_router  # Nirbaan AI Protocol Generation
 
 app = FastAPI(
     title="Nirbaan - Therapy Management Backend",
@@ -37,6 +42,7 @@ app.include_router(emergency_personnel_router)
 app.include_router(resources_router)  # --> /resources/*
 app.include_router(progress_router)  # --> /progress/*
 app.include_router(sessions_router)  # --> /sessions/*
+app.include_router(nirbaan_ai_router)  # --> /nirbaan-ai/*
 
 @app.get("/")
 def health_check():

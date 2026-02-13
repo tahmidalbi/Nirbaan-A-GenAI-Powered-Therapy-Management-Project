@@ -229,6 +229,14 @@
   width: 100%;
 }
 
+/* Nirbaan AI Section - full width for protocol generator */
+.nirbaan-ai-section {
+  min-height: calc(100vh - 10rem);
+  width: 100%;
+  padding: 0;
+  margin: -1rem -1rem -1rem -1rem;
+}
+
 .dashboard-main {
   position: relative;
   z-index: 1;

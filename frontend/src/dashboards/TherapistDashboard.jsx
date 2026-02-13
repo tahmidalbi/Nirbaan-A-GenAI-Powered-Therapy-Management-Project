@@ -7,6 +7,7 @@ import AddPatient from'../components/AddPatient';
 import AddEmergencyPersonnel from '../components/AddEmergencyPersonnel';
 import ResourceManager from '../components/ResourceManager';
 import RAGChat from '../components/RAGChat';
+import NirbaanAI from '../components/NirbaanAI';
 import PatientHistoryList from '../components/PatientHistoryList';
 import PatientSessionList from '../components/PatientSessionList';
 import './TherapistDashboard.css';
@@ -269,8 +270,8 @@ const TherapistDashboard = () => {
         )}
 
         {activeSection === 'ai' && (
-          <div className="section-content">
-            <RAGChat />
+          <div className="section-content nirbaan-ai-section">
+            <NirbaanAI />
           </div>
         )}
 

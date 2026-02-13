@@ -61,13 +61,18 @@ class SessionPickerAgent:
         Raises:
             ValueError: If no sessions found for the patient-therapist pair
         """
+        print(f"[SESSION PICKER] Fetching sessions for PATIENT {patient_id} with THERAPIST {therapist_id}")
+        
         # Query for recent sessions, ordered by week_number descending
+        # CRITICAL: This filters ONLY for the specific patient_id - no other patients' sessions
         sessions = self.db.query(TherapySession).filter(
             TherapySession.patient_id == patient_id,
             TherapySession.therapist_id == therapist_id
         ).order_by(
             desc(TherapySession.week_number)
         ).limit(num_sessions).all()
+        
+        print(f"[SESSION PICKER] Found {len(sessions)} sessions for patient {patient_id}")
         
         if not sessions:
             raise ValueError(
@@ -77,6 +82,7 @@ class SessionPickerAgent:
         # Structure the session data
         session_data = []
         for session in sessions:
+            print(f"[SESSION PICKER]   - Session ID {session.id}: Week {session.week_number}, Patient ID {session.patient_id}")
             session_data.append({
                 "id": session.id,
                 "week_number": session.week_number,
@@ -85,6 +91,8 @@ class SessionPickerAgent:
                 "created_at": session.created_at.isoformat() if session.created_at else None,
                 "updated_at": session.updated_at.isoformat() if session.updated_at else None,
             })
+        
+        print(f"[SESSION PICKER] All {len(session_data)} sessions belong to patient {patient_id} ✓")
         
         return session_data
     

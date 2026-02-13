@@ -365,3 +365,4 @@ Both registration and login follow a similar pattern:
 9. Dashboard rendering with user context
 
 The system uses JWT-based stateless authentication, bcrypt password hashing, and role-based access control to ensure security throughout the application.
+

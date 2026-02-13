@@ -379,7 +379,7 @@ The blueprint is a **high-level session skeleton**: phases, time blocks, activit
 
 **What it checks:**
 - Does any proposed technique conflict with the patient's comorbid conditions?
-- Are there trauma-related contraindications for proposed exposure exercises?
+- Are there trauma-related contraindications for proposed homework?
 - Does the progression pace match KB recommendations for the patient's severity level?
 - Are there any techniques the therapist has explicitly noted as inappropriate for this patient (in their notes)?
 

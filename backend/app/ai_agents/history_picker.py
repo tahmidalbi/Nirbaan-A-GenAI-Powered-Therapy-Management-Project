@@ -59,6 +59,8 @@ class HistoryPickerAgent:
         Raises:
             ValueError: If patient not found or therapist-patient mismatch
         """
+        print(f"[HISTORY PICKER] Fetching history for PATIENT {patient_id} with THERAPIST {therapist_id}")
+        
         # Fetch patient demographics
         patient = self.db.query(Patient).filter(
             Patient.id == patient_id,
@@ -69,6 +71,8 @@ class HistoryPickerAgent:
             raise ValueError(
                 f"Patient {patient_id} not found or does not belong to therapist {therapist_id}"
             )
+        
+        print(f"[HISTORY PICKER] Found patient: ID={patient.id}, Name={patient.name}")
         
         # Fetch patient progress data
         progress = self.db.query(PatientProgress).filter(
