@@ -58,8 +58,8 @@ class ResourceChunk(Base):
     # Metadata (JSONB for better performance: {page: 12, section: "Introduction"})
     metadata_: Mapped[dict] = mapped_column("metadata", JSONB, nullable=False, default=dict)
     
-    # Vector embedding (1536 dimensions for text-embedding-3-small) - CORRECTED!
-    embedding: Mapped[list[float]] = mapped_column(Vector(1536), nullable=False)
+    # Vector embedding (3072 dimensions for text-embedding-3-large)
+    embedding: Mapped[list[float]] = mapped_column(Vector(3072), nullable=False)
     
     # Timestamps
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())

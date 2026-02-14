@@ -11,6 +11,7 @@ from app.database.deps import get_db
 from app.therapists.models import Therapist
 from app.patients.models import Patient
 from app.emergency_personnel.models import EmergencyPersonnel
+from app.users.models import User
 from app.schemas.auth import TokenData
 
 # Password hashing context
@@ -57,6 +58,37 @@ def decode_access_token(token: str) -> TokenData:
         return token_data
     except JWTError:
         raise credentials_exception
+
+async def get_current_user(
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db)
+):
+    """Get the current authenticated user (any role) - returns appropriate model based on role"""
+    token_data = decode_access_token(token)
+    
+    # Query the appropriate table based on role
+    if token_data.role == "patient":
+        user = db.query(Patient).filter(Patient.email == token_data.email).first()
+    elif token_data.role == "therapist":
+        user = db.query(Therapist).filter(Therapist.email == token_data.email).first()
+    elif token_data.role == "emergency":
+        user = db.query(EmergencyPersonnel).filter(EmergencyPersonnel.email == token_data.email).first()
+    else:
+        # Fallback to User table for generic users
+        user = db.query(User).filter(User.email == token_data.email).first()
+    
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    # Add role attribute for convenience
+    if not hasattr(user, 'role'):
+        user.role = token_data.role
+    
+    return user
 
 async def get_current_therapist(
     token: str = Depends(oauth2_scheme),
