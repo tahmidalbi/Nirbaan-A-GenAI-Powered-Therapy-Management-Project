@@ -1,4 +1,3 @@
-
 import json
 import os
 from typing import List, Dict, Any
@@ -6,23 +5,29 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from openai import OpenAI
 
-from app.resources.models import ResourceChunk, Resource
-
 # Initialize OpenAI client (OpenAI 2.x)
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
-LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")
+
+# CONFIGURATION
+# GPT-5.2 standard embedding model
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-large")
+# GPT-5.2 is the correct model ID for the 2026 release
+LLM_MODEL = os.getenv("LLM_MODEL", "gpt-5.2")
 
 class RAGService:
     """Retrieval-Augmented Generation service"""
     
     def _generate_query_embedding(self, query: str) -> List[float]:
         """Generate embedding for search query"""
-        response = client.embeddings.create(
-            input=[query],
-            model=EMBEDDING_MODEL
-        )
-        return response.data[0].embedding
+        try:
+            response = client.embeddings.create(
+                input=[query],
+                model=EMBEDDING_MODEL
+            )
+            return response.data[0].embedding
+        except Exception as e:
+            print(f"Embedding error: {e}")
+            return []
     
     def retrieve_chunks(
         self,
@@ -33,19 +38,17 @@ class RAGService:
     ) -> List[Dict[str, Any]]:
         """
         Retrieve most relevant chunks using vector similarity
-        
-        Returns:
-            List of dicts with chunk_text, resource_title, similarity_score
         """
-        # Embed the query
         query_embedding = self._generate_query_embedding(query)
         
-        # Format embedding for SQL (proper vector literal format)
-        embedding_str = "[" + ",".join(f"{x:.8f}" for x in query_embedding) + "]"
+        if not query_embedding:
+            return []
         
-        # Vector similarity search with pgvector (cosine distance)
-        # Uses ivfflat index created in migrations
-        # NOTE: Using CAST() instead of :: for bind parameter compatibility
+        # Format for pgvector: plain string representation of the list "[0.1, 0.2, ...]"
+        embedding_str = f"[{','.join(f'{x:.8f}' for x in query_embedding)}]"
+        
+        # SQL Query
+        # NOTE: used CAST(:query_embedding AS vector) to ensure type safety with binding
         sql = text("""
             SELECT 
                 rc.chunk_text,
@@ -70,12 +73,13 @@ class RAGService:
         )
         
         chunks = []
-        for row in result:
+        # FIX: Use .mappings() to safely access columns by name in SQLAlchemy 2.0+
+        for row in result.mappings():
             chunks.append({
-                "chunk_text": row.chunk_text,
-                "resource_title": row.resource_title,
-                "resource_id": row.resource_id,
-                "similarity_score": float(row.similarity)
+                "chunk_text": row['chunk_text'],
+                "resource_title": row['resource_title'],
+                "resource_id": row['resource_id'],
+                "similarity_score": float(row['similarity'])
             })
         
         return chunks
@@ -87,64 +91,54 @@ class RAGService:
     ) -> Dict[str, Any]:
         """
         Generate answer using retrieved chunks
-        
-        Returns:
-            {
-                answer: str,
-                sources: List[{resource_title, chunk_text}],
-                chunks_used: int
-            }
         """
         if not chunks:
             return {
-                "answer": "I don't have enough information in the knowledge base to answer this question.",
+                "answer": "I don't have enough information to answer this question.",
                 "sources": [],
                 "chunks_used": 0
             }
         
-        # Build context from chunks
+        # Build context safely
         context_parts = []
         for idx, chunk in enumerate(chunks, 1):
             context_parts.append(
-                f"[Source {idx}: {chunk['resource_title']}]\\n{chunk['chunk_text']}"
+                f"[Source {idx}: {chunk['resource_title']}]\n{chunk['chunk_text']}"
             )
         
-        context = "\\n\\n---\\n\\n".join(context_parts)
+        context_str = "\n\n---\n\n".join(context_parts)
         
-        # System prompt
-        system_prompt = """You are a knowledgeable therapy assistant helping therapists find information from their knowledge base.
-
-CRITICAL RULES:
-1. Answer ONLY using information from the provided sources
-2. If sources don't contain the answer, say "I don't have enough information to answer this question"
-3. Always cite your sources by mentioning the resource title
-4. Be concise, clear, and professional
-5. Do NOT make up or infer information beyond what's in the sources
-6. If multiple sources support a claim, mention all relevant titles
-
-SOURCES:
-{context}"""
+        # FIX: Do NOT use .format() on the system prompt if context contains curly braces.
+        # Instead, inject the context via a formatted string literal or a separate message.
+        system_instruction = (
+            "You are a knowledgeable therapy assistant helping therapists find information from their knowledge base.\n"
+            "CRITICAL RULES:\n"
+            "1. Answer ONLY using information from the provided sources\n"
+            "2. If sources don't contain the answer, say 'I don't have enough information'\n"
+            "3. Cite sources by title\n"
+            "SOURCES:\n"
+            f"{context_str}" 
+        )
         
-        # Generate answer using OpenAI
         try:
             response = client.chat.completions.create(
                 model=LLM_MODEL,
                 messages=[
-                    {"role": "system", "content": system_prompt.format(context=context)},
+                    {"role": "system", "content": system_instruction},
                     {"role": "user", "content": query}
                 ],
                 temperature=0,
-                max_tokens=800
+                # NOTE: GPT-5.2 supports 'max_completion_tokens' but 'max_tokens' still works for backward comp.
+                max_completion_tokens=800
             )
             
             answer = response.choices[0].message.content
             
-            # Extract sources for frontend display
             sources = [
                 {
                     "resource_title": chunk['resource_title'],
                     "resource_id": chunk['resource_id'],
-                    "chunk_text": chunk['chunk_text'][:500]  # First 500 chars
+                    "chunk_text": chunk['chunk_text'][:500]
                 }
                 for chunk in chunks
             ]

@@ -14,7 +14,7 @@ celery_app = Celery(
     "nirbaan",
     broker=CELERY_BROKER_URL,
     backend=CELERY_RESULT_BACKEND,
-    include=['app.resources.tasks']  # Import task modules
+    include=['app.resources.tasks', 'app.intakes.tasks']  # Import task modules
 )
 
 # Celery configuration

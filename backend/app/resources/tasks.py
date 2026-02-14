@@ -18,9 +18,9 @@ from app.resources.r2_storage import r2_storage
 
 # OpenAI Configuration
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
-MAX_CHUNK_SIZE = int(os.getenv("MAX_CHUNK_SIZE", "800"))
-CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "100"))
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-large")
+MAX_CHUNK_SIZE = int(os.getenv("MAX_CHUNK_SIZE", "1200"))
+CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "200"))
 
 
 class DocumentProcessor:
