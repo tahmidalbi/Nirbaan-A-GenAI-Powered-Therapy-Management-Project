@@ -13,6 +13,7 @@ import PatientDetail from '../pages/PatientDetail';
 import TherapistDashboard from '../dashboards/TherapistDashboard';
 import EmergencyPersonnelDashboard from '../dashboards/EmergencyPersonnelDashboard';
 import EmergencyPersonnelDetail from '../pages/EmergencyPersonnelDetail';
+import VideoSessionTest from '../pages/VideoSessionTest';
 
 const AppRoutes = () => {
   return (
@@ -24,6 +25,9 @@ const AppRoutes = () => {
       <Route path="/signup" element={<Signup />} />
       <Route path="/patient/login" element={<PatientLogin />} />
       <Route path="/emergency-personnel/login" element={<EmergencyPersonnelLogin />} />
+      
+      {/* Test Routes */}
+      <Route path="/test/video-session" element={<VideoSessionTest />} />
       
       {/* Protected Routes - Patient */}
       <Route
