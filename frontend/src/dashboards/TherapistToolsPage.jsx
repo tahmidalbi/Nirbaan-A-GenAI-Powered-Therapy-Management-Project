@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import './ConditionDashboard.css';
 
-const OCDTools = () => {
+const TherapistToolsPage = () => {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
 
@@ -12,7 +12,7 @@ const OCDTools = () => {
   };
 
   const handleBack = () => {
-    navigate('/patient/dashboard');
+    navigate('/therapist/dashboard');
   };
 
   return (
@@ -27,7 +27,7 @@ const OCDTools = () => {
       {/* Header */}
       <header className="dashboard-header">
         <div className="header-content">
-          <h1 className="logo">OCD Tools</h1>
+          <h1 className="logo">Therapist Tools</h1>
           <div className="header-actions">
             <button onClick={handleBack} className="back-btn">← Back</button>
             <button onClick={handleLogout} className="logout-btn">Logout</button>
@@ -35,31 +35,25 @@ const OCDTools = () => {
         </div>
       </header>
 
-      {/* Main Content */}
+      {/* Main Content - Tools Grid */}
       <main className="dashboard-main">
         <div className="tools-grid">
           <div className="tool-box" onClick={() => console.log('Fear Ladder Maker clicked')}>
             <div className="tool-icon">📋</div>
             <h3>Fear Ladder Maker</h3>
-            <p>Create and manage your exposure hierarchy</p>
+            <p>Create and manage exposure hierarchies for your patients</p>
           </div>
           
           <div className="tool-box" onClick={() => console.log('ERP Workspace clicked')}>
             <div className="tool-icon">🛠️</div>
             <h3>ERP Workspace</h3>
-            <p>Track your exposure and response prevention exercises</p>
+            <p>Monitor and guide patient exposure exercises</p>
           </div>
           
           <div className="tool-box" onClick={() => console.log('Imaginal Exposures clicked')}>
             <div className="tool-icon">💭</div>
             <h3>Imaginal Exposures</h3>
-            <p>Practice imaginal exposure exercises</p>
-          </div>
-          
-          <div className="tool-box" onClick={() => console.log('Anti-Reassurance Chatbot clicked')}>
-            <div className="tool-icon">🤖</div>
-            <h3>Anti-Reassurance Chatbot</h3>
-            <p>Get support without seeking reassurance</p>
+            <p>Design and track imaginal exposure protocols</p>
           </div>
         </div>
       </main>
@@ -67,4 +61,4 @@ const OCDTools = () => {
   );
 };
 
-export default OCDTools;
+export default TherapistToolsPage;
