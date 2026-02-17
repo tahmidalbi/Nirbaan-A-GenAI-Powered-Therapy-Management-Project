@@ -55,6 +55,12 @@ const TherapistToolsPage = () => {
             <h3>Imaginal Exposures</h3>
             <p>Design and track imaginal exposure protocols</p>
           </div>
+          
+          <div className="tool-box" onClick={() => navigate('/therapist/dashboard/self-monitoring')}>
+            <div className="tool-icon">📊</div>
+            <h3>Daily Self Monitoring Log</h3>
+            <p>View and monitor patient self-monitoring logs</p>
+          </div>
         </div>
       </main>
     </div>

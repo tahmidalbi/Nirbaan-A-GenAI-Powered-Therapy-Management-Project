@@ -11,6 +11,8 @@ import OCDTools from '../dashboards/OCDPatientDashboard';
 import PatientDetail from '../pages/PatientDetail';
 import TherapistDashboard from '../dashboards/TherapistDashboard';
 import TherapistToolsPage from '../dashboards/TherapistToolsPage';
+import PatientSelfMonitoring from '../components/PatientSelfMonitoring';
+import TherapistSelfMonitoringView from '../components/TherapistSelfMonitoringView';
 import EmergencyPersonnelDashboard from '../dashboards/EmergencyPersonnelDashboard';
 import EmergencyPersonnelDetail from '../pages/EmergencyPersonnelDetail';
 
@@ -45,6 +47,16 @@ const AppRoutes = () => {
         }
       />
 
+      {/* Protected Routes - Patient Self Monitoring */}
+      <Route
+        path="/patient/dashboard/self-monitoring"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <PatientSelfMonitoring />
+          </ProtectedRoute>
+        }
+      />
+
       {/* Protected Routes - Therapist */}
       <Route
         path="/therapist/dashboard"
@@ -61,6 +73,16 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['therapist']}>
             <TherapistToolsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist Self Monitoring View */}
+      <Route
+        path="/therapist/dashboard/self-monitoring"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistSelfMonitoringView />
           </ProtectedRoute>
         }
       />
