@@ -8,9 +8,9 @@ import EmergencyPersonnelLogin from '../auth/EmergencyPersonnelLogin';
 import ProtectedRoute from '../auth/ProtectedRoute';
 import PatientDashboard from '../dashboards/PatientDashboard';
 import OCDTools from '../dashboards/OCDPatientDashboard';
-import ADHDTools from '../dashboards/ADHDPatientDashboard';
 import PatientDetail from '../pages/PatientDetail';
 import TherapistDashboard from '../dashboards/TherapistDashboard';
+import TherapistToolsPage from '../dashboards/TherapistToolsPage';
 import EmergencyPersonnelDashboard from '../dashboards/EmergencyPersonnelDashboard';
 import EmergencyPersonnelDetail from '../pages/EmergencyPersonnelDetail';
 
@@ -45,22 +45,22 @@ const AppRoutes = () => {
         }
       />
 
-      {/* Protected Routes - Patient ADHD Tools */}
-      <Route
-        path="/patient/dashboard/tools/adhd"
-        element={
-          <ProtectedRoute allowedRoles={['patient']}>
-            <ADHDTools />
-          </ProtectedRoute>
-        }
-      />
-
       {/* Protected Routes - Therapist */}
       <Route
         path="/therapist/dashboard"
         element={
           <ProtectedRoute allowedRoles={['therapist']}>
             <TherapistDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist Tools */}
+      <Route
+        path="/therapist/dashboard/tools"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistToolsPage />
           </ProtectedRoute>
         }
       />

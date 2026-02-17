@@ -214,6 +214,151 @@
   min-height: 60vh;
 }
 
+/* Tools Grid */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2.5rem;
+  padding: 3rem 0;
+  margin-top: 2rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tool-box {
+  background: linear-gradient(135deg, rgba(107, 155, 141, 0.15) 0%, rgba(124, 171, 157, 0.12) 100%);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(107, 155, 141, 0.4);
+  border-radius: 8px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 20px rgba(44, 95, 77, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.tool-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(107, 155, 141, 0.5) 20%, 
+    rgba(107, 155, 141, 0.8) 50%,
+    rgba(107, 155, 141, 0.5) 80%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.tool-box::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(107, 155, 141, 0.5) 20%, 
+    rgba(107, 155, 141, 0.8) 50%,
+    rgba(107, 155, 141, 0.5) 80%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.tool-box:hover::before,
+.tool-box:hover::after {
+  opacity: 1;
+}
+
+.tool-box:hover {
+  transform: translateY(-8px) scale(1.02);
+  background: linear-gradient(135deg, rgba(107, 155, 141, 0.25) 0%, rgba(124, 171, 157, 0.22) 100%);
+  box-shadow: 
+    0 12px 35px rgba(44, 95, 77, 0.25),
+    0 0 0 1px rgba(107, 155, 141, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+  border-color: rgba(107, 155, 141, 0.7);
+}
+
+.tool-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1.2rem;
+  filter: drop-shadow(0 2px 8px rgba(44, 95, 77, 0.3));
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(135deg, rgba(107, 155, 141, 0.15), rgba(124, 171, 157, 0.15));
+  width: 90px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.2rem;
+  border-radius: 50%;
+  border: 2px solid rgba(107, 155, 141, 0.3);
+  box-shadow: 
+    0 4px 12px rgba(44, 95, 77, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.tool-box:hover .tool-icon {
+  transform: scale(1.15) rotate(5deg);
+  filter: drop-shadow(0 4px 15px rgba(44, 95, 77, 0.4));
+  background: linear-gradient(135deg, rgba(107, 155, 141, 0.25), rgba(124, 171, 157, 0.25));
+  border-color: rgba(107, 155, 141, 0.5);
+}
+
+.tool-box h3 {
+  color: #2C5F4D;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+  font-family: 'Georgia', serif;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+  position: relative;
+}
+
+.tool-box h3::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(107, 155, 141, 0.6), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease, width 0.3s ease;
+}
+
+.tool-box:hover h3::after {
+  opacity: 1;
+  width: 60px;
+}
+
+.tool-box p {
+  color: #3A6B5C;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+  font-weight: 400;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
   .nav-menu {
@@ -281,6 +426,21 @@
     padding-right: 1.5rem;
     padding-top: 7rem;
   }
+
+  .tools-grid {
+    gap: 2rem;
+    padding: 2rem 0;
+  }
+
+  .tool-box {
+    padding: 2rem 1.5rem;
+  }
+
+  .tool-icon {
+    width: 75px;
+    height: 75px;
+    font-size: 2.8rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -310,5 +470,29 @@
   .dashboard-main {
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+
+  .tools-grid {
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    grid-template-columns: 1fr;
+  }
+
+  .tool-box {
+    padding: 1.8rem 1.5rem;
+  }
+
+  .tool-icon {
+    width: 70px;
+    height: 70px;
+    font-size: 2.5rem;
+  }
+
+  .tool-box h3 {
+    font-size: 1.2rem;
+  }
+
+  .tool-box p {
+    font-size: 0.9rem;
   }
 }
