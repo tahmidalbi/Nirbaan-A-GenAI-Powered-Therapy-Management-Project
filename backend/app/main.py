@@ -8,6 +8,7 @@ from app.patients.router import router as patients_router
 from app.emergency_personnel.router import router as emergency_personnel_router
 from app.resources.router import router as resources_router
 from app.intakes.router import router as intakes_router
+from app.self_monitoring.router import router as self_monitoring_router
 
 # Optional: if you have SQLAlchemy Base + engine and want to ensure tables exist in dev
 # from app.database.base import Base
@@ -43,6 +44,7 @@ def create_app() -> FastAPI:
     app.include_router(emergency_personnel_router)
     app.include_router(resources_router)
     app.include_router(intakes_router)
+    app.include_router(self_monitoring_router)
 
     @app.get("/", tags=["health"])
     def health_check():

@@ -61,6 +61,12 @@ const OCDTools = () => {
             <h3>Anti-Reassurance Chatbot</h3>
             <p>Get support without seeking reassurance</p>
           </div>
+          
+          <div className="tool-box" onClick={() => navigate('/patient/dashboard/self-monitoring')}>
+            <div className="tool-icon">📊</div>
+            <h3>Daily Self Monitoring Log</h3>
+            <p>Track your daily events, rituals, and anxiety levels</p>
+          </div>
         </div>
       </main>
     </div>
