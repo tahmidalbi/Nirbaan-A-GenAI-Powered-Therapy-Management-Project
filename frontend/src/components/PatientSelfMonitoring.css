@@ -6,6 +6,21 @@
   min-height: 70vh;
 }
 
+/* Embedded Mode */
+.condition-dashboard-container.embedded {
+  background: transparent;
+  min-height: auto;
+}
+
+.condition-dashboard-container.embedded .dashboard-main {
+  padding: 0;
+  margin: 0;
+}
+
+.condition-dashboard-container.embedded .monitoring-container {
+  margin-top: 0;
+}
+
 /* Error Message */
 .error-message {
   background: rgba(220, 53, 69, 0.1);

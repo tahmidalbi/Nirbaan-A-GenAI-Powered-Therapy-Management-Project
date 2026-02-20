@@ -1,0 +1,616 @@
+/* Therapist Fear Ladder Container */
+.therapist-fear-ladder-container {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #E8F3EE, #D4E9E0);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Background Decorations */
+.dashboard-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0.4;
+}
+
+.geometric-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(107, 155, 141, 0.03) 35px, rgba(107, 155, 141, 0.03) 70px);
+}
+
+.art-deco-line {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, rgba(107, 155, 141, 0.3), transparent);
+}
+
+.art-deco-line-top {
+  top: 80px;
+}
+
+.art-deco-line-bottom {
+  bottom: 20px;
+}
+
+/* Header */
+.dashboard-header {
+  position: relative;
+  z-index: 10;
+  background: linear-gradient(135deg, #2C5F4D, #3A7761);
+  padding: 1.5rem 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  color: white;
+  font-size: 1.8rem;
+  font-family: 'Georgia', serif;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.back-btn,
+.logout-btn {
+  padding: 0.7rem 1.5rem;
+  border-radius: 6px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover,
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Main Content */
+.fear-ladder-main {
+  position: relative;
+  z-index: 5;
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 0 2rem 2rem;
+}
+
+/* Section Tabs */
+.section-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  flex: 1;
+  min-width: 250px;
+  padding: 1.2rem 1.5rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(107, 155, 141, 0.3);
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2C5F4D;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.tab-btn:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: #6B9B8D;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(107, 155, 141, 0.2);
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, #6B9B8D, #5A7A70);
+  border-color: #5A7A70;
+  color: white;
+  box-shadow: 0 4px 12px rgba(107, 155, 141, 0.3);
+}
+
+.tab-icon {
+  font-size: 1.5rem;
+}
+
+/* Content Area */
+.content-area {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 2.5rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(107, 155, 141, 0.2);
+  min-height: 500px;
+}
+
+/* Ladder Content */
+.ladder-content h2 {
+  color: #2C5F4D;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-family: 'Georgia', serif;
+  border-bottom: 3px solid #6B9B8D;
+  padding-bottom: 1rem;
+}
+
+.info-message {
+  background: linear-gradient(135deg, rgba(107, 155, 141, 0.12), rgba(107, 155, 141, 0.06));
+  border-left: 6px solid #6B9B8D;
+  padding: 1.3rem 1.8rem;
+  margin-bottom: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  border: 2px solid rgba(107, 155, 141, 0.2);
+  border-left: 6px solid #6B9B8D;
+}
+
+.info-message p {
+  color: #2C5F4D;
+  margin: 0;
+  line-height: 1.7;
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+/* Patient Selection */
+.patient-selection {
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  border: 2px solid rgba(107, 155, 141, 0.2);
+}
+
+.patient-selection label {
+  font-weight: 600;
+  color: #2C5F4D;
+  font-size: 1.1rem;
+  font-family: 'Georgia', serif;
+  letter-spacing: 0.5px;
+}
+
+.patient-dropdown {
+  flex: 1;
+  max-width: 600px;
+  padding: 0.9rem 1.2rem;
+  border: 2px solid rgba(107, 155, 141, 0.4);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #2C5F4D;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.patient-dropdown:hover {
+  border-color: #6B9B8D;
+  box-shadow: 0 3px 12px rgba(107, 155, 141, 0.15);
+}
+
+.patient-dropdown:focus {
+  outline: none;
+  border-color: #6B9B8D;
+  box-shadow: 0 0 0 3px rgba(107, 155, 141, 0.15);
+}
+
+/* Fear Ladder Display */
+.fear-ladder-display {
+  min-height: 300px;
+  margin-bottom: 2rem;
+}
+
+.no-data-message {
+  text-align: center;
+  padding: 5rem 2rem;
+  color: #6B9B8D;
+  background: rgba(107, 155, 141, 0.03);
+  border-radius: 12px;
+  border: 2px dashed rgba(107, 155, 141, 0.3);
+}
+
+.no-data-message p {
+  font-size: 1.3rem;
+  margin-bottom: 0.7rem;
+  font-weight: 600;
+  color: #5A7A70;
+}
+
+.no-data-message .subtext {
+  font-size: 1.05rem;
+  color: #8AAFA4;
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* Ladder Table Wrapper */
+.ladder-table-wrapper {
+  background: white;
+  border-radius: 8px;
+  border: 2px solid rgba(107, 155, 141, 0.2);
+  overflow: hidden;
+}
+
+.ladder-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ladder-table thead {
+  background: linear-gradient(135deg, #6B9B8D, #5A7A70);
+  color: white;
+}
+
+.ladder-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.95rem;
+}
+
+.ladder-table td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(107, 155, 141, 0.1);
+  color: #3A4E46;
+}
+
+.ladder-table tbody tr:hover {
+  background: rgba(107, 155, 141, 0.05);
+}
+
+.ladder-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Status Badge */
+.status-badge {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.not-started {
+  background: rgba(108, 117, 125, 0.1);
+  color: #6c757d;
+  border: 1px solid rgba(108, 117, 125, 0.3);
+}
+
+.status-badge.in-progress {
+  background: rgba(255, 193, 7, 0.1);
+  color: #ff8800;
+  border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.status-badge.completed {
+  background: rgba(40, 167, 69, 0.1);
+  color: #28a745;
+  border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+/* Therapist Actions */
+.therapist-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  padding: 0.9rem 2rem;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.feedback-btn {
+  background: linear-gradient(135deg, #6B9B8D, #5A7A70);
+  color: white;
+}
+
+.feedback-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5A7A70, #4A6A60);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(107, 155, 141, 0.3);
+}
+
+.export-btn {
+  background: linear-gradient(135deg, #9B8B6B, #7A6A5A);
+  color: white;
+}
+
+.export-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #8B7B5B, #6A5A4A);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(155, 139, 107, 0.3);
+}
+
+/* Monitoring Content */
+.monitoring-content {
+  padding: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .fear-ladder-main {
+    padding: 0 1.5rem 1.5rem;
+  }
+
+  .content-area {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo {
+    font-size: 1.4rem;
+  }
+
+  .header-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .back-btn,
+  .logout-btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .section-tabs {
+    flex-direction: column;
+  }
+
+  .tab-btn {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .content-area {
+    padding: 1.5rem;
+  }
+
+  .ladder-content h2 {
+    font-size: 1.6rem;
+  }
+
+  .patient-selection {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .patient-dropdown {
+    max-width: 100%;
+  }
+
+  .therapist-actions {
+    flex-direction: column;
+  }
+
+  .action-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .fear-ladder-main {
+    margin: 1rem auto;
+    padding: 0 1rem 1rem;
+  }
+
+  .logo {
+    font-size: 1.1rem;
+  }
+
+  .content-area {
+    padding: 1rem;
+  }
+
+  .ladder-table th,
+  .ladder-table td {
+    padding: 0.7rem 0.5rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Action Message */
+.action-message {
+  padding: 1.2rem 2rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  font-size: 1.05rem;
+  animation: slideIn 0.4s ease-out;
+  text-align: center;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+}
+
+.action-message.success {
+  background: linear-gradient(135deg, rgba(102, 187, 106, 0.15), rgba(102, 187, 106, 0.08));
+  border: 2px solid #66BB6A;
+  color: #1B5E20;
+  border-left: 6px solid #43A047;
+}
+
+.action-message.error {
+  background: linear-gradient(135deg, rgba(239, 83, 80, 0.15), rgba(239, 83, 80, 0.08));
+  border: 2px solid #EF5350;
+  color: #B71C1C;
+  border-left: 6px solid #D32F2F;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Patient Info */
+.patient-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, rgba(107, 155, 141, 0.08), rgba(107, 155, 141, 0.03));
+  border-radius: 12px;
+  border-left: 6px solid #6B9B8D;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  border: 2px solid rgba(107, 155, 141, 0.2);
+  border-left: 6px solid #6B9B8D;
+}
+
+.patient-details h3 {
+  color: #2C5F4D;
+  font-size: 1.5rem;
+  margin: 0 0 0.4rem 0;
+  font-family: 'Georgia', serif;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.patient-email {
+  color: #5A7A70;
+  font-size: 1rem;
+  margin: 0;
+  font-style: italic;
+  font-weight: 500;
+}
+
+/* Status Badge Variants */
+.status-pending {
+  background: linear-gradient(135deg, #FFA726, #FB8C00);
+  color: white;
+  box-shadow: 0 3px 10px rgba(255, 167, 38, 0.4);
+  border: 2px solid #FF9800;
+  font-weight: 700;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+}
+
+.status-approved {
+  background: linear-gradient(135deg, #66BB6A, #43A047);
+  color: white;
+  box-shadow: 0 3px 10px rgba(102, 187, 106, 0.4);
+  border: 2px solid #4CAF50;
+  font-weight: 700;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+}
+
+.status-rejected {
+  background: linear-gradient(135deg, #EF5350, #E53935);
+  color: white;
+  box-shadow: 0 3px 10px rgba(239, 83, 80, 0.4);
+  border: 2px solid #F44336;
+  font-weight: 700;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+}
+
+/* Approve Button */
+.approve-btn {
+  padding: 1.1rem 3rem;
+  border-radius: 10px;
+  border: 2px solid #4CAF50;
+  background: linear-gradient(135deg, #66BB6A, #43A047);
+  color: white;
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 2rem;
+  box-shadow: 0 5px 15px rgba(102, 187, 106, 0.35);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.approve-btn:hover {
+  background: linear-gradient(135deg, #57A95D, #388E3C);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(102, 187, 106, 0.5);
+  border-color: #2E7D32;
+}
+
+.approve-btn:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 187, 106, 0.4);
+}
+
+/* Loading Message */
+.loading-message {
+  text-align: center;
+  padding: 4rem;
+  color: #6B9B8D;
+  font-size: 1.3rem;
+  font-weight: 600;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}

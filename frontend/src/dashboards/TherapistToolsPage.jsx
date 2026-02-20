@@ -38,7 +38,7 @@ const TherapistToolsPage = () => {
       {/* Main Content - Tools Grid */}
       <main className="dashboard-main">
         <div className="tools-grid">
-          <div className="tool-box" onClick={() => console.log('Fear Ladder Maker clicked')}>
+          <div className="tool-box" onClick={() => navigate('/therapist/dashboard/fear-ladder')}>
             <div className="tool-icon">📋</div>
             <h3>Fear Ladder Maker</h3>
             <p>Create and manage exposure hierarchies for your patients</p>
@@ -54,12 +54,6 @@ const TherapistToolsPage = () => {
             <div className="tool-icon">💭</div>
             <h3>Imaginal Exposures</h3>
             <p>Design and track imaginal exposure protocols</p>
-          </div>
-          
-          <div className="tool-box" onClick={() => navigate('/therapist/dashboard/self-monitoring')}>
-            <div className="tool-icon">📊</div>
-            <h3>Daily Self Monitoring Log</h3>
-            <p>View and monitor patient self-monitoring logs</p>
           </div>
         </div>
       </main>

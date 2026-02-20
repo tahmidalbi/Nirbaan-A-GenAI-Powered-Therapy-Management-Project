@@ -1,11 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useAuthStore } from '../store/authStore';
 import { getPatients } from '../api/patient.api';
 import { getPatientMonitoringDays } from '../api/self-monitoring.api';
 import './PatientSelfMonitoring.css';
 
-const TherapistSelfMonitoringView = () => {
+const TherapistSelfMonitoringView = ({ isEmbedded = false }) => {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
   const [patients, setPatients] = useState([]);
@@ -79,28 +80,32 @@ const TherapistSelfMonitoringView = () => {
   };
 
   return (
-    <div className="condition-dashboard-container">
+    <div className={`condition-dashboard-container ${isEmbedded ? 'embedded' : ''}`}>
       {/* Vintage background */}
-      <div className="dashboard-background">
-        <div className="geometric-pattern"></div>
-        <div className="art-deco-line art-deco-line-top"></div>
-        <div className="art-deco-line art-deco-line-bottom"></div>
-      </div>
+      {!isEmbedded && (
+        <div className="dashboard-background">
+          <div className="geometric-pattern"></div>
+          <div className="art-deco-line art-deco-line-top"></div>
+          <div className="art-deco-line art-deco-line-bottom"></div>
+        </div>
+      )}
 
       {/* Header */}
-      <header className="dashboard-header">
-        <div className="header-content">
-          <h1 className="logo">Patient Self Monitoring Logs</h1>
-          <div className="header-actions">
-            {selectedPatient ? (
-              <button onClick={handleBackToPatients} className="back-btn">← Back to Patients</button>
-            ) : (
-              <button onClick={handleBack} className="back-btn">← Back to Tools</button>
-            )}
-            <button onClick={handleLogout} className="logout-btn">Logout</button>
+      {!isEmbedded && (
+        <header className="dashboard-header">
+          <div className="header-content">
+            <h1 className="logo">Patient Self Monitoring Logs</h1>
+            <div className="header-actions">
+              {selectedPatient ? (
+                <button onClick={handleBackToPatients} className="back-btn">← Back to Patients</button>
+              ) : (
+                <button onClick={handleBack} className="back-btn">← Back to Tools</button>
+              )}
+              <button onClick={handleLogout} className="logout-btn">Logout</button>
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+      )}
 
       {/* Main Content */}
       <main className="dashboard-main">
@@ -249,6 +254,10 @@ const TherapistSelfMonitoringView = () => {
       </main>
     </div>
   );
+};
+
+TherapistSelfMonitoringView.propTypes = {
+  isEmbedded: PropTypes.bool
 };
 
 export default TherapistSelfMonitoringView;

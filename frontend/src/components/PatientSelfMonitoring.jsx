@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useAuthStore } from '../store/authStore';
 import { 
   createMonitoringDay, 
@@ -9,7 +10,7 @@ import {
 } from '../api/self-monitoring.api';
 import './PatientSelfMonitoring.css';
 
-const PatientSelfMonitoring = () => {
+const PatientSelfMonitoring = ({ isEmbedded = false }) => {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
   const [days, setDays] = useState([]);
@@ -164,24 +165,28 @@ const PatientSelfMonitoring = () => {
   };
 
   return (
-    <div className="condition-dashboard-container">
+    <div className={`condition-dashboard-container ${isEmbedded ? 'embedded' : ''}`}>
       {/* Vintage background */}
-      <div className="dashboard-background">
-        <div className="geometric-pattern"></div>
-        <div className="art-deco-line art-deco-line-top"></div>
-        <div className="art-deco-line art-deco-line-bottom"></div>
-      </div>
+      {!isEmbedded && (
+        <div className="dashboard-background">
+          <div className="geometric-pattern"></div>
+          <div className="art-deco-line art-deco-line-top"></div>
+          <div className="art-deco-line art-deco-line-bottom"></div>
+        </div>
+      )}
 
       {/* Header */}
-      <header className="dashboard-header">
-        <div className="header-content">
-          <h1 className="logo">Daily Self Monitoring Log</h1>
-          <div className="header-actions">
-            <button onClick={handleBack} className="back-btn">← Back</button>
-            <button onClick={handleLogout} className="logout-btn">Logout</button>
+      {!isEmbedded && (
+        <header className="dashboard-header">
+          <div className="header-content">
+            <h1 className="logo">Daily Self Monitoring Log</h1>
+            <div className="header-actions">
+              <button onClick={handleBack} className="back-btn">← Back</button>
+              <button onClick={handleLogout} className="logout-btn">Logout</button>
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+      )}
 
       {/* Main Content */}
       <main className="dashboard-main">
@@ -366,6 +371,10 @@ const PatientSelfMonitoring = () => {
       </main>
     </div>
   );
+};
+
+PatientSelfMonitoring.propTypes = {
+  isEmbedded: PropTypes.bool
 };
 
 export default PatientSelfMonitoring;

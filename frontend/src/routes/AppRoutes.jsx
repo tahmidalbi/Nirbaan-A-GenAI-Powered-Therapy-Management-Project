@@ -13,6 +13,14 @@ import TherapistDashboard from '../dashboards/TherapistDashboard';
 import TherapistToolsPage from '../dashboards/TherapistToolsPage';
 import PatientSelfMonitoring from '../components/PatientSelfMonitoring';
 import TherapistSelfMonitoringView from '../components/TherapistSelfMonitoringView';
+import PatientFearLadderHub from '../pages/PatientFearLadderHub';
+import PatientFearLadderEducation from '../pages/PatientFearLadderEducation';
+import PatientFearLadderPage from '../pages/PatientFearLadderPage';
+import PatientFearLadderMonitoring from '../pages/PatientFearLadderMonitoring';
+import TherapistFearLadderHub from '../pages/TherapistFearLadderHub';
+import TherapistFearLadderPatientList from '../pages/TherapistFearLadderPatientList';
+import TherapistFearLadderPatientView from '../pages/TherapistFearLadderPatientView';
+import TherapistFearLadderMonitoring from '../pages/TherapistFearLadderMonitoring';
 import EmergencyPersonnelDashboard from '../dashboards/EmergencyPersonnelDashboard';
 import EmergencyPersonnelDetail from '../pages/EmergencyPersonnelDetail';
 
@@ -57,6 +65,46 @@ const AppRoutes = () => {
         }
       />
 
+      {/* Protected Routes - Patient Fear Ladder Hub */}
+      <Route
+        path="/patient/dashboard/fear-ladder"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <PatientFearLadderHub />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Patient Fear Ladder Education */}
+      <Route
+        path="/patient/dashboard/fear-ladder/education"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <PatientFearLadderEducation />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Patient Fear Ladder Builder */}
+      <Route
+        path="/patient/dashboard/fear-ladder/builder"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <PatientFearLadderPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Patient Fear Ladder Monitoring */}
+      <Route
+        path="/patient/dashboard/fear-ladder/monitoring"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <PatientFearLadderMonitoring />
+          </ProtectedRoute>
+        }
+      />
+
       {/* Protected Routes - Therapist */}
       <Route
         path="/therapist/dashboard"
@@ -83,6 +131,46 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['therapist']}>
             <TherapistSelfMonitoringView />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist Fear Ladder Hub */}
+      <Route
+        path="/therapist/dashboard/fear-ladder"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistFearLadderHub />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist Fear Ladder Patient List */}
+      <Route
+        path="/therapist/dashboard/fear-ladder/patients"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistFearLadderPatientList />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist Fear Ladder Patient View */}
+      <Route
+        path="/therapist/dashboard/fear-ladder/patient/:patientId"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistFearLadderPatientView />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist Fear Ladder Monitoring */}
+      <Route
+        path="/therapist/dashboard/fear-ladder/monitoring"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistFearLadderMonitoring />
           </ProtectedRoute>
         }
       />
