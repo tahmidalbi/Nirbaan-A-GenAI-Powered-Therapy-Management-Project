@@ -1,0 +1,314 @@
+/* Fear Ladder Education Container */
+.fear-ladder-education-container {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #E8F3EE, #D4E9E0);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Background Decorations */
+.dashboard-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0.4;
+}
+
+.geometric-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(107, 155, 141, 0.03) 35px, rgba(107, 155, 141, 0.03) 70px);
+}
+
+.art-deco-line {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, rgba(107, 155, 141, 0.3), transparent);
+}
+
+.art-deco-line-top {
+  top: 80px;
+}
+
+.art-deco-line-bottom {
+  bottom: 20px;
+}
+
+/* Header */
+.dashboard-header {
+  position: relative;
+  z-index: 10;
+  background: linear-gradient(135deg, #2C5F4D, #3A7761);
+  padding: 1.5rem 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  color: white;
+  font-size: 2rem;
+  font-family: 'Georgia', serif;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.back-btn,
+.logout-btn {
+  padding: 0.7rem 1.5rem;
+  border-radius: 6px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover,
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Main Content */
+.education-main {
+  position: relative;
+  z-index: 5;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 2rem 2rem;
+}
+
+.education-content {
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 12px;
+  padding: 3rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(107, 155, 141, 0.2);
+}
+
+.education-content h2 {
+  color: #2C5F4D;
+  font-size: 2.2rem;
+  margin-bottom: 2.5rem;
+  text-align: center;
+  font-family: 'Georgia', serif;
+  border-bottom: 3px solid #6B9B8D;
+  padding-bottom: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.education-block {
+  margin-bottom: 2.5rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(107, 155, 141, 0.06), rgba(107, 155, 141, 0.02));
+  border-left: 6px solid #6B9B8D;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.education-block h3 {
+  color: #2C5F4D;
+  font-size: 1.6rem;
+  margin-bottom: 1.2rem;
+  font-family: 'Georgia', serif;
+  font-weight: 700;
+}
+
+.education-block p {
+  color: #3A4E46;
+  line-height: 1.8;
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.education-block ul,
+.education-block ol {
+  color: #3A4E46;
+  line-height: 1.9;
+  padding-left: 2rem;
+  font-size: 1.05rem;
+}
+
+.education-block li {
+  margin-bottom: 0.8rem;
+  font-weight: 500;
+}
+
+.education-block strong {
+  color: #2C5F4D;
+  font-weight: 700;
+}
+
+/* Example Table */
+.education-example {
+  margin-top: 2.5rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 10px;
+  border: 2px solid rgba(107, 155, 141, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.education-example h3 {
+  color: #2C5F4D;
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+  font-family: 'Georgia', serif;
+  text-align: center;
+  font-weight: 700;
+}
+
+.example-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.example-table thead {
+  background: linear-gradient(135deg, #6B9B8D, #5A7A70);
+  color: white;
+}
+
+.example-table th,
+.example-table td {
+  padding: 1.2rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(107, 155, 141, 0.15);
+}
+
+.example-table th {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.95rem;
+}
+
+.example-table td {
+  color: #3A4E46;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.example-table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.example-table tbody tr:hover {
+  background: rgba(107, 155, 141, 0.08);
+  transform: translateX(3px);
+}
+
+.example-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .education-main {
+    padding: 0 1.5rem 1.5rem;
+  }
+
+  .education-content {
+    padding: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo {
+    font-size: 1.5rem;
+  }
+
+  .header-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .back-btn,
+  .logout-btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .education-content {
+    padding: 2rem;
+  }
+
+  .education-content h2 {
+    font-size: 1.8rem;
+  }
+
+  .education-block {
+    padding: 1.5rem;
+  }
+
+  .education-block h3 {
+    font-size: 1.4rem;
+  }
+
+  .education-block p,
+  .education-block ul,
+  .education-block ol {
+    font-size: 1rem;
+  }
+
+  .example-table th,
+  .example-table td {
+    padding: 0.9rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .education-main {
+    margin: 1rem auto;
+    padding: 0 1rem 1rem;
+  }
+
+  .logo {
+    font-size: 1.2rem;
+  }
+
+  .education-content {
+    padding: 1.5rem;
+  }
+
+  .education-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .education-block {
+    padding: 1rem;
+  }
+
+  .example-table th,
+  .example-table td {
+    padding: 0.7rem;
+    font-size: 0.85rem;
+  }
+}

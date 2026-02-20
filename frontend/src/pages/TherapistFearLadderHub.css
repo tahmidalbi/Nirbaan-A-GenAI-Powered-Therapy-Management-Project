@@ -1,0 +1,403 @@
+.therapist-hub-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #E8F3EE 0%, #D4E9E0 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Vintage Background Elements */
+.dashboard-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+.geometric-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(45deg, transparent 48%, rgba(44, 95, 77, 0.03) 49%, rgba(44, 95, 77, 0.03) 51%, transparent 52%),
+    linear-gradient(-45deg, transparent 48%, rgba(44, 95, 77, 0.03) 49%, rgba(44, 95, 77, 0.03) 51%, transparent 52%);
+  background-size: 40px 40px;
+}
+
+.art-deco-line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(44, 95, 77, 0.2) 20%,
+    rgba(44, 95, 77, 0.4) 50%,
+    rgba(44, 95, 77, 0.2) 80%,
+    transparent 100%
+  );
+}
+
+.art-deco-line-top {
+  top: 100px;
+}
+
+.art-deco-line-bottom {
+  bottom: 100px;
+}
+
+/* Header */
+.dashboard-header {
+  position: relative;
+  z-index: 10;
+  background: linear-gradient(135deg, #2C5F4D 0%, #3d7a64 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-bottom: 3px solid #1a3d30;
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  color: #ffffff;
+  font-size: 1.8rem;
+  font-weight: 700;
+  font-family: 'Georgia', serif;
+  letter-spacing: 0.5px;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.back-btn,
+.logout-btn {
+  padding: 0.6rem 1.4rem;
+  border: 2px solid #ffffff;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Georgia', serif;
+}
+
+.back-btn {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.back-btn:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.logout-btn {
+  background-color: #8B4545;
+  color: #ffffff;
+  border-color: #8B4545;
+}
+
+.logout-btn:hover {
+  background-color: #6d3535;
+  border-color: #6d3535;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Main Hub Content */
+.therapist-hub-main {
+  position: relative;
+  z-index: 5;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  min-height: calc(100vh - 140px);
+}
+
+.hub-intro {
+  text-align: center;
+  margin-bottom: 3rem;
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hub-intro h2 {
+  color: #2C5F4D;
+  font-size: 2.4rem;
+  font-weight: 700;
+  font-family: 'Georgia', serif;
+  margin: 0 0 0.8rem 0;
+  letter-spacing: 0.5px;
+}
+
+.hub-intro p {
+  color: #5A7A70;
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Hub Options Grid */
+.hub-options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  animation: slideUp 0.8s ease-out 0.2s both;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Option Cards */
+.option-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 2.5rem;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 2px solid #e0e0e0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  position: relative;
+  overflow: hidden;
+}
+
+.option-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.option-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  border-color: #2C5F4D;
+}
+
+.option-card:hover::before {
+  width: 100%;
+  opacity: 0.05;
+}
+
+/* Card Specific Colors */
+.card-patients::before {
+  background: linear-gradient(to bottom, #2C5F4D, #6B9B8D);
+}
+
+.card-monitoring::before {
+  background: linear-gradient(to bottom, #5A7A70, #8BA89F);
+}
+
+/* Card Icon - Hidden but for structure */
+.card-icon {
+  font-size: 3rem;
+  margin-bottom: 1.2rem;
+}
+
+.card-icon-hidden {
+  display: none;
+}
+
+/* Card Content */
+.card-content {
+  position: relative;
+  z-index: 2;
+}
+
+.card-content h3 {
+  color: #2C5F4D;
+  font-size: 1.6rem;
+  font-weight: 700;
+  font-family: 'Georgia', serif;
+  margin: 0 0 1rem 0;
+  letter-spacing: 0.3px;
+  transition: color 0.3s ease;
+}
+
+.option-card:hover .card-content h3 {
+  color: #1a3d30;
+}
+
+.card-content p {
+  color: #5A7A70;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin: 0 0 1.5rem 0;
+  font-weight: 400;
+}
+
+.card-action {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #e9ecef;
+}
+
+.card-action span {
+  color: #2C5F4D;
+  font-weight: 600;
+  font-size: 1.05rem;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.option-card:hover .card-action span {
+  color: #1a3d30;
+  transform: translateX(8px);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .therapist-hub-main {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .hub-intro h2 {
+    font-size: 2rem;
+  }
+
+  .hub-intro p {
+    font-size: 1.05rem;
+  }
+
+  .hub-options-grid {
+    gap: 1.5rem;
+  }
+
+  .option-card {
+    padding: 2rem;
+  }
+
+  .card-content h3 {
+    font-size: 1.4rem;
+  }
+
+  .card-content p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .therapist-hub-main {
+    padding: 2rem 1rem;
+  }
+
+  .hub-intro h2 {
+    font-size: 1.8rem;
+  }
+
+  .hub-intro p {
+    font-size: 1rem;
+  }
+
+  .hub-options-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .option-card {
+    padding: 1.8rem;
+  }
+
+  .card-content h3 {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo {
+    font-size: 1.2rem;
+  }
+
+  .back-btn,
+  .logout-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .therapist-hub-main {
+    padding: 1.5rem 0.8rem;
+  }
+
+  .hub-intro {
+    margin-bottom: 2rem;
+  }
+
+  .hub-intro h2 {
+    font-size: 1.5rem;
+  }
+
+  .hub-intro p {
+    font-size: 0.95rem;
+  }
+
+  .option-card {
+    padding: 1.5rem;
+  }
+
+  .card-content h3 {
+    font-size: 1.2rem;
+  }
+
+  .card-content p {
+    font-size: 0.95rem;
+  }
+
+  .card-action span {
+    font-size: 1rem;
+  }
+}

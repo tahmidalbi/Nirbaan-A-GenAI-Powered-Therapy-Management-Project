@@ -28,30 +28,46 @@ const Login = () => {
     setLoading(true);
 
     try {
+      console.log('[LOGIN] Starting therapist login for:', formData.email);
+      
       // Login and get token
       const loginResponse = await loginTherapist(formData);
+      console.log('[LOGIN] Login response:', loginResponse);
       
-      // Store token first
+      // Store token and initial data
+      console.log('[LOGIN] Storing auth data with token...');
       login({ 
         email: formData.email,
         role: 'therapist' 
       }, loginResponse.access_token);
       
+      console.log('[LOGIN] Auth stored, checking localStorage...');
+      const stored = localStorage.getItem('auth-storage');
+      console.log('[LOGIN] Stored auth-storage:', stored);
+      
       // Now get therapist details with the stored token
       try {
+        console.log('[LOGIN] Fetching therapist details...');
         const therapistData = await getCurrentTherapist();
-        // Update with full data
+        console.log('[LOGIN] Therapist data received:', therapistData);
+        
+        // Update with full data (keep the same token)
         login({ 
           ...therapistData,
           role: 'therapist' 
         }, loginResponse.access_token);
+        console.log('[LOGIN] Updated auth with full therapist data');
       } catch (err) {
-        console.error('Failed to fetch therapist data:', err);
+        console.error('[LOGIN] Failed to fetch therapist data:', err);
+        console.error('[LOGIN] Error details:', err.response || err);
+        // Continue to dashboard even if fetching details fails
       }
       
       // Redirect to therapist dashboard
+      console.log('[LOGIN] Redirecting to therapist dashboard...');
       navigate('/therapist/dashboard');
     } catch (err) {
+      console.error('[LOGIN] Login error:', err);
       setError(typeof err === 'string' ? err : 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);

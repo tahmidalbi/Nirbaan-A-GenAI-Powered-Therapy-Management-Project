@@ -9,6 +9,7 @@ from app.emergency_personnel.router import router as emergency_personnel_router
 from app.resources.router import router as resources_router
 from app.intakes.router import router as intakes_router
 from app.self_monitoring.router import router as self_monitoring_router
+from app.fear_ladder.router import router as fear_ladder_router
 
 # Optional: if you have SQLAlchemy Base + engine and want to ensure tables exist in dev
 # from app.database.base import Base
@@ -28,9 +29,11 @@ def create_app() -> FastAPI:
             "http://localhost:5173",
             "http://localhost:5174",
             "http://localhost:5175",
+            "http://localhost:5176",
             "http://127.0.0.1:5173",
             "http://127.0.0.1:5174",
             "http://127.0.0.1:5175",
+            "http://127.0.0.1:5176",
         ],
         allow_credentials=True,
         allow_methods=["*"],
@@ -45,6 +48,7 @@ def create_app() -> FastAPI:
     app.include_router(resources_router)
     app.include_router(intakes_router)
     app.include_router(self_monitoring_router)
+    app.include_router(fear_ladder_router)
 
     @app.get("/", tags=["health"])
     def health_check():
