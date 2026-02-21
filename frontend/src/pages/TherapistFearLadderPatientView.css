@@ -365,6 +365,9 @@
   padding: 1.5rem;
   border-bottom: 3px solid #f0f0f0;
   background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .ai-details-section .section-header h3 {
@@ -376,10 +379,16 @@
   letter-spacing: 0.3px;
 }
 
+.loading-indicator {
+  font-size: 0.85rem;
+  color: #c9aa71;
+  font-style: italic;
+}
+
 .ai-content {
-  padding: 1.5rem;
   overflow-y: auto;
   max-height: 700px;
+  height: calc(100% - 70px);
 }
 
 .placeholder-content {

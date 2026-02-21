@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 import FearLadderBuilder from '../components/FearLadderBuilder';
-import { getMyFearLadder, createFearLadder, updateMyFearLadder } from '../api/fear-ladder.api';
+import { getMyFearLadder, createFearLadder, updateMyFearLadder, submitLadderForAIReview } from '../api/fear-ladder.api';
 import './PatientFearLadderPage.css';
 
 const PatientFearLadderPage = () => {
@@ -12,6 +12,7 @@ const PatientFearLadderPage = () => {
   const [ladderStatus, setLadderStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitMessage, setSubmitMessage] = useState('');
+  const [aiReviewSubmitting, setAiReviewSubmitting] = useState(false);
 
   useEffect(() => {
     fetchExistingLadder();
@@ -40,6 +41,31 @@ const PatientFearLadderPage = () => {
 
   const handleBack = () => {
     navigate('/patient/dashboard/fear-ladder');
+  };
+
+  const handleSubmitForAIReview = async () => {
+    if (!existingLadder?.id) {
+      setSubmitMessage('Please submit your fear ladder first before requesting AI analysis.');
+      setTimeout(() => setSubmitMessage(''), 5000);
+      return;
+    }
+
+    try {
+      setAiReviewSubmitting(true);
+      await submitLadderForAIReview(existingLadder.id);
+      setSubmitMessage('✨ AI analysis requested! Your therapist will see the results once complete.');
+      setTimeout(() => setSubmitMessage(''), 5000);
+    } catch (error) {
+      console.error('Error submitting for AI review:', error);
+      if (error.includes('already in progress')) {
+        setSubmitMessage('AI analysis is already in progress for this ladder.');
+      } else {
+        setSubmitMessage('Error requesting AI analysis. Please try again.');
+      }
+      setTimeout(() => setSubmitMessage(''), 5000);
+    } finally {
+      setAiReviewSubmitting(false);
+    }
   };
 
   const handleFearLadderSubmit = async (ladderItems) => {
@@ -118,18 +144,40 @@ const PatientFearLadderPage = () => {
           {loading ? (
             <div className="loading-message">Loading your fear ladder...</div>
           ) : (
-            <FearLadderBuilder 
-              onSubmit={handleFearLadderSubmit}
-              existingItems={existingLadder ? existingLadder.items : []}
-              readOnly={false}
-              submitButtonText={
-                ladderStatus === 'approved' 
-                  ? 'Submit New Fear Ladder'
-                  : existingLadder 
-                    ? 'Update & Resubmit'
-                    : 'Submit to Therapist'
-              }
-            />
+            <>
+              <FearLadderBuilder 
+                onSubmit={handleFearLadderSubmit}
+                existingItems={existingLadder ? existingLadder.items : []}
+                readOnly={false}
+                submitButtonText={
+                  ladderStatus === 'approved' 
+                    ? 'Submit New Fear Ladder'
+                    : existingLadder 
+                      ? 'Update & Resubmit'
+                      : 'Submit to Therapist'
+                }
+              />
+              
+              {existingLadder && (
+                <div className="ai-review-section">
+                  <div className="ai-review-info">
+                    <h3>🤖 AI-Powered Analysis</h3>
+                    <p>
+                      Request an AI analysis of your fear ladder. The AI will review your intake 
+                      responses and recent daily logs to identify any patterns that might be missing 
+                      from your ladder. Your therapist will see these suggestions.
+                    </p>
+                  </div>
+                  <button 
+                    className="ai-review-btn"
+                    onClick={handleSubmitForAIReview}
+                    disabled={aiReviewSubmitting}
+                  >
+                    {aiReviewSubmitting ? 'Submitting...' : '✨ Request AI Analysis'}
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </main>

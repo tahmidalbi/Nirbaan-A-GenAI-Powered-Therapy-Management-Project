@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import FearLadderBuilder from '../components/FearLadderBuilder';
-import { getPatientFearLadder, updatePatientFearLadder, approveFearLadder } from '../api/fear-ladder.api';
+import AILadderReview from '../components/AILadderReview';
+import { getPatientFearLadder, updatePatientFearLadder, approveFearLadder, getLadderAIReview } from '../api/fear-ladder.api';
 import './TherapistFearLadderPatientView.css';
 
 const TherapistFearLadderPatientView = () => {
@@ -17,6 +18,8 @@ const TherapistFearLadderPatientView = () => {
     name: location.state?.patientName || '',
     email: location.state?.patientEmail || ''
   });
+  const [aiReview, setAiReview] = useState(null);
+  const [aiReviewLoading, setAiReviewLoading] = useState(false);
 
   useEffect(() => {
     if (patientId) {
@@ -29,12 +32,30 @@ const TherapistFearLadderPatientView = () => {
       setLoading(true);
       const response = await getPatientFearLadder(patientId);
       setLadder(response.data);
+      
+      // Fetch AI review if ladder exists
+      if (response.data?.id) {
+        fetchAIReview(response.data.id);
+      }
     } catch (error) {
       console.error('Error fetching patient fear ladder:', error);
       setActionMessage('Error loading patient fear ladder.');
       setTimeout(() => setActionMessage(''), 5000);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchAIReview = async (ladderId) => {
+    try {
+      setAiReviewLoading(true);
+      const response = await getLadderAIReview(ladderId);
+      setAiReview(response.data);
+    } catch (error) {
+      console.log('No AI review available yet:', error);
+      setAiReview(null);
+    } finally {
+      setAiReviewLoading(false);
     }
   };
 
@@ -164,23 +185,10 @@ const TherapistFearLadderPatientView = () => {
             <div className="ai-details-section">
               <div className="section-header">
                 <h3>AI Analysis</h3>
+                {aiReviewLoading && <span className="loading-indicator">Loading...</span>}
               </div>
               <div className="ai-content">
-                <div className="placeholder-content">
-                  <div className="placeholder-icon">🤖</div>
-                  <h4>AI Analysis Coming Soon</h4>
-                  <p>
-                    This section will display AI-powered insights and analysis 
-                    of the patient's fear ladder, including:
-                  </p>
-                  <ul>
-                    <li>Pattern recognition in fears</li>
-                    <li>Suggested exposure progression</li>
-                    <li>Risk assessment</li>
-                    <li>Treatment recommendations</li>
-                    <li>Progress tracking insights</li>
-                  </ul>
-                </div>
+                <AILadderReview reviewData={aiReview} />
               </div>
             </div>
           </div>

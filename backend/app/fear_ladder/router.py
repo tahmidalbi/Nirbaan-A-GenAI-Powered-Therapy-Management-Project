@@ -1,19 +1,22 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 from datetime import datetime
 
 from app.database.deps import get_db
-from app.fear_ladder.models import FearLadder, FearLadderItem, FearLadderStatus
+from app.fear_ladder.models import FearLadder, FearLadderItem, FearLadderStatus, AILadderReview, AILadderReviewStatus
 from app.fear_ladder.schemas import (
     FearLadderCreate,
     FearLadderUpdate,
     FearLadderResponse,
-    FearLadderWithPatientInfo
+    FearLadderWithPatientInfo,
+    AILadderReviewResponse,
+    AILadderReviewSummary
 )
 from app.patients.models import Patient
 from app.therapists.models import Therapist
 from app.auth.utils import get_current_patient, get_current_therapist
+from app.ai_ladder_review.tasks import detect_missing_ocd_structures_task
 
 router = APIRouter(prefix="/fear-ladders", tags=["Fear Ladders"])
 
@@ -311,3 +314,147 @@ async def approve_fear_ladder(
     db.commit()
     db.refresh(ladder)
     return ladder
+
+
+# AI Ladder Review Endpoints
+
+@router.post("/{ladder_id}/submit-for-review", status_code=status.HTTP_202_ACCEPTED)
+async def submit_ladder_for_ai_review(
+    ladder_id: int,
+    db: Session = Depends(get_db),
+    current_patient: Patient = Depends(get_current_patient)
+):
+    """
+    Submit fear ladder for AI review (patient only).
+    Creates a review task that analyzes intake + last 7 days logs.
+    """
+    # Verify ladder belongs to patient
+    ladder = db.query(FearLadder).filter(
+        FearLadder.id == ladder_id,
+        FearLadder.patient_id == current_patient.id
+    ).first()
+    
+    if not ladder:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Fear ladder not found"
+        )
+    
+    # Get patient's therapist
+    patient = db.query(Patient).filter(Patient.id == current_patient.id).first()
+    if not patient or not patient.therapist_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No therapist assigned to your account"
+        )
+    
+    # Check if there's already a recent review
+    existing_review = db.query(AILadderReview).filter(
+        AILadderReview.ladder_id == ladder_id,
+        AILadderReview.status.in_([AILadderReviewStatus.queued, AILadderReviewStatus.running])
+    ).first()
+    
+    if existing_review:
+        return {
+            "message": "AI review already in progress",
+            "review_id": existing_review.id,
+            "status": existing_review.status.value
+        }
+    
+    # Create new review record
+    review = AILadderReview(
+        ladder_id=ladder_id,
+        patient_id=current_patient.id,
+        therapist_id=patient.therapist_id,
+        status=AILadderReviewStatus.queued,
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow()
+    )
+    db.add(review)
+    db.commit()
+    db.refresh(review)
+    
+    # Enqueue Celery task
+    detect_missing_ocd_structures_task.delay(review.id)
+    
+    return {
+        "message": "AI review queued successfully",
+        "review_id": review.id,
+        "status": review.status.value
+    }
+
+
+@router.get("/{ladder_id}/ai-review", response_model=AILadderReviewSummary)
+async def get_ladder_ai_review(
+    ladder_id: int,
+    db: Session = Depends(get_db),
+    current_therapist: Therapist = Depends(get_current_therapist)
+):
+    """
+    Get AI review results for a ladder (therapist only).
+    Returns suggestions for missing obsession-compulsion pairs.
+    """
+    # Verify ladder belongs to therapist's patient
+    ladder = db.query(FearLadder).join(Patient).filter(
+        FearLadder.id == ladder_id,
+        Patient.therapist_id == current_therapist.id
+    ).first()
+    
+    if not ladder:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Fear ladder not found or not assigned to you"
+        )
+    
+    # Get most recent review for this ladder
+    review = db.query(AILadderReview).filter(
+        AILadderReview.ladder_id == ladder_id
+    ).order_by(AILadderReview.created_at.desc()).first()
+    
+    if not review:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No AI review found for this ladder. Patient needs to submit it for review first."
+        )
+    
+    # Return summary format
+    return AILadderReviewSummary(
+        status=review.status.value,
+        suggestions=[s for s in review.suggestions] if review.status == AILadderReviewStatus.completed else [],
+        error_message=review.error_message
+    )
+
+
+@router.get("/{ladder_id}/ai-review/full", response_model=AILadderReviewResponse)
+async def get_full_ladder_ai_review(
+    ladder_id: int,
+    db: Session = Depends(get_db),
+    current_therapist: Therapist = Depends(get_current_therapist)
+):
+    """
+    Get full AI review details including all metadata (therapist only).
+    """
+    # Verify ladder belongs to therapist's patient
+    ladder = db.query(FearLadder).join(Patient).filter(
+        FearLadder.id == ladder_id,
+        Patient.therapist_id == current_therapist.id
+    ).first()
+    
+    if not ladder:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Fear ladder not found or not assigned to you"
+        )
+    
+    # Get most recent review for this ladder
+    review = db.query(AILadderReview).filter(
+        AILadderReview.ladder_id == ladder_id
+    ).order_by(AILadderReview.created_at.desc()).first()
+    
+    if not review:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No AI review found for this ladder"
+        )
+    
+    return review

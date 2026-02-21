@@ -64,3 +64,31 @@ export const approveFearLadder = async (patientId) => {
     throw error.response?.data?.detail || 'Failed to approve fear ladder';
   }
 };
+
+// AI Ladder Review API calls
+export const submitLadderForAIReview = async (ladderId) => {
+  try {
+    const response = await axiosInstance.post(`/fear-ladders/${ladderId}/submit-for-review`);
+    return { data: response.data };
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to submit for AI review';
+  }
+};
+
+export const getLadderAIReview = async (ladderId) => {
+  try {
+    const response = await axiosInstance.get(`/fear-ladders/${ladderId}/ai-review`);
+    return { data: response.data };
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to fetch AI review';
+  }
+};
+
+export const getFullLadderAIReview = async (ladderId) => {
+  try {
+    const response = await axiosInstance.get(`/fear-ladders/${ladderId}/ai-review/full`);
+    return { data: response.data };
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to fetch full AI review';
+  }
+};
