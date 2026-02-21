@@ -249,6 +249,59 @@
   }
 }
 
+/* AI Review Section */
+.ai-review-section {
+  margin-top: 3rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 12px;
+  border: 2px solid #c9aa71;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.ai-review-info {
+  margin-bottom: 1.5rem;
+}
+
+.ai-review-info h3 {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-family: 'Playfair Display', serif;
+}
+
+.ai-review-info p {
+  color: #555;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.ai-review-btn {
+  width: 100%;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #c9aa71 0%, #b39961 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(201, 170, 113, 0.3);
+}
+
+.ai-review-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #b39961 0%, #a38951 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(201, 170, 113, 0.4);
+}
+
+.ai-review-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .fear-ladder-main {
