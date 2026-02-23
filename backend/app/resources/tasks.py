@@ -16,21 +16,29 @@ from app.database.session import SessionLocal
 from app.resources.models import Resource, ResourceChunk, IngestionJob
 from app.resources.r2_storage import r2_storage
 
+import tiktoken
+
 # OpenAI Configuration
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-large")
-MAX_CHUNK_SIZE = int(os.getenv("MAX_CHUNK_SIZE", "1200"))
-CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "200"))
+MAX_CHUNK_SIZE = int(os.getenv("MAX_CHUNK_SIZE", "400"))
+CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "80"))
 
 
 class DocumentProcessor:
     """Process documents: extract text, chunk, embed"""
-    
     def __init__(self):
+        # Choose encoding that matches your embedding model best
+        # 'cl100k_base' is a solid default for modern OpenAI models
+        enc = tiktoken.get_encoding("cl100k_base")
+
+        def token_len(text: str) -> int:
+            return len(enc.encode(text))
+
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=MAX_CHUNK_SIZE,
-            chunk_overlap=CHUNK_OVERLAP,
-            length_function=len,
+            chunk_size=MAX_CHUNK_SIZE,       # now interpreted as TOKENS
+            chunk_overlap=CHUNK_OVERLAP,     # now interpreted as TOKENS
+            length_function=token_len,
             separators=["\n\n", "\n", ". ", " ", ""]
         )
     
