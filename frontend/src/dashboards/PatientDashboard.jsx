@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuthStore } from '../store/authStore';
-import Intake from '../components/Intake';
 import './PatientDashboard.css';
 
 const PatientDashboard = () => {
@@ -33,10 +32,10 @@ const PatientDashboard = () => {
           <h1 className="logo">Nirbaan</h1>
           <nav className="nav-menu">
             <button 
-              className={`nav-btn ${activeSection === 'intake' ? 'active' : ''}`}
-              onClick={() => setActiveSection('intake')}
+              className={`nav-btn ${activeSection === 'sessions' ? 'active' : ''}`}
+              onClick={() => setActiveSection('sessions')}
             >
-              Intake
+              Sessions
             </button>
             <button 
               className={`nav-btn ${activeSection === 'progress' ? 'active' : ''}`}
@@ -69,12 +68,6 @@ const PatientDashboard = () => {
               Mindfulness
             </button>
             <button 
-              className={`nav-btn ${activeSection === 'sessions' ? 'active' : ''}`}
-              onClick={() => setActiveSection('sessions')}
-            >
-              Sessions
-            </button>
-            <button 
               className={`nav-btn ${activeSection === 'chat' ? 'active' : ''}`}
               onClick={() => setActiveSection('chat')}
             >
@@ -96,10 +89,6 @@ const PatientDashboard = () => {
 
       {/* Main Content - Empty sections */}
       <main className="dashboard-main">
-        {activeSection === 'intake' && (
-          <Intake />
-        )}
-
         {activeSection === 'progress' && (
           <div className="empty-section">
             {/* Empty Progress section */}

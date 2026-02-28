@@ -38,6 +38,12 @@ const OCDTools = () => {
       {/* Main Content */}
       <main className="dashboard-main">
         <div className="tools-grid">
+          <div className="tool-box" onClick={() => navigate('/patient/dashboard/tools/ocd/assessment')}>
+            <div className="tool-icon">🩺</div>
+            <h3>Assessment</h3>
+            <p>Complete your intake form and access educational resources</p>
+          </div>
+
           <div className="tool-box" onClick={() => navigate('/patient/dashboard/fear-ladder')}>
             <div className="tool-icon">📋</div>
             <h3>Fear Ladder Maker</h3>
@@ -60,6 +66,12 @@ const OCDTools = () => {
             <div className="tool-icon">🤖</div>
             <h3>Anti-Reassurance Chatbot</h3>
             <p>Get support without seeking reassurance</p>
+          </div>
+
+          <div className="tool-box" onClick={() => console.log('Relapse Prevention clicked')}>
+            <div className="tool-icon">🛡️</div>
+            <h3>Relapse Prevention</h3>
+            <p>Strategies and plans to maintain your progress</p>
           </div>
         </div>
       </main>
