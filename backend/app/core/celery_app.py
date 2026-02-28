@@ -18,6 +18,7 @@ celery_app = Celery(
         'app.intakes.tasks',
         'app.ai_ladder_review.tasks',
         'app.ai_ladder_review_v2.tasks',
+        'app.education.ocd_core.tasks',
     ]
 )
 
@@ -45,6 +46,7 @@ def _register_tasks():
         import app.intakes.tasks  # noqa: F401
         import app.ai_ladder_review.tasks  # noqa: F401
         import app.ai_ladder_review_v2.tasks  # noqa: F401
+        import app.education.ocd_core.tasks  # noqa: F401
     except ImportError as e:
         print(f"Warning: Could not import task module: {e}")
 

@@ -137,6 +137,12 @@ const TherapistDashboard = () => {
             >
               Chat
             </button>
+            <button 
+              className={`nav-btn ${activeSection === 'sessions' ? 'active' : ''}`}
+              onClick={() => setActiveSection('sessions')}
+            >
+              Sessions
+            </button>
           </nav>
           <button onClick={handleLogout} className="logout-btn">Logout</button>
         </div>
@@ -274,6 +280,12 @@ const TherapistDashboard = () => {
         {activeSection === 'chat' && (
           <div className="section-content-blank">
             {/* Chat section - to be implemented */}
+          </div>
+        )}
+
+        {activeSection === 'sessions' && (
+          <div className="section-content-blank">
+            {/* Sessions section - to be implemented */}
           </div>
         )}
       </main>

@@ -1,0 +1,314 @@
+/* PatientOCDEducation.css */
+
+.ocd-education-container {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #6B9B8D 0%, #7CAB9D 50%, #8DBCAE 100%);
+  font-family: 'Georgia', serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.ocd-edu-main {
+  padding-top: 90px;
+  padding-bottom: 3rem;
+  position: relative;
+  z-index: 1;
+}
+
+.ocd-edu-content {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 2rem;
+}
+
+/* ---- Action buttons ---- */
+.edu-actions {
+  margin-bottom: 2rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.generate-btn {
+  padding: 0.75rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Georgia', serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.generate-btn.primary {
+  background: rgba(255, 255, 255, 0.9);
+  color: #4a7a6d;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.generate-btn.primary:hover:not(:disabled) {
+  background: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.generate-btn.secondary {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.generate-btn.secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.generate-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ---- Loading / spinner ---- */
+.edu-loading {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #fff;
+}
+
+.edu-spinner {
+  width: 44px;
+  height: 44px;
+  border: 4px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: edu-spin 0.8s linear infinite;
+  margin: 0 auto 1.5rem;
+}
+
+@keyframes edu-spin {
+  to { transform: rotate(360deg); }
+}
+
+.edu-status-text {
+  font-size: 0.9rem;
+  opacity: 0.85;
+  margin-top: 0.5rem;
+}
+
+.edu-status-sub {
+  font-size: 0.82rem;
+  opacity: 0.65;
+  margin-top: 0.4rem;
+  font-style: italic;
+}
+
+/* ---- Empty state ---- */
+.edu-empty {
+  text-align: center;
+  padding: 5rem 2rem;
+  color: rgba(255,255,255,0.9);
+}
+
+.edu-empty-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.edu-empty h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.8rem;
+}
+
+.edu-empty p {
+  font-size: 0.95rem;
+  opacity: 0.8;
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ---- Error states ---- */
+.edu-error-banner {
+  background: rgba(220, 38, 38, 0.15);
+  border: 1px solid rgba(220, 38, 38, 0.4);
+  color: #fff;
+  padding: 0.9rem 1.2rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.edu-error-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #fff;
+}
+
+.edu-error-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+/* ---- Topic header ---- */
+.edu-topic-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.edu-topic-header h2 {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 0;
+  flex: 1;
+}
+
+.edu-reading-badge {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255,255,255,0.3);
+  white-space: nowrap;
+}
+
+/* ---- Section cards ---- */
+.edu-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+
+.edu-section-card {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 12px;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+}
+
+.edu-section-toggle {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 1.1rem 1.4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  color: #fff;
+  font-family: 'Georgia', serif;
+  font-size: 1.0rem;
+  font-weight: 600;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.edu-section-toggle:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.edu-toggle-icon {
+  font-size: 0.75rem;
+  opacity: 0.75;
+  flex-shrink: 0;
+  margin-left: 1rem;
+}
+
+.edu-section-body {
+  padding: 0 1.4rem 1.4rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.edu-section-markdown {
+  color: rgba(255,255,255,0.92);
+  font-size: 0.93rem;
+  line-height: 1.75;
+  padding-top: 1rem;
+}
+
+.edu-section-markdown p { margin: 0 0 0.8rem; }
+.edu-section-markdown strong { color: #fff; }
+.edu-section-markdown ul,
+.edu-section-markdown ol { padding-left: 1.4rem; margin: 0.5rem 0 0.8rem; }
+
+.edu-key-points {
+  margin-top: 1rem;
+  background: rgba(255,255,255,0.07);
+  border-radius: 8px;
+  padding: 0.9rem 1.2rem;
+}
+
+.edu-key-points h4 {
+  color: rgba(255,255,255,0.75);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 0.6rem;
+}
+
+.edu-key-points ul {
+  margin: 0;
+  padding-left: 1.4rem;
+  color: rgba(255,255,255,0.88);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+/* ---- Sources ---- */
+.edu-sources {
+  margin-bottom: 2rem;
+}
+
+.edu-sources h3 {
+  color: rgba(255,255,255,0.75);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.8rem;
+}
+
+.edu-source-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.85);
+  flex-wrap: wrap;
+}
+
+.edu-source-badge {
+  background: rgba(255,255,255,0.15);
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.edu-source-link {
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-size: 0.8rem;
+}
+
+.edu-source-link:hover { color: #fff; text-decoration: underline; }
+
+/* ---- Disclaimer ---- */
+.edu-disclaimer {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  font-size: 0.83rem;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.6;
+}

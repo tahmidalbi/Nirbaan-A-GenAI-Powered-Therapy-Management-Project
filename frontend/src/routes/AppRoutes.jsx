@@ -8,6 +8,8 @@ import EmergencyPersonnelLogin from '../auth/EmergencyPersonnelLogin';
 import ProtectedRoute from '../auth/ProtectedRoute';
 import PatientDashboard from '../dashboards/PatientDashboard';
 import OCDTools from '../dashboards/OCDPatientDashboard';
+import PatientAssessmentPage from '../pages/PatientAssessmentPage';
+import PatientOCDEducation from '../pages/PatientOCDEducation';
 import PatientDetail from '../pages/PatientDetail';
 import TherapistDashboard from '../dashboards/TherapistDashboard';
 import TherapistToolsPage from '../dashboards/TherapistToolsPage';
@@ -51,6 +53,26 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['patient']}>
             <OCDTools />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Patient Assessment */}
+      <Route
+        path="/patient/dashboard/tools/ocd/assessment"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <PatientAssessmentPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - OCD Core Education */}
+      <Route
+        path="/patient/dashboard/tools/ocd/assessment/ocd-education"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <PatientOCDEducation />
           </ProtectedRoute>
         }
       />
