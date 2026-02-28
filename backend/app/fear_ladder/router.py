@@ -16,7 +16,7 @@ from app.fear_ladder.schemas import (
 from app.patients.models import Patient
 from app.therapists.models import Therapist
 from app.auth.utils import get_current_patient, get_current_therapist
-from app.ai_ladder_review.tasks import detect_missing_ocd_structures_task
+from app.ai_ladder_review_v2.tasks import run_ladder_review_agent_v2_task
 
 router = APIRouter(prefix="/fear-ladders", tags=["Fear Ladders"])
 
@@ -374,8 +374,8 @@ async def submit_ladder_for_ai_review(
     db.commit()
     db.refresh(review)
     
-    # Enqueue Celery task
-    detect_missing_ocd_structures_task.delay(review.id)
+    # Enqueue v2 LangGraph Celery task
+    run_ladder_review_agent_v2_task.delay(review.id)
     
     return {
         "message": "AI review queued successfully",
