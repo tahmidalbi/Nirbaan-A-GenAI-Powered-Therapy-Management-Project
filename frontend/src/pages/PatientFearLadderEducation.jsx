@@ -1,10 +1,50 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
+import { getMyEducation, generateEducation } from '../api/fear-ladder-education.api';
+import ReactMarkdown from 'react-markdown';
 import './PatientFearLadderEducation.css';
 
 const PatientFearLadderEducation = () => {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
+  
+  const [education, setEducation] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    fetchEducation();
+  }, []);
+
+  const fetchEducation = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await getMyEducation();
+      setEducation(data);
+    } catch (err) {
+      console.error('Error fetching education:', err);
+      setError('');
+      setEducation(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGenerate = async (regenerate = false) => {
+    try {
+      setGenerating(true);
+      setError('');
+      const data = await generateEducation(regenerate);
+      setEducation(data);
+    } catch (err) {
+      setError(typeof err === 'string' ? err : 'Failed to generate education. Please try again.');
+    } finally {
+      setGenerating(false);
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -13,6 +53,49 @@ const PatientFearLadderEducation = () => {
 
   const handleBack = () => {
     navigate('/patient/dashboard/fear-ladder');
+  };
+
+  // Render key points as list items
+  const renderKeyPoints = (points) => {
+    if (!points || points.length === 0) return null;
+    return (
+      <div className="key-points">
+        <h4>Key Points:</h4>
+        <ul>
+          {points.map((point, idx) => (
+            <li key={idx}>{point}</li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+
+  // Render sources with proper formatting
+  const renderSources = (sources) => {
+    if (!sources || sources.length === 0) return null;
+    return (
+      <div className="sources-section">
+        <h3>Sources</h3>
+        <div className="sources-list">
+          {sources.map((source, idx) => (
+            <div key={idx} className="source-item">
+              <span className="source-type">[{source.type.toUpperCase()}]</span>
+              <span className="source-title">{source.title}</span>
+              {source.url && (
+                <a 
+                  href={source.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="source-link"
+                >
+                  View Source →
+                </a>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -38,89 +121,81 @@ const PatientFearLadderEducation = () => {
       {/* Main Content */}
       <main className="education-main">
         <div className="education-content">
-          <h2>Understanding Fear Ladders</h2>
           
-          <div className="education-block">
-            <h3>What is a Fear Ladder?</h3>
-            <p>
-              A fear ladder (also called an exposure hierarchy) is a tool used in Exposure and 
-              Response Prevention (ERP) therapy for OCD. It helps you organize your fears and 
-              obsessions from least to most distressing, creating a structured path for facing 
-              your fears gradually.
-            </p>
+          {/* Action Buttons */}
+          <div className="education-actions">
+            {!education ? (
+              <button 
+                onClick={() => handleGenerate(false)}
+                disabled={generating || loading}
+                className="generate-btn primary"
+              >
+                {generating ? 'Generating...' : 'Generate Education'}
+              </button>
+            ) : (
+              <button 
+                onClick={() => handleGenerate(true)}
+                disabled={generating}
+                className="generate-btn secondary"
+              >
+                {generating ? 'Regenerating...' : 'Regenerate Education'}
+              </button>
+            )}
           </div>
 
-          <div className="education-block">
-            <h3>What is SUDS?</h3>
-            <p>
-              SUDS stands for <strong>Subjective Units of Distress Scale</strong>. It's a scale 
-              from 0-100 that helps you rate how much anxiety or distress a particular fear causes you:
-            </p>
-            <ul>
-              <li><strong>0-25:</strong> Low anxiety - Mild discomfort</li>
-              <li><strong>26-50:</strong> Moderate anxiety - Noticeable distress</li>
-              <li><strong>51-75:</strong> High anxiety - Significant distress</li>
-              <li><strong>76-100:</strong> Extreme anxiety - Overwhelming distress</li>
-            </ul>
-          </div>
+          {/* Error Message */}
+          {error && (
+            <div className="error-banner">
+              {error}
+            </div>
+          )}
 
-          <div className="education-block">
-            <h3>How to Build Your Fear Ladder</h3>
-            <ol>
-              <li><strong>Identify your fears:</strong> List all the situations, thoughts, or objects that trigger your OCD</li>
-              <li><strong>Rate each fear:</strong> Assign a SUDS rating (0-100) to each item based on your distress level</li>
-              <li><strong>Order them:</strong> Arrange items from lowest to highest SUDS rating</li>
-              <li><strong>Start small:</strong> Begin ERP with lower-rated items and gradually work your way up</li>
-            </ol>
-          </div>
+          {/* Loading State */}
+          {loading && (
+            <div className="loading-state">
+              <div className="spinner"></div>
+              <p>Loading education content...</p>
+            </div>
+          )}
 
-          <div className="education-block">
-            <h3>Tips for Creating Your Fear Ladder</h3>
-            <ul>
-              <li>Be specific - Instead of "germs," try "touching a doorknob in a public place"</li>
-              <li>Include a range of items - Have items at different difficulty levels</li>
-              <li>Be honest - Your SUDS ratings should reflect your true feelings</li>
-              <li>Update as needed - Your ratings may change over time as you make progress</li>
-            </ul>
-          </div>
+          {/* No Education State */}
+          {!loading && !education && !error && (
+            <div className="empty-state">
+              <div className="empty-icon">📚</div>
+              <h3>No Education Content Yet</h3>
+              <p>Click "Generate Education" to create personalized educational content about fear ladders.</p>
+            </div>
+          )}
 
-          <div className="education-example">
-            <h3>Example Fear Ladder</h3>
-            <table className="example-table">
-              <thead>
-                <tr>
-                  <th>Item</th>
-                  <th>SUDS</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Touching my laptop without washing hands</td>
-                  <td>20</td>
-                </tr>
-                <tr>
-                  <td>Touching doorknob at home</td>
-                  <td>35</td>
-                </tr>
-                <tr>
-                  <td>Shaking someone's hand</td>
-                  <td>50</td>
-                </tr>
-                <tr>
-                  <td>Touching a public doorknob</td>
-                  <td>65</td>
-                </tr>
-                <tr>
-                  <td>Using a public restroom</td>
-                  <td>80</td>
-                </tr>
-                <tr>
-                  <td>Touching trash can without washing hands after</td>
-                  <td>95</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          {/* Education Content */}
+          {!loading && education && (
+            <>
+              <h2>{education.topic}</h2>
+              
+              {/* Sections */}
+              {education.sections && education.sections.map((section) => (
+                <div key={section.id} className="education-block">
+                  <h3>{section.title}</h3>
+                  <div className="section-content">
+                    <ReactMarkdown>{section.content_markdown}</ReactMarkdown>
+                  </div>
+                  {renderKeyPoints(section.key_points)}
+                </div>
+              ))}
+
+              {/* Sources */}
+              {renderSources(education.sources)}
+
+              {/* Disclaimer */}
+              {education.disclaimer && (
+                <div className="disclaimer-section">
+                  <p className="disclaimer-text">
+                    <strong>Disclaimer:</strong> {education.disclaimer}
+                  </p>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </main>
     </div>
