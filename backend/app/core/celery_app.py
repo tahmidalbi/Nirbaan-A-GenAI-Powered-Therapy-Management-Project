@@ -13,7 +13,12 @@ celery_app = Celery(
     "nirbaan",
     broker=CELERY_BROKER_URL,
     backend=CELERY_RESULT_BACKEND,
-    include=['app.resources.tasks', 'app.intakes.tasks', 'app.ai_ladder_review.tasks']  # Import task modules
+    include=[
+        'app.resources.tasks',
+        'app.intakes.tasks',
+        'app.ai_ladder_review.tasks',
+        'app.ai_ladder_review_v2.tasks',
+    ]
 )
 
 # Celery configuration
@@ -39,6 +44,7 @@ def _register_tasks():
         import app.resources.tasks  # noqa: F401
         import app.intakes.tasks  # noqa: F401
         import app.ai_ladder_review.tasks  # noqa: F401
+        import app.ai_ladder_review_v2.tasks  # noqa: F401
     except ImportError as e:
         print(f"Warning: Could not import task module: {e}")
 
