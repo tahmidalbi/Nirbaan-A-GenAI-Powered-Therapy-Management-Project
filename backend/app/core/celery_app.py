@@ -1,4 +1,3 @@
-
 import os
 from celery import Celery
 from dotenv import load_dotenv
@@ -14,7 +13,12 @@ celery_app = Celery(
     "nirbaan",
     broker=CELERY_BROKER_URL,
     backend=CELERY_RESULT_BACKEND,
-    include=['app.resources.tasks', 'app.intakes.tasks']  # Import task modules
+    include=[
+        'app.resources.tasks',
+        'app.intakes.tasks',
+        'app.ai_ladder_review.tasks',
+        'app.ai_ladder_review_v2.tasks',
+    ]
 )
 
 # Celery configuration
@@ -33,3 +37,15 @@ celery_app.conf.update(
 
 # Task result expires after 24 hours
 celery_app.conf.result_expires = 86400
+
+# Force import of tasks to ensure they're registered
+def _register_tasks():
+    try:
+        import app.resources.tasks  # noqa: F401
+        import app.intakes.tasks  # noqa: F401
+        import app.ai_ladder_review.tasks  # noqa: F401
+        import app.ai_ladder_review_v2.tasks  # noqa: F401
+    except ImportError as e:
+        print(f"Warning: Could not import task module: {e}")
+
+_register_tasks()

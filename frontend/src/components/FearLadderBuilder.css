@@ -1,0 +1,305 @@
+/* Fear Ladder Builder Container */
+.fear-ladder-builder {
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 12px;
+  padding: 2.5rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  border: 2px solid rgba(107, 155, 141, 0.3);
+}
+
+.builder-header {
+  margin-bottom: 2.5rem;
+  text-align: center;
+  padding-bottom: 1.5rem;
+  border-bottom: 3px solid rgba(107, 155, 141, 0.2);
+}
+
+.builder-header h3 {
+  color: #2C5F4D;
+  font-size: 2rem;
+  margin-bottom: 0.8rem;
+  font-family: 'Georgia', serif;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.builder-instructions {
+  color: #5A7A70;
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+/* Ladder Table */
+.ladder-table {
+  background: white;
+  border-radius: 8px;
+  border: 2px solid rgba(107, 155, 141, 0.25);
+  overflow: hidden;
+  margin-bottom: 2rem;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 1fr 150px 80px;
+  background: linear-gradient(135deg, #6B9B8D, #5A7A70);
+  padding: 1.2rem 1rem;
+  color: white;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.column-header {
+  display: flex;
+  align-items: center;
+}
+
+.item-column {
+  justify-content: flex-start;
+}
+
+.suds-column {
+  justify-content: center;
+}
+
+.action-column {
+  justify-content: center;
+}
+
+.table-body {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 1fr 150px 80px;
+  padding: 1rem 1rem;
+  border-bottom: 1px solid rgba(107, 155, 141, 0.15);
+  transition: all 0.2s ease;
+}
+
+.table-row:hover {
+  background-color: rgba(107, 155, 141, 0.08);
+  transform: translateX(2px);
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-cell {
+  display: flex;
+  align-items: center;
+}
+
+/* Input Fields */
+.item-input,
+.suds-input {
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  border: 2px solid rgba(107, 155, 141, 0.3);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  background: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.item-input:focus,
+.suds-input:focus {
+  outline: none;
+  border-color: #6B9B8D;
+  box-shadow: 0 0 0 3px rgba(107, 155, 141, 0.15);
+  transform: translateY(-1px);
+}
+
+.item-input:disabled,
+.suds-input:disabled {
+  background: rgba(107, 155, 141, 0.05);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.suds-input {
+  text-align: center;
+  max-width: 120px;
+  margin: 0 auto;
+}
+
+/* Remove number input spinner arrows in some browsers */
+.suds-input::-webkit-inner-spin-button,
+.suds-input::-webkit-outer-spin-button {
+  opacity: 1;
+}
+
+/* Delete Row Button */
+.delete-row-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.delete-row-btn:hover:not(:disabled) {
+  background-color: rgba(220, 53, 69, 0.15);
+  transform: scale(1.15);
+}
+
+.delete-row-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+/* Builder Actions */
+.builder-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-row-btn,
+.reorder-btn,
+.submit-ladder-btn,
+.confirm-reorder-btn,
+.cancel-btn {
+  padding: 0.9rem 1.8rem;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Add Row Button */
+.add-row-btn {
+  background: linear-gradient(135deg, #6B9B8D, #5A7A70);
+  border-color: #5A7A70;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.add-row-btn:hover {
+  background: linear-gradient(135deg, #5A7A70, #4A6A60);
+  border-color: #4A6A60;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(107, 155, 141, 0.4);
+}
+
+.plus-icon {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+/* Reorder Button */
+.reorder-btn {
+  background: linear-gradient(135deg, #9B8B6B, #7A6A5A);
+  color: white;
+}
+
+.reorder-btn:hover {
+  background: linear-gradient(135deg, #8B7B5B, #6A5A4A);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(155, 139, 107, 0.3);
+}
+
+/* Submit Button */
+.submit-ladder-btn {
+  background: linear-gradient(135deg, #2C5F4D, #1E4538);
+  border-color: #1E4538;
+  color: white;
+}
+
+.submit-ladder-btn:hover {
+  background: linear-gradient(135deg, #1E4538, #0F2A20);
+  border-color: #0F2A20;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(44, 95, 77, 0.5);
+}
+
+.submit-ladder-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Reorder Confirmation */
+.reorder-confirm {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.confirm-reorder-btn {
+  background: linear-gradient(135deg, #28a745, #218838);
+  color: white;
+}
+
+.confirm-reorder-btn:hover {
+  background: linear-gradient(135deg, #218838, #1a6b2d);
+  transform: translateY(-2px);
+}
+
+.cancel-btn {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: white;
+}
+
+.cancel-btn:hover {
+  background: linear-gradient(135deg, #c82333, #a71d2a);
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .table-header,
+  .table-row {
+    grid-template-columns: 1fr 100px 60px;
+  }
+
+  .builder-header h3 {
+    font-size: 1.5rem;
+  }
+
+  .builder-instructions {
+    font-size: 0.85rem;
+  }
+
+  .add-row-btn,
+  .reorder-btn,
+  .submit-ladder-btn,
+  .confirm-reorder-btn,
+  .cancel-btn {
+    padding: 0.7rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .builder-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .builder-actions button {
+    width: 100%;
+  }
+
+  .reorder-confirm {
+    width: 100%;
+    flex-direction: column;
+  }
+}

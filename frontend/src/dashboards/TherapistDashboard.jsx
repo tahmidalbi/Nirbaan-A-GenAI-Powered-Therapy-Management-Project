@@ -7,6 +7,7 @@ import AddPatient from'../components/AddPatient';
 import AddEmergencyPersonnel from '../components/AddEmergencyPersonnel';
 import ResourceManager from '../components/ResourceManager';
 import RAGChat from '../components/RAGChat';
+import PatientHistory from '../components/PatientHistory';
 import './TherapistDashboard.css';
 
 const TherapistDashboard = () => {
@@ -111,6 +112,12 @@ const TherapistDashboard = () => {
               onClick={() => setActiveSection('resources')}
             >
               Resources
+            </button>
+            <button 
+              className={`nav-btn ${activeSection === 'tools' ? 'active' : ''}`}
+              onClick={() => navigate('/therapist/dashboard/tools')}
+            >
+              Tools
             </button>
             <button 
               className={`nav-btn ${activeSection === 'history' ? 'active' : ''}`}
@@ -253,8 +260,8 @@ const TherapistDashboard = () => {
         )}
 
         {activeSection === 'history' && (
-          <div className="section-content-blank">
-            {/* History section - to be implemented */}
+          <div className="section-content">
+            <PatientHistory />
           </div>
         )}
 

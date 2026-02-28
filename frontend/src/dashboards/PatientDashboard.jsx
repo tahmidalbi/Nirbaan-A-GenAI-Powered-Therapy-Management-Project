@@ -1,29 +1,21 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuthStore } from '../store/authStore';
+import Intake from '../components/Intake';
 import './PatientDashboard.css';
 
 const PatientDashboard = () => {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
   const [activeSection, setActiveSection] = useState(null);
-  const [showToolsDropdown, setShowToolsDropdown] = useState(false);
 
   const handleLogout = () => {
     logout();
     navigate('/');
   };
 
-  const handleToolsClick = () => {
-    setShowToolsDropdown(!showToolsDropdown);
-  };
-
   const handleOCDToolsClick = () => {
     navigate('/patient/dashboard/tools/ocd');
-  };
-
-  const handleADHDToolsClick = () => {
-    navigate('/patient/dashboard/tools/adhd');
   };
 
   return (
@@ -40,6 +32,12 @@ const PatientDashboard = () => {
         <div className="header-content">
           <h1 className="logo">Nirbaan</h1>
           <nav className="nav-menu">
+            <button 
+              className={`nav-btn ${activeSection === 'intake' ? 'active' : ''}`}
+              onClick={() => setActiveSection('intake')}
+            >
+              Intake
+            </button>
             <button 
               className={`nav-btn ${activeSection === 'progress' ? 'active' : ''}`}
               onClick={() => setActiveSection('progress')}
@@ -58,20 +56,12 @@ const PatientDashboard = () => {
             >
               Resources
             </button>
-            <div className="nav-btn-wrapper">
-              <button 
-                className="nav-btn"
-                onClick={handleToolsClick}
-              >
-                Tools ▾
-              </button>
-              {showToolsDropdown && (
-                <div className="tools-dropdown">
-                  <button onClick={handleOCDToolsClick}>OCD</button>
-                  <button onClick={handleADHDToolsClick}>ADHD</button>
-                </div>
-              )}
-            </div>
+            <button 
+              className="nav-btn"
+              onClick={handleOCDToolsClick}
+            >
+              Tools
+            </button>
             <button 
               className={`nav-btn ${activeSection === 'mindfulness' ? 'active' : ''}`}
               onClick={() => setActiveSection('mindfulness')}
@@ -106,6 +96,10 @@ const PatientDashboard = () => {
 
       {/* Main Content - Empty sections */}
       <main className="dashboard-main">
+        {activeSection === 'intake' && (
+          <Intake />
+        )}
+
         {activeSection === 'progress' && (
           <div className="empty-section">
             {/* Empty Progress section */}

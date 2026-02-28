@@ -35,10 +35,32 @@ const OCDTools = () => {
         </div>
       </header>
 
-      {/* Main Content - Empty */}
+      {/* Main Content */}
       <main className="dashboard-main">
-        <div className="empty-section">
-          {/* Empty OCD Tools section */}
+        <div className="tools-grid">
+          <div className="tool-box" onClick={() => navigate('/patient/dashboard/fear-ladder')}>
+            <div className="tool-icon">📋</div>
+            <h3>Fear Ladder Maker</h3>
+            <p>Create and manage your exposure hierarchy</p>
+          </div>
+          
+          <div className="tool-box" onClick={() => console.log('ERP Workspace clicked')}>
+            <div className="tool-icon">🛠️</div>
+            <h3>ERP Workspace</h3>
+            <p>Track your exposure and response prevention exercises</p>
+          </div>
+          
+          <div className="tool-box" onClick={() => console.log('Imaginal Exposures clicked')}>
+            <div className="tool-icon">💭</div>
+            <h3>Imaginal Exposures</h3>
+            <p>Practice imaginal exposure exercises</p>
+          </div>
+          
+          <div className="tool-box" onClick={() => console.log('Anti-Reassurance Chatbot clicked')}>
+            <div className="tool-icon">🤖</div>
+            <h3>Anti-Reassurance Chatbot</h3>
+            <p>Get support without seeking reassurance</p>
+          </div>
         </div>
       </main>
     </div>

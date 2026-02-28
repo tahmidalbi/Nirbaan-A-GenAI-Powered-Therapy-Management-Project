@@ -28,30 +28,46 @@ const PatientLogin = () => {
     setLoading(true);
 
     try {
+      console.log('[LOGIN] Starting patient login for:', formData.email);
+      
       // Login and get token
       const loginResponse = await loginPatient(formData);
+      console.log('[LOGIN] Login response:', loginResponse);
       
-      // Store token first
+      // Store token and initial data
+      console.log('[LOGIN] Storing auth data with token...');
       login({ 
         email: formData.email,
         role: 'patient' 
       }, loginResponse.access_token);
       
+      console.log('[LOGIN] Auth stored, checking localStorage...');
+      const stored = localStorage.getItem('auth-storage');
+      console.log('[LOGIN] Stored auth-storage:', stored);
+      
       // Now get patient details with the stored token
       try {
+        console.log('[LOGIN] Fetching patient details...');
         const patientData = await getCurrentPatient();
-        // Update with full data
+        console.log('[LOGIN] Patient data received:', patientData);
+        
+        // Update with full data (keep the same token)
         login({ 
           ...patientData,
           role: 'patient' 
         }, loginResponse.access_token);
+        console.log('[LOGIN] Updated auth with full patient data');
       } catch (err) {
-        console.error('Failed to fetch patient data:', err);
+        console.error('[LOGIN] Failed to fetch patient data:', err);
+        console.error('[LOGIN] Error details:', err.response || err);
+        // Continue to dashboard even if fetching details fails
       }
       
       // Redirect to patient dashboard
+      console.log('[LOGIN] Redirecting to patient dashboard...');
       navigate('/patient/dashboard');
     } catch (err) {
+      console.error('[LOGIN] Login error:', err);
       setError(typeof err === 'string' ? err : 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
