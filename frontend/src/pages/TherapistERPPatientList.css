@@ -1,0 +1,155 @@
+/* ─── TherapistERPPatientList ──────────────────────────────────────────── */
+.terp-pl-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #E8F3EE 0%, #D4E9E0 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ── Background decorations ── */
+.terp-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+.terp-bg-pattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(45deg, transparent 48%, rgba(44,95,77,0.03) 49%, rgba(44,95,77,0.03) 51%, transparent 52%),
+    linear-gradient(-45deg, transparent 48%, rgba(44,95,77,0.03) 49%, rgba(44,95,77,0.03) 51%, transparent 52%);
+  background-size: 40px 40px;
+}
+.terp-deco {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent 0%, rgba(44,95,77,0.25) 20%, rgba(44,95,77,0.45) 50%, rgba(44,95,77,0.25) 80%, transparent 100%);
+}
+.terp-deco-top    { top: 100px; }
+.terp-deco-bottom { bottom: 100px; }
+
+/* ── Header ── */
+.terp-header {
+  position: relative;
+  z-index: 10;
+  background: linear-gradient(135deg, #2C5F4D 0%, #3d7a64 100%);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border-bottom: 3px solid #1a3d30;
+}
+.terp-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.4rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.terp-logo {
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 700;
+  font-family: 'Georgia', serif;
+  letter-spacing: 0.5px;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+.terp-ghost-btn {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.4);
+  color: #fff;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+.terp-ghost-btn:hover { background: rgba(255,255,255,0.25); }
+
+/* ── Main ── */
+.terp-main {
+  position: relative;
+  z-index: 1;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+.terp-intro {
+  text-align: center;
+  color: #2C5F4D;
+  font-size: 1.05rem;
+  margin-bottom: 2rem;
+}
+.terp-error {
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.terp-loading,
+.terp-empty {
+  text-align: center;
+  color: #4a7c63;
+  padding: 3rem 1rem;
+}
+.terp-empty h3 { font-size: 1.3rem; margin-bottom: 0.5rem; color: #2C5F4D; }
+.terp-empty p  { font-size: 0.95rem; }
+
+/* ── Patient cards ── */
+.terp-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.terp-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid rgba(44,95,77,0.15);
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.terp-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(44,95,77,0.15);
+}
+.terp-card-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2C5F4D, #4a9b7e);
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.terp-card-info { flex: 1; }
+.terp-card-name  { font-size: 1.05rem; font-weight: 600; color: #1a3d30; margin: 0 0 0.2rem; }
+.terp-card-email { font-size: 0.85rem; color: #5a8a72; margin: 0; }
+.terp-card-badge {
+  background: #E8F3EE;
+  color: #2C5F4D;
+  border: 1px solid rgba(44,95,77,0.2);
+  border-radius: 20px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.terp-card-arrow {
+  color: #4a9b7e;
+  font-size: 1.2rem;
+  font-weight: 700;
+}

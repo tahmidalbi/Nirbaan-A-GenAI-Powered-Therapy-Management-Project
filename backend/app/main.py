@@ -12,6 +12,7 @@ from app.self_monitoring.router import router as self_monitoring_router
 from app.fear_ladder.router import router as fear_ladder_router
 from app.education.fear_ladder.router import router as education_fear_ladder_router
 from app.education.ocd_core.router import router as education_ocd_core_router
+from app.erp.router import router as erp_router
 
 # Optional: if you have SQLAlchemy Base + engine and want to ensure tables exist in dev
 # from app.database.base import Base
@@ -53,6 +54,7 @@ def create_app() -> FastAPI:
     app.include_router(fear_ladder_router)
     app.include_router(education_fear_ladder_router)
     app.include_router(education_ocd_core_router)
+    app.include_router(erp_router)
 
     @app.get("/", tags=["health"])
     def health_check():

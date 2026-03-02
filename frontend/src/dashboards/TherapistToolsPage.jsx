@@ -44,7 +44,7 @@ const TherapistToolsPage = () => {
             <p>Create and manage exposure hierarchies for your patients</p>
           </div>
           
-          <div className="tool-box" onClick={() => console.log('ERP Workspace clicked')}>
+          <div className="tool-box" onClick={() => navigate('/therapist/dashboard/erp')}>
             <div className="tool-icon">🛠️</div>
             <h3>ERP Workspace</h3>
             <p>Monitor and guide patient exposure exercises</p>
