@@ -1,0 +1,200 @@
+/* ─── TherapistERPObsessionView ──────────────────────────────────────────── */
+
+/* Reuse bg / header styles from TherapistERPPatientList.css via the shared
+   class names (.terp-bg, .terp-header, etc.). Only split-panel styles live here. */
+
+.terp-ov-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #E8F3EE 0%, #D4E9E0 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ── Main split layout ── */
+.terp-ov-main {
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+.terp-ov-error {
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.terp-ov-loading {
+  text-align: center;
+  color: #4a7c63;
+  padding: 4rem 1rem;
+  font-size: 1.1rem;
+}
+
+/* ── Split panel ── */
+.terp-ov-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: stretch;
+}
+@media (max-width: 900px) {
+  .terp-ov-split { grid-template-columns: 1fr; }
+}
+
+/* ── Shared section style ── */
+.terp-ov-section {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid rgba(44,95,77,0.12);
+  padding: 1.4rem 1.6rem;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.terp-ov-section:last-child { margin-bottom: 0; }
+
+.terp-ov-section-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #2C5F4D;
+  margin: 0 0 0.9rem;
+}
+.terp-ov-count {
+  font-weight: 400;
+  color: #7aab96;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Obsession */
+.terp-ov-obsession-text {
+  font-size: 1.05rem;
+  color: #1a3d30;
+  line-height: 1.6;
+  margin: 0 0 0.8rem;
+}
+.terp-ov-suds-pill {
+  display: inline-block;
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffd970;
+  border-radius: 20px;
+  padding: 0.25rem 0.9rem;
+  font-size: 0.82rem;
+  margin-top: 0.2rem;
+}
+
+/* Compulsions */
+.terp-ov-empty-note {
+  font-size: 0.88rem;
+  color: #7aab96;
+  margin: 0;
+  font-style: italic;
+}
+.terp-ov-comp-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.terp-ov-comp-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  font-size: 0.95rem;
+  color: #2a4a3a;
+  line-height: 1.5;
+}
+.terp-ov-comp-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2C5F4D;
+  flex-shrink: 0;
+  margin-top: 0.45rem;
+}
+
+/* SUDS chart stat badges */
+.terp-ov-suds-stats {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+  flex-wrap: wrap;
+}
+.terp-ov-stat-badge {
+  border-radius: 20px;
+  padding: 0.2rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.stat-low  { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+.stat-high { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+.stat-last { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+
+/* Session note */
+.terp-ov-note-text {
+  font-size: 0.95rem;
+  color: #2a4a3a;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+/* ── RIGHT: AI full-height panel ── */
+.terp-ov-right {
+  display: flex;
+  flex-direction: column;
+}
+.terp-ov-ai-panel {
+  flex: 1;
+  background: linear-gradient(160deg, #1a3d30 0%, #2C5F4D 40%, #1a3d30 100%);
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 4px 20px rgba(44,95,77,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  position: sticky;
+  top: 90px;
+}
+.terp-ov-ai-inner {
+  padding: 3rem 2rem;
+  text-align: center;
+  max-width: 340px;
+}
+.terp-ov-ai-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1.2rem;
+  filter: drop-shadow(0 0 12px rgba(99,202,183,0.4));
+}
+.terp-ov-ai-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #e0f5ef;
+  margin: 0 0 0.7rem;
+  font-family: 'Georgia', serif;
+}
+.terp-ov-ai-desc {
+  font-size: 0.92rem;
+  color: rgba(200,240,220,0.75);
+  line-height: 1.7;
+  margin: 0 0 1.8rem;
+}
+.terp-ov-ai-coming {
+  display: inline-block;
+  background: rgba(99,202,183,0.15);
+  border: 1px solid rgba(99,202,183,0.4);
+  color: #63cab7;
+  padding: 0.45rem 1.4rem;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}

@@ -1,0 +1,143 @@
+/* ─── ERPAIReport ─────────────────────────────────────────────────────────── */
+.ai-report-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f1923 0%, #1a2d3d 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ── Background ── */
+.ai-report-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.3;
+}
+.ai-report-bg-pattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(99,202,183,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(99,202,183,0.06) 0%, transparent 50%);
+}
+.ai-report-deco {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, rgba(99,202,183,0.3) 30%, rgba(99,202,183,0.6) 50%, rgba(99,202,183,0.3) 70%, transparent 100%);
+}
+.ai-report-deco-top    { top: 80px; }
+.ai-report-deco-bottom { bottom: 80px; }
+
+/* ── Header ── */
+.ai-report-header {
+  position: relative;
+  z-index: 10;
+  background: rgba(15,25,35,0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(99,202,183,0.2);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.ai-report-header-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.4rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ai-report-logo {
+  color: #63cab7;
+  font-size: 1.6rem;
+  font-weight: 700;
+  font-family: 'Georgia', serif;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+.ai-report-ghost-btn {
+  background: rgba(99,202,183,0.1);
+  border: 1px solid rgba(99,202,183,0.35);
+  color: #63cab7;
+  padding: 0.45rem 1.1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  transition: background 0.2s;
+}
+.ai-report-ghost-btn:hover { background: rgba(99,202,183,0.2); }
+
+/* ── Main ── */
+.ai-report-main {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ── Obsession context ── */
+.ai-report-context {
+  background: rgba(99,202,183,0.08);
+  border: 1px solid rgba(99,202,183,0.2);
+  border-radius: 10px;
+  padding: 1rem 1.3rem;
+}
+.ai-report-context-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(99,202,183,0.7);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+.ai-report-context-text {
+  font-size: 1rem;
+  color: #c8e6e0;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Placeholder card ── */
+.ai-report-placeholder {
+  background: rgba(255,255,255,0.04);
+  border: 2px dashed rgba(99,202,183,0.3);
+  border-radius: 16px;
+  padding: 3.5rem 2.5rem;
+  text-align: center;
+}
+.ai-report-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1.2rem;
+}
+.ai-report-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #e2f4f1;
+  margin: 0 0 0.8rem;
+}
+.ai-report-desc {
+  font-size: 0.96rem;
+  color: rgba(200,230,224,0.7);
+  line-height: 1.7;
+  margin: 0 0 1.8rem;
+  max-width: 460px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.ai-report-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #2a8a7a, #63cab7);
+  color: #0f1923;
+  padding: 0.45rem 1.4rem;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
