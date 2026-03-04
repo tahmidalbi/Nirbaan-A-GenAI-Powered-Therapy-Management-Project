@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from app.auth.router import router as auth_router
 from app.patients.router import router as patients_router
@@ -63,6 +64,58 @@ def create_app() -> FastAPI:
             "message": "Nirbaan Therapy Management API with RAG + Intake AI Summary",
             "version": "0.1.0",
         }
+
+    @app.get("/health/celery", tags=["health"])
+    def celery_health():
+        """
+        Checks:
+        1. Are any Celery workers alive? (ping)
+        2. Are the critical ERP tasks registered on those workers?
+        """
+        from app.core.celery_app import celery_app as _celery
+
+        REQUIRED_TASKS = [
+            "app.erp.ERPCoach.tasks.erp_checkins.dispatch_due_checkins",
+            "app.erp.ERPCoach.tasks.erp_checkins.run_checkin",
+            "app.erp.ERPCoach.tasks.erp_reports.run_end_session_report",
+        ]
+
+        # --- ping workers (2 s timeout) ---
+        ping_result = _celery.control.ping(timeout=2) or []
+        workers_alive = [list(w.keys())[0] for w in ping_result if w]
+
+        if not workers_alive:
+            return JSONResponse(
+                status_code=503,
+                content={
+                    "celery": "offline",
+                    "workers": [],
+                    "tasks_registered": False,
+                    "detail": "No Celery workers responded to ping. Is the worker running?",
+                },
+            )
+
+        # --- inspect registered tasks ---
+        inspector = _celery.control.inspect(workers_alive, timeout=2)
+        registered_map = inspector.registered() or {}  # {worker_name: [task, ...]}
+
+        all_registered: set[str] = set()
+        for task_list in registered_map.values():
+            all_registered.update(task_list or [])
+
+        missing = [t for t in REQUIRED_TASKS if t not in all_registered]
+        tasks_ok = len(missing) == 0
+
+        return JSONResponse(
+            status_code=200 if tasks_ok else 206,
+            content={
+                "celery": "ok" if tasks_ok else "degraded",
+                "workers": workers_alive,
+                "tasks_registered": tasks_ok,
+                "missing_tasks": missing,
+                "all_erp_tasks": [t for t in sorted(all_registered) if "erp" in t.lower()],
+            },
+        )
 
     # Optional startup hook (useful if you want to auto-create tables in dev)
     # @app.on_event("startup")

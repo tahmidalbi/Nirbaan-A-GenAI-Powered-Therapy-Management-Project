@@ -227,3 +227,122 @@ export const updateExerciseNote = async (noteId, content) => {
     throw error.response?.data?.detail || 'Failed to update exercise note';
   }
 };
+
+// ─── ERP Coach (LangGraph) ────────────────────────────────────────────────────
+
+export const coachSendMessage = async (sessionId, message) => {
+  try {
+    const response = await axiosInstance.post(`/erp/sessions/${sessionId}/coach/message`, { message });
+    return { data: response.data };
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to send message to coach';
+  }
+};
+
+export const coachEndClick = async (sessionId) => {
+  try {
+    const response = await axiosInstance.post(`/erp/sessions/${sessionId}/coach/end-click`);
+    return { data: response.data };
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to trigger end-session flow';
+  }
+};
+
+export const coachDebriefSubmit = async (sessionId, patientDebriefText) => {
+  try {
+    const response = await axiosInstance.post(`/erp/sessions/${sessionId}/coach/debrief-submit`, {
+      patient_debrief_text: patientDebriefText,
+    });
+    return { data: response.data };
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to submit debrief';
+  }
+};
+
+// ─── Session Transcript ───────────────────────────────────────────────────────
+
+export const getSessionTranscript = async (sessionId) => {
+  try {
+    const response = await axiosInstance.get(`/erp/sessions/${sessionId}/transcript`);
+    return { data: response.data };
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to fetch transcript';
+  }
+};
+
+// ─── Patient Session History ──────────────────────────────────────────────────
+
+export const listItemSessions = async (itemId) => {
+  try {
+    const response = await axiosInstance.get(`/erp/items/${itemId}/sessions`);
+    return { data: response.data };
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to fetch session list';
+  }
+};
+
+export const getSession = async (sessionId) => {
+  try {
+    const response = await axiosInstance.get(`/erp/sessions/${sessionId}`);
+    return { data: response.data };
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to fetch session';
+  }
+};
+
+export const getSessionDetail = async (sessionId) => {
+  try {
+    const response = await axiosInstance.get(`/erp/sessions/${sessionId}/detail`);
+    return { data: response.data };
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to fetch session detail';
+  }
+};
+
+export const getSessionSUDS = async (sessionId) => {
+  try {
+    const response = await axiosInstance.get(`/erp/sessions/${sessionId}/suds`);
+    return { data: response.data };
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to fetch session SUDS';
+  }
+};
+
+// ─── Therapist Session Endpoints ──────────────────────────────────────────────
+
+export const therapistListItemSessions = async (patientId, itemId) => {
+  try {
+    const response = await axiosInstance.get(`/erp/therapist/patients/${patientId}/items/${itemId}/sessions`);
+    return { data: response.data };
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to fetch sessions';
+  }
+};
+
+export const therapistGetSessionDetail = async (sessionId) => {
+  try {
+    const response = await axiosInstance.get(`/erp/therapist/sessions/${sessionId}`);
+    return { data: response.data };
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to fetch session detail';
+  }
+};
+
+export const therapistGetSessionTranscript = async (sessionId) => {
+  try {
+    const response = await axiosInstance.get(`/erp/therapist/sessions/${sessionId}/transcript`);
+    return { data: response.data };
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to fetch transcript';
+  }
+};
+
+export const therapistGetSessionReport = async (sessionId) => {
+  try {
+    const response = await axiosInstance.get(`/erp/therapist/sessions/${sessionId}/report`);
+    return { data: response.data };
+  } catch (error) {
+    if (error.response?.status === 404) return { data: null };
+    throw error.response?.data?.detail || 'Failed to fetch session report';
+  }
+};

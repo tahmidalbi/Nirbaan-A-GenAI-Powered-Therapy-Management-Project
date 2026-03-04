@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { therapistGetERPItemDetail } from '../api/erp.api';
+import { therapistGetERPItemDetail, therapistListItemSessions, therapistGetSessionDetail } from '../api/erp.api';
 import {
   ResponsiveContainer,
   LineChart,
@@ -28,12 +28,41 @@ const TherapistERPObsessionView = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState('');
 
+  // Session history
+  const [sessions, setSessions]           = useState([]);
+  const [sessionsLoading, setSessionsLoading] = useState(false);
+  const [selectedSessionId, setSelectedSessionId] = useState(null);
+  const [sessionDetail, setSessionDetail] = useState(null);
+  const [sessionDetailLoading, setSessionDetailLoading] = useState(false);
+  const [activeTab, setActiveTab]         = useState('sessions'); // 'sessions' | 'report'
+
   useEffect(() => {
     therapistGetERPItemDetail(patientId, itemId)
-      .then(({ data }) => setItem(data))
+      .then(({ data }) => {
+        setItem(data);
+        // Load sessions after item loads
+        setSessionsLoading(true);
+        return therapistListItemSessions(patientId, itemId);
+      })
+      .then(({ data }) => {
+        setSessions(data);
+        // Pre-select latest ended session
+        const latest = data.find((s) => s.status === 'ended');
+        if (latest) setSelectedSessionId(latest.id);
+      })
       .catch((err) => setError(typeof err === 'string' ? err : 'Failed to load detail.'))
-      .finally(() => setLoading(false));
+      .finally(() => { setLoading(false); setSessionsLoading(false); });
   }, [patientId, itemId]);
+
+  useEffect(() => {
+    if (!selectedSessionId) return;
+    setSessionDetail(null);
+    setSessionDetailLoading(true);
+    therapistGetSessionDetail(selectedSessionId)
+      .then(({ data }) => setSessionDetail(data))
+      .catch(() => {})
+      .finally(() => setSessionDetailLoading(false));
+  }, [selectedSessionId]);
 
   const handleBack = () =>
     navigate(`/therapist/dashboard/erp/patient/${patientId}`, {
@@ -177,18 +206,225 @@ const TherapistERPObsessionView = () => {
 
             {/* ── RIGHT PANEL ── */}
             <section className="terp-ov-right">
-              <div className="terp-ov-ai-panel">
-                <div className="terp-ov-ai-inner">
-                  <div className="terp-ov-ai-icon">🤖</div>
-                  <h3 className="terp-ov-ai-title">AI Clinical Summary</h3>
-                  <p className="terp-ov-ai-desc">
-                    The AI-generated clinical summary for this obsession — including
-                    progress analysis, pattern detection, and treatment recommendations
-                    — will appear here.
-                  </p>
-                  <div className="terp-ov-ai-coming">Coming soon</div>
-                </div>
+              {/* Tabs */}
+              <div className="terp-ov-tabs">
+                <button
+                  className={`terp-ov-tab ${activeTab === 'sessions' ? 'terp-ov-tab--active' : ''}`}
+                  onClick={() => setActiveTab('sessions')}
+                >
+                  Sessions ({sessions.length})
+                </button>
+                <button
+                  className={`terp-ov-tab ${activeTab === 'report' ? 'terp-ov-tab--active' : ''}`}
+                  onClick={() => setActiveTab('report')}
+                >
+                  Clinical Report
+                </button>
               </div>
+
+              {/* ── Sessions tab ── */}
+              {activeTab === 'sessions' && (
+                <div className="terp-ov-sessions-panel">
+                  {sessionsLoading ? (
+                    <div className="terp-ov-loading">Loading sessions…</div>
+                  ) : sessions.length === 0 ? (
+                    <div className="terp-ov-empty-note">No sessions recorded yet.</div>
+                  ) : (
+                    <div className="terp-ov-sessions-split">
+                      {/* Session list */}
+                      <div className="terp-ov-session-list">
+                        {sessions.map((s) => (
+                          <button
+                            key={s.id}
+                            className={`terp-ov-session-btn ${selectedSessionId === s.id ? 'terp-ov-session-btn--active' : ''}`}
+                            onClick={() => setSelectedSessionId(s.id)}
+                          >
+                            <div className="terp-ov-sbi-date">
+                              {new Date(s.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}
+                            </div>
+                            <div className="terp-ov-sbi-meta">
+                              <span className={`terp-ov-status terp-ov-status--${s.status}`}>{s.status}</span>
+                              <span className="terp-ov-sbi-dur">
+                                {(() => { const t = Math.round(s.accumulated_seconds || 0); return `${Math.floor(t/60)}m ${t%60}s`; })()}
+                              </span>
+                            </div>
+                            {s.patient_feedback_json && <span className="terp-ov-report-dot">✓ Report</span>}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Session detail */}
+                      <div className="terp-ov-session-detail">
+                        {!selectedSessionId && <div className="terp-ov-empty-note">Select a session.</div>}
+                        {selectedSessionId && sessionDetailLoading && <div className="terp-ov-loading">Loading…</div>}
+                        {selectedSessionId && !sessionDetailLoading && sessionDetail && (
+                          <>
+                            {/* Transcript */}
+                            {sessionDetail.transcript?.messages?.length > 0 && (
+                              <div className="terp-ov-section">
+                                <h4 className="terp-ov-section-title">
+                                  Transcript
+                                  <span className="terp-ov-count"> ({sessionDetail.transcript.messages.length} messages)</span>
+                                </h4>
+                                <div className="terp-ov-transcript">
+                                  {sessionDetail.transcript.messages.map((msg) => (
+                                    <div key={msg.id} className={`terp-ov-msg terp-ov-msg--${msg.role}`}>
+                                      <span className="terp-ov-msg-role">{msg.role}</span>
+                                      <p className="terp-ov-msg-text">{msg.content}</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* SUDS */}
+                            {sessionDetail.suds_readings?.length > 0 && (
+                              <div className="terp-ov-section">
+                                <h4 className="terp-ov-section-title">
+                                  SUDS This Session
+                                  <span className="terp-ov-count"> ({sessionDetail.suds_readings.length})</span>
+                                </h4>
+                                <div className="terp-ov-suds-pills">
+                                  <span className="terp-ov-stat-badge stat-low">
+                                    Start {sessionDetail.suds_readings[0].suds_value}
+                                  </span>
+                                  <span className="terp-ov-stat-badge stat-high">
+                                    ↑ Peak {Math.max(...sessionDetail.suds_readings.map(r => r.suds_value))}
+                                  </span>
+                                  <span className="terp-ov-stat-badge stat-last">
+                                    End {sessionDetail.suds_readings[sessionDetail.suds_readings.length - 1].suds_value}
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Patient feedback */}
+                            {sessionDetail.patient_feedback && (
+                              <div className="terp-ov-section">
+                                <h4 className="terp-ov-section-title">Patient Feedback</h4>
+                                {sessionDetail.patient_feedback.wins?.length > 0 && (
+                                  <div className="terp-ov-fb-block">
+                                    <span className="terp-ov-fb-label">Wins</span>
+                                    <ul className="terp-ov-fb-list">
+                                      {sessionDetail.patient_feedback.wins.map((w, i) => <li key={i}>{w}</li>)}
+                                    </ul>
+                                  </div>
+                                )}
+                                {sessionDetail.patient_feedback.reflection?.length > 0 && (
+                                  <div className="terp-ov-fb-block">
+                                    <span className="terp-ov-fb-label">Reflections</span>
+                                    <ul className="terp-ov-fb-list">
+                                      {sessionDetail.patient_feedback.reflection.map((r, i) => <li key={i}>{r}</li>)}
+                                    </ul>
+                                  </div>
+                                )}
+                                {sessionDetail.patient_feedback.skill_to_practice && (
+                                  <div className="terp-ov-fb-block">
+                                    <span className="terp-ov-fb-label">Skill to Practice</span>
+                                    <p className="terp-ov-note-text">{sessionDetail.patient_feedback.skill_to_practice}</p>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
+                            {/* No report yet */}
+                            {!sessionDetail.patient_feedback && sessionDetail.session.status === 'ended' && (
+                              <div className="terp-ov-empty-note" style={{ marginTop: '0.5rem' }}>
+                                No debrief report for this session.
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* ── Clinical Report tab ── */}
+              {activeTab === 'report' && (
+                <div className="terp-ov-clinical-panel">
+                  {!selectedSessionId || !sessionDetail?.therapist_report ? (
+                    <div className="terp-ov-ai-panel">
+                      <div className="terp-ov-ai-inner">
+                        <div className="terp-ov-ai-icon">📋</div>
+                        <h3 className="terp-ov-ai-title">Clinical Report</h3>
+                        <p className="terp-ov-ai-desc">
+                          Select an ended session from the Sessions tab that has a report, then switch here to view the AI-generated clinical summary.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="terp-ov-report-content">
+                      <h4 className="terp-ov-section-title">
+                        AI Clinical Report —{' '}
+                        {new Date(sessionDetail.session.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </h4>
+
+                      {sessionDetail.therapist_report.suds_curve_summary && (
+                        <div className="terp-ov-section">
+                          <span className="terp-ov-fb-label">SUDS Curve Summary</span>
+                          <p className="terp-ov-note-text">{sessionDetail.therapist_report.suds_curve_summary}</p>
+                        </div>
+                      )}
+
+                      {sessionDetail.therapist_report.what_happened?.length > 0 && (
+                        <div className="terp-ov-section">
+                          <span className="terp-ov-fb-label">What Happened</span>
+                          <ul className="terp-ov-fb-list">
+                            {sessionDetail.therapist_report.what_happened.map((x, i) => <li key={i}>{x}</li>)}
+                          </ul>
+                        </div>
+                      )}
+
+                      {sessionDetail.therapist_report.response_prevention_successes?.length > 0 && (
+                        <div className="terp-ov-section">
+                          <span className="terp-ov-fb-label">Response Prevention Successes</span>
+                          <ul className="terp-ov-fb-list">
+                            {sessionDetail.therapist_report.response_prevention_successes.map((x, i) => <li key={i}>{x}</li>)}
+                          </ul>
+                        </div>
+                      )}
+
+                      {sessionDetail.therapist_report.avoidance_or_safety_behaviors?.length > 0 && (
+                        <div className="terp-ov-section">
+                          <span className="terp-ov-fb-label">Avoidance / Safety Behaviors</span>
+                          <ul className="terp-ov-fb-list">
+                            {sessionDetail.therapist_report.avoidance_or_safety_behaviors.map((x, i) => <li key={i}>{x}</li>)}
+                          </ul>
+                        </div>
+                      )}
+
+                      {sessionDetail.therapist_report.key_learning?.length > 0 && (
+                        <div className="terp-ov-section">
+                          <span className="terp-ov-fb-label">Key Learning</span>
+                          <ul className="terp-ov-fb-list">
+                            {sessionDetail.therapist_report.key_learning.map((x, i) => <li key={i}>{x}</li>)}
+                          </ul>
+                        </div>
+                      )}
+
+                      {sessionDetail.therapist_report.risk_flags?.length > 0 && (
+                        <div className="terp-ov-section terp-ov-risk-flags">
+                          <span className="terp-ov-fb-label">⚠ Risk Flags</span>
+                          <ul className="terp-ov-fb-list">
+                            {sessionDetail.therapist_report.risk_flags.map((x, i) => <li key={i}>{x}</li>)}
+                          </ul>
+                        </div>
+                      )}
+
+                      {sessionDetail.therapist_report.recommend_next_step && Object.keys(sessionDetail.therapist_report.recommend_next_step).length > 0 && (
+                        <div className="terp-ov-section">
+                          <span className="terp-ov-fb-label">Recommended Next Step</span>
+                          <pre className="terp-ov-json-pre">
+                            {JSON.stringify(sessionDetail.therapist_report.recommend_next_step, null, 2)}
+                          </pre>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
             </section>
           </div>
         )}
