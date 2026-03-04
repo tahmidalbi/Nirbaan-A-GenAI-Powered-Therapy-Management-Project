@@ -198,3 +198,178 @@
   font-weight: 700;
   letter-spacing: 0.5px;
 }
+
+/* ── Tabs ── */
+.terp-ov-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1.1rem;
+  border-bottom: 2px solid rgba(44,95,77,0.15);
+}
+.terp-ov-tab {
+  background: none;
+  border: none;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #4a7c63;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s;
+  font-family: 'Georgia', serif;
+}
+.terp-ov-tab:hover { color: #2C5F4D; }
+.terp-ov-tab--active {
+  color: #2C5F4D;
+  border-bottom-color: #2C5F4D;
+}
+
+/* ── Sessions panel ── */
+.terp-ov-sessions-panel { display: flex; flex-direction: column; }
+.terp-ov-sessions-split {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .terp-ov-sessions-split { grid-template-columns: 1fr; }
+}
+
+/* Session list */
+.terp-ov-session-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  background: rgba(44,95,77,0.07);
+  border-radius: 10px;
+  padding: 0.7rem;
+  border: 1px solid rgba(44,95,77,0.12);
+}
+.terp-ov-session-btn {
+  width: 100%;
+  background: none;
+  border: 1px solid rgba(44,95,77,0.12);
+  border-radius: 7px;
+  text-align: left;
+  padding: 0.55rem 0.7rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  transition: background 0.15s, border-color 0.15s;
+  font-family: 'Georgia', serif;
+}
+.terp-ov-session-btn:hover { background: rgba(44,95,77,0.1); border-color: rgba(44,95,77,0.3); }
+.terp-ov-session-btn--active {
+  background: rgba(44,95,77,0.18) !important;
+  border-color: rgba(44,95,77,0.55) !important;
+}
+.terp-ov-sbi-date { font-size: 0.8rem; font-weight: 600; color: #2C5F4D; }
+.terp-ov-sbi-meta { display: flex; gap: 0.4rem; align-items: center; }
+.terp-ov-sbi-dur  { font-size: 0.7rem; color: #7aab96; }
+.terp-ov-report-dot { font-size: 0.68rem; color: #4a9b7e; font-weight: 700; }
+.terp-ov-status {
+  font-size: 0.67rem;
+  font-weight: 700;
+  padding: 0.08rem 0.4rem;
+  border-radius: 8px;
+  text-transform: capitalize;
+}
+.terp-ov-status--ended   { background: rgba(44,95,77,0.15); color: #2C5F4D; }
+.terp-ov-status--running { background: rgba(74,222,128,0.1); color: #16a34a; }
+.terp-ov-status--paused  { background: rgba(234,179,8,0.1); color: #854d0e; }
+.terp-ov-status--ending  { background: rgba(251,191,36,0.1); color: #92400e; }
+
+/* Session detail */
+.terp-ov-session-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 200px;
+}
+
+/* Transcript */
+.terp-ov-transcript {
+  max-height: 280px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.6rem;
+  background: rgba(44,95,77,0.05);
+  border: 1px solid rgba(44,95,77,0.1);
+  border-radius: 8px;
+}
+.terp-ov-transcript::-webkit-scrollbar { width: 3px; }
+.terp-ov-transcript::-webkit-scrollbar-thumb { background: rgba(44,95,77,0.25); border-radius: 3px; }
+.terp-ov-msg {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.terp-ov-msg-role {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.terp-ov-msg--patient .terp-ov-msg-role { color: #4a7c63; align-self: flex-end; }
+.terp-ov-msg--coach   .terp-ov-msg-role,
+.terp-ov-msg--system  .terp-ov-msg-role { color: #7aab96; }
+.terp-ov-msg-text {
+  font-size: 0.82rem;
+  margin: 0;
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
+  line-height: 1.45;
+  max-width: 88%;
+}
+.terp-ov-msg--patient .terp-ov-msg-text {
+  background: rgba(44,95,77,0.12);
+  color: #2C5F4D;
+  align-self: flex-end;
+}
+.terp-ov-msg--coach .terp-ov-msg-text,
+.terp-ov-msg--system .terp-ov-msg-text {
+  background: rgba(44,95,77,0.06);
+  color: #4a7c63;
+  border: 1px solid rgba(44,95,77,0.1);
+}
+
+/* SUDS pills in session detail */
+.terp-ov-suds-pills { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.35rem; }
+
+/* Feedback */
+.terp-ov-fb-block { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.65rem; }
+.terp-ov-fb-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #7aab96;
+}
+.terp-ov-fb-list {
+  margin: 0; padding-left: 1.1rem;
+  display: flex; flex-direction: column; gap: 0.2rem;
+}
+.terp-ov-fb-list li { font-size: 0.82rem; color: #4a7c63; line-height: 1.4; }
+
+/* Clinical report */
+.terp-ov-clinical-panel { display: flex; flex-direction: column; gap: 0.7rem; }
+.terp-ov-report-content { display: flex; flex-direction: column; gap: 0.85rem; }
+.terp-ov-risk-flags .terp-ov-fb-label { color: #dc2626; }
+.terp-ov-risk-flags .terp-ov-fb-list li { color: #dc2626; }
+.terp-ov-json-pre {
+  font-family: monospace;
+  font-size: 0.77rem;
+  background: rgba(44,95,77,0.07);
+  border: 1px solid rgba(44,95,77,0.12);
+  border-radius: 6px;
+  padding: 0.7rem;
+  color: #2C5F4D;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}

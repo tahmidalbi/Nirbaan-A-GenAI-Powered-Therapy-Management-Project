@@ -15,7 +15,14 @@ from app.database.base import Base
 
 # Import all models that the ERP model depends on so they are registered
 from app.patients.models import Patient          # noqa: F401 (registers "patients" table)
-from app.erp.models import ERPItem               # noqa: F401 (registers "erp_items" table)
+from app.erp.models import (                     # noqa: F401
+    ERPItem,
+    ERPImaginalCard,
+    ERPLiveSession,
+    ERPSUDSReading,
+    ERPExerciseNote,
+    ERPChatMessage,
+)
 
 
 def create_erp_tables() -> None:
@@ -24,6 +31,11 @@ def create_erp_tables() -> None:
         Base.metadata.create_all(bind=engine, checkfirst=True)
         print("✓ ERP tables created successfully!")
         print("  - erp_items")
+        print("  - erp_imaginal_cards")
+        print("  - erp_live_sessions")
+        print("  - erp_suds_readings")
+        print("  - erp_exercise_notes")
+        print("  - erp_chat_messages")
     except Exception as exc:
         print(f"✗ Error creating tables: {exc}")
         raise

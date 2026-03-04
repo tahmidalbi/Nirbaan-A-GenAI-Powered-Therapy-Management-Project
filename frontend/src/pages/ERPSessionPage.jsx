@@ -11,12 +11,15 @@ import {
   startSession,
   pauseSession,
   resumeSession,
-  endSession,
   recordSUDS,
   getSUDSHistory,
   getLatestExerciseNote,
   createExerciseNote,
   updateExerciseNote,
+  coachSendMessage,
+  coachEndClick,
+  coachDebriefSubmit,
+  getSessionTranscript,
 } from '../api/erp.api';
 import {
   ResponsiveContainer,
@@ -71,6 +74,19 @@ const ERPSessionPage = () => {
   const [sudsValue, setSudsValue]           = useState(50);
   const [sudsSubmitting, setSudsSubmitting] = useState(false);
   const [sudsHistory, setSudsHistory]       = useState([]);
+
+  // ── Coach chat ─────────────────────────────────────────────────────────────
+  const [chatMessages, setChatMessages]         = useState([]);
+  const [chatInput, setChatInput]               = useState('');
+  const [chatSending, setChatSending]           = useState(false);
+  const [transcriptLoading, setTranscriptLoading] = useState(false);
+  // debrief flow
+  const [debriefMode, setDebriefMode]           = useState(false); // true when status==='ending'
+  const [debriefText, setDebriefText]           = useState('');
+  const [debriefSubmitting, setDebriefSubmitting] = useState(false);
+  const [sessionFeedback, setSessionFeedback]   = useState(null); // PatientFeedbackJSON after submit
+  const chatEndRef                              = useRef(null);
+  const pollRef                                 = useRef(null);  // coach message poll interval
 
   // ── helpers ────────────────────────────────────────────────────────────────
   const formatTime = (totalSeconds) => {
@@ -151,6 +167,19 @@ const ERPSessionPage = () => {
     }
   }, [itemId]);
 
+  const loadTranscript = useCallback(async (sessionId, { silent = false } = {}) => {
+    if (!sessionId) return;
+    try {
+      if (!silent) setTranscriptLoading(true);
+      const { data } = await getSessionTranscript(sessionId);
+      setChatMessages(data.messages || []);
+    } catch {
+      // silent
+    } finally {
+      if (!silent) setTranscriptLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     loadItem();
     loadLatestNote();
@@ -158,6 +187,46 @@ const ERPSessionPage = () => {
     loadSession();
     loadSUDSHistory();
   }, [loadItem, loadLatestNote, loadCards, loadSession, loadSUDSHistory]);
+
+  // Load transcript when session becomes known
+  useEffect(() => {
+    if (session?.id) {
+      loadTranscript(session.id);
+      if (session.status === 'ending') setDebriefMode(true);
+      if (session.status === 'ended' && session.patient_feedback_json) {
+        setSessionFeedback(session.patient_feedback_json);
+      }
+    }
+  }, [session?.id, session?.status, loadTranscript]);
+
+  // Auto-scroll chat
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatMessages, debriefMode, sessionFeedback]);
+
+  // ── poll for new coach messages while session is running ─────────────────
+  useEffect(() => {
+    const sid = session?.id;
+    const isRunning = session?.status === 'running';
+    if (sid && isRunning) {
+      // clear any stale interval first
+      if (pollRef.current) clearInterval(pollRef.current);
+      pollRef.current = setInterval(() => {
+        loadTranscript(sid, { silent: true });
+      }, 15000); // every 15 seconds
+    } else {
+      if (pollRef.current) {
+        clearInterval(pollRef.current);
+        pollRef.current = null;
+      }
+    }
+    return () => {
+      if (pollRef.current) {
+        clearInterval(pollRef.current);
+        pollRef.current = null;
+      }
+    };
+  }, [session?.id, session?.status, loadTranscript]);
 
   // ── timer tick ────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -202,13 +271,70 @@ const ERPSessionPage = () => {
 
   const handleEnd = async () => {
     if (!session) return;
-    if (!window.confirm('End this session? The timer will stop.')) return;
+    if (!window.confirm('End this session and begin the debrief?')) return;
     setActionLoading(true);
     try {
-      const { data } = await endSession(session.id);
-      setSession(data);
-      setDisplaySeconds(data.accumulated_seconds);
+      const { data: coachResp } = await coachEndClick(session.id);
+      // Reload session so status reflects 'ending'
+      const { data: updatedSession } = await getActiveSession(Number(itemId));
+      if (updatedSession) {
+        setSession(updatedSession);
+        setDisplaySeconds(updatedSession.accumulated_seconds);
+      }
+      // Append coach debrief prompt to chat
+      if (coachResp?.coach_message) {
+        setChatMessages((prev) => [
+          ...prev,
+          {
+            id: Date.now(),
+            role: 'coach',
+            content: coachResp.coach_message,
+            intent: 'DEBRIEF_PROMPT',
+            tags: coachResp.tags || [],
+            created_at: new Date().toISOString(),
+          },
+        ]);
+      }
+      setDebriefMode(true);
     } catch { /* silent */ } finally { setActionLoading(false); }
+  };
+
+  const handleCoachSend = async () => {
+    if (!chatInput.trim() || !session || session.status !== 'running') return;
+    const text = chatInput.trim();
+    setChatInput('');
+    // Optimistic patient message
+    const tempPatientMsg = { id: Date.now(), role: 'patient', content: text, created_at: new Date().toISOString() };
+    setChatMessages((prev) => [...prev, tempPatientMsg]);
+    setChatSending(true);
+    try {
+      const { data: coachResp } = await coachSendMessage(session.id, text);
+      if (coachResp?.coach_message && coachResp.type !== 'NO_MESSAGE') {
+        setChatMessages((prev) => [
+          ...prev,
+          {
+            id: Date.now() + 1,
+            role: 'coach',
+            content: coachResp.coach_message,
+            intent: coachResp.source,
+            tags: coachResp.tags || [],
+            created_at: new Date().toISOString(),
+          },
+        ]);
+      }
+    } catch { /* silent */ } finally { setChatSending(false); }
+  };
+
+  const handleDebriefSubmit = async () => {
+    if (!debriefText.trim() || !session) return;
+    setDebriefSubmitting(true);
+    try {
+      const { data } = await coachDebriefSubmit(session.id, debriefText);
+      setSessionFeedback(data.patient_feedback);
+      setDebriefMode(false);
+      // Mark session as ended locally
+      setSession((prev) => prev ? { ...prev, status: 'ended' } : prev);
+    } catch { /* silent */ } finally { setDebriefSubmitting(false); }
   };
 
   const handleRecordSUDS = async () => {
@@ -445,6 +571,7 @@ const ERPSessionPage = () => {
             <div className={`sc-status-badge sc-status-${session?.status ?? 'idle'}`}>
               {session?.status === 'running' && '● Running'}
               {session?.status === 'paused'  && '⏸ Paused'}
+              {session?.status === 'ending'  && '📝 Debrief'}
               {session?.status === 'ended'   && '✓ Ended'}
               {!session && (sessionLoading ? 'Loading…' : 'Not started')}
             </div>
@@ -585,11 +712,136 @@ const ERPSessionPage = () => {
 
         </section>
 
-        {/* ── RIGHT PANEL ──────────────────────────────────────────────── */}
+        {/* ── RIGHT PANEL ─ ERP Coach Chat ─────────────────────────────── */}
         <section className="session-panel session-panel-right">
-          <div className="session-placeholder">
-            <span className="session-placeholder-icon">📝</span>
-            <p>Right panel coming soon</p>
+          <div className="sc-coach-panel">
+            <div className="sc-coach-header">
+              <span className="sc-coach-title">🤖 ERP Coach</span>
+              {transcriptLoading && <span className="sc-coach-loading-dot" />}
+            </div>
+
+            {/* ── Messages ── */}
+            <div className="sc-chat-messages">
+              {!transcriptLoading && chatMessages.length === 0 && !sessionFeedback && (
+                <div className="sc-chat-empty">
+                  {session?.status === 'running' || session?.status === 'paused'
+                    ? 'Send a message to start chatting with your ERP Coach.'
+                    : session
+                    ? 'No messages in this session yet.'
+                    : 'Start a session to chat with your coach.'}
+                </div>
+              )}
+
+              {chatMessages.map((msg) => (
+                <div key={msg.id} className={`sc-chat-bubble sc-bubble-${msg.role}`}>
+                  {(msg.role === 'coach' || msg.role === 'system') && (
+                    <span className="sc-bubble-icon">🤖</span>
+                  )}
+                  <div className="sc-bubble-content">
+                    <p className="sc-bubble-text">{msg.content}</p>
+                    {msg.tags?.length > 0 && (
+                      <div className="sc-bubble-tags">
+                        {msg.tags.map((t, i) => <span key={i} className="sc-tag">{t}</span>)}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+
+              {/* ── Debrief form ── */}
+              {debriefMode && (
+                <div className="sc-debrief-form">
+                  <p className="sc-debrief-label">Your reflection on this session:</p>
+                  <textarea
+                    className="sc-debrief-textarea"
+                    placeholder="What did you notice during the exposure? How did your anxiety change?"
+                    value={debriefText}
+                    onChange={(e) => setDebriefText(e.target.value)}
+                    rows={4}
+                  />
+                  <button
+                    className="sc-btn sc-btn-debrief"
+                    onClick={handleDebriefSubmit}
+                    disabled={debriefSubmitting || !debriefText.trim()}
+                  >
+                    {debriefSubmitting ? 'Saving…' : 'Submit Reflection'}
+                  </button>
+                </div>
+              )}
+
+              {/* ── Patient feedback after debrief ── */}
+              {sessionFeedback && (
+                <div className="sc-feedback-card">
+                  <div className="sc-feedback-header">✨ Session Summary</div>
+                  {sessionFeedback.wins?.length > 0 && (
+                    <div className="sc-feedback-section">
+                      <span className="sc-feedback-label">Your Wins</span>
+                      <ul className="sc-feedback-list">
+                        {sessionFeedback.wins.map((w, i) => <li key={i}>{w}</li>)}
+                      </ul>
+                    </div>
+                  )}
+                  {sessionFeedback.reflection?.length > 0 && (
+                    <div className="sc-feedback-section">
+                      <span className="sc-feedback-label">Reflections</span>
+                      <ul className="sc-feedback-list">
+                        {sessionFeedback.reflection.map((r, i) => <li key={i}>{r}</li>)}
+                      </ul>
+                    </div>
+                  )}
+                  {sessionFeedback.skill_to_practice && (
+                    <div className="sc-feedback-section">
+                      <span className="sc-feedback-label">Skill to Practice</span>
+                      <p className="sc-feedback-text">{sessionFeedback.skill_to_practice}</p>
+                    </div>
+                  )}
+                  {sessionFeedback.one_micro_goal_next_time && (
+                    <div className="sc-feedback-section">
+                      <span className="sc-feedback-label">Next Session Goal</span>
+                      <p className="sc-feedback-text">{sessionFeedback.one_micro_goal_next_time}</p>
+                    </div>
+                  )}
+                  {sessionFeedback.reminder && (
+                    <div className="sc-feedback-reminder">{sessionFeedback.reminder}</div>
+                  )}
+                </div>
+              )}
+
+              <div ref={chatEndRef} />
+            </div>
+
+            {/* ── Input area ── */}
+            {session?.status === 'running' && !debriefMode && (
+              <div className="sc-chat-input-row">
+                <textarea
+                  className="sc-chat-input"
+                  placeholder="Message your coach…"
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleCoachSend();
+                    }
+                  }}
+                  rows={2}
+                  disabled={chatSending}
+                />
+                <button
+                  className="sc-chat-send-btn"
+                  onClick={handleCoachSend}
+                  disabled={chatSending || !chatInput.trim()}
+                >
+                  {chatSending ? '…' : '↑'}
+                </button>
+              </div>
+            )}
+            {session?.status === 'paused' && !debriefMode && (
+              <div className="sc-chat-paused-note">Resume the session to send messages.</div>
+            )}
+            {session?.status === 'ended' && !sessionFeedback && (
+              <div className="sc-chat-paused-note">Session ended. View your report above.</div>
+            )}
           </div>
         </section>
 
