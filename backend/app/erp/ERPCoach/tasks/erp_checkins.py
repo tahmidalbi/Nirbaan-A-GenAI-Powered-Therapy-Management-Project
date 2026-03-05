@@ -107,21 +107,8 @@ def run_checkin(session_id: int) -> dict:
             storage.update_last_agent_run_at(session_id, when=datetime.utcnow(), commit=True)
             return {"ok": True, "session_id": session_id, "type": "NO_MESSAGE"}
 
-        # Persist coach message (as role="coach")
-        msg_text = coach_resp.get("coach_message") or ""
-        tags = coach_resp.get("tags") or []
-        intent = coach_resp.get("intent")  # optional if you include
-
-        storage.save_chat_message(
-            session_id=session.id,
-            erp_item_id=session.erp_item_id,
-            patient_id=session.patient_id,
-            role="coach",
-            content=msg_text,
-            intent=intent,
-            tags=tags,
-            commit=True,
-        )
+        # NOTE: The graph's log_coach node already persisted the message —
+        # do NOT save again here or the message will appear twice.
 
         storage.update_last_agent_run_at(session_id, when=datetime.utcnow(), commit=True)
 
