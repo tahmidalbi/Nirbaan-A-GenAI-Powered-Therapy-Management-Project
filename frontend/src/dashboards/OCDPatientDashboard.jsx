@@ -50,7 +50,7 @@ const OCDTools = () => {
             <p>Create and manage your exposure hierarchy</p>
           </div>
           
-          <div className="tool-box" onClick={() => console.log('ERP Workspace clicked')}>
+          <div className="tool-box" onClick={() => navigate('/patient/dashboard/erp')}>
             <div className="tool-icon">🛠️</div>
             <h3>ERP Workspace</h3>
             <p>Track your exposure and response prevention exercises</p>

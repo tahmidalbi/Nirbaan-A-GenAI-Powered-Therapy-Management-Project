@@ -25,6 +25,14 @@ import TherapistFearLadderPatientView from '../pages/TherapistFearLadderPatientV
 import TherapistFearLadderMonitoring from '../pages/TherapistFearLadderMonitoring';
 import EmergencyPersonnelDashboard from '../dashboards/EmergencyPersonnelDashboard';
 import EmergencyPersonnelDetail from '../pages/EmergencyPersonnelDetail';
+import ERPWorkspace from '../pages/ERPWorkspace';
+import ERPPlanRecovery from '../pages/ERPPlanRecovery';
+import ERPDiveIn from '../pages/ERPDiveIn';
+import ERPSessionPage from '../pages/ERPSessionPage';
+import ERPAIReport from '../pages/ERPAIReport';
+import TherapistERPPatientList from '../pages/TherapistERPPatientList';
+import TherapistERPObsessionList from '../pages/TherapistERPObsessionList';
+import TherapistERPObsessionView from '../pages/TherapistERPObsessionView';
 
 const AppRoutes = () => {
   return (
@@ -127,6 +135,56 @@ const AppRoutes = () => {
         }
       />
 
+      {/* Protected Routes - ERP Workspace */}
+      <Route
+        path="/patient/dashboard/erp"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <ERPWorkspace />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - ERP Plan Recovery */}
+      <Route
+        path="/patient/dashboard/erp/plan"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <ERPPlanRecovery />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - ERP Dive In */}
+      <Route
+        path="/patient/dashboard/erp/dive-in"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <ERPDiveIn />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - ERP Session */}
+      <Route
+        path="/patient/dashboard/erp/session/:itemId"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <ERPSessionPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - ERP AI Report */}
+      <Route
+        path="/patient/dashboard/erp/item/:itemId/ai-report"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <ERPAIReport />
+          </ProtectedRoute>
+        }
+      />
+
       {/* Protected Routes - Therapist */}
       <Route
         path="/therapist/dashboard"
@@ -143,6 +201,36 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['therapist']}>
             <TherapistToolsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist ERP Patient List */}
+      <Route
+        path="/therapist/dashboard/erp"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistERPPatientList />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist ERP Obsession List (one patient) */}
+      <Route
+        path="/therapist/dashboard/erp/patient/:patientId"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistERPObsessionList />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist ERP Obsession Detail (split panel) */}
+      <Route
+        path="/therapist/dashboard/erp/patient/:patientId/item/:itemId"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistERPObsessionView />
           </ProtectedRoute>
         }
       />
