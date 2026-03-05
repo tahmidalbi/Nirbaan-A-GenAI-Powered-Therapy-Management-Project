@@ -315,6 +315,17 @@ class TherapistReportJSON(BaseModel):
 
     risk_flags: List[str] = Field(default_factory=list)
 
+    # Cross-session analysis (null when no prior sessions exist)
+    cross_session_overview: Optional[Dict[str, Any]] = None
+
+
+class CrossSessionOverviewResult(BaseModel):
+    """Pydantic model for the structured LLM call that generates cross-session analysis."""
+    summary: Optional[str] = None
+    common_patterns: List[str] = Field(default_factory=list)
+    blockers_to_progress: List[str] = Field(default_factory=list)
+    progress_signs: List[str] = Field(default_factory=list)
+
 
 class PatientFeedbackJSON(BaseModel):
     reflection: List[str] = Field(default_factory=list)

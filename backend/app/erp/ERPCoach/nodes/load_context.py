@@ -58,6 +58,9 @@ def load_context_node(state: Dict[str, Any]) -> Dict[str, Any]:
 
     exercise_text = safe_text_clip(bundle.exercise_text, max_chars=1200)
 
+    last_patient_message_at = storage.get_last_patient_message_at(session_id)
+    last_spike_notified_suds = getattr(bundle.session, "last_spike_notified_suds", None)
+
     state.update(
         {
             "session": bundle.session,
@@ -77,6 +80,8 @@ def load_context_node(state: Dict[str, Any]) -> Dict[str, Any]:
             "prior_sessions": bundle.prior_sessions,
             "prior_summaries": prior_summaries,
             "elapsed_seconds": float(elapsed),
+            "last_patient_message_at": last_patient_message_at,
+            "last_spike_notified_suds": last_spike_notified_suds,
         }
     )
     return state

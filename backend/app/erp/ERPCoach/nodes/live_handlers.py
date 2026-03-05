@@ -29,6 +29,12 @@ def _ctx(state: Dict[str, Any]) -> Dict[str, Any]:
         "suds_trend_hint": state.get("suds_trend_hint"),
         "prior_summaries": state.get("prior_summaries", []) or [],
         "transcript_block": state.get("transcript_block", "") or "",
+        # ✅ NEW: give prompts deterministic “don’t over-ask” signals
+        "since_last_suds_seconds": state.get("since_last_suds_seconds"),
+        "since_last_agent_seconds": state.get("since_last_agent_seconds"),
+        "rate_reminder_flag": bool(state.get("rate_reminder_flag", False)),
+        "spike_flag": bool(state.get("spike_flag", False)),
+        "cooldown_ok": bool(state.get("cooldown_ok", True)),
     }
 
 
@@ -85,10 +91,7 @@ def handle_avoidance_quit(state: Dict[str, Any], *, llm: LLMClient) -> Dict[str,
 def handle_rate_reminder(state: Dict[str, Any], *, llm: LLMClient) -> Dict[str, Any]:
     """CHECK_IN handler: remind to rate SUDS."""
     ctx = _ctx(state)
-    prompt = prompt_rate_reminder(
-        **ctx,
-        since_last_suds_seconds=state.get("since_last_suds_seconds"),
-    )
+    prompt = prompt_rate_reminder(**ctx)
     resp = llm.structured_call(schema=CoachResponse, prompt=prompt)
     state["coach_response"] = resp
     state["coach_response_json"] = resp.model_dump()
@@ -102,6 +105,8 @@ def handle_suds_spike(state: Dict[str, Any], *, llm: LLMClient) -> Dict[str, Any
     resp = llm.structured_call(schema=CoachResponse, prompt=prompt)
     state["coach_response"] = resp
     state["coach_response_json"] = resp.model_dump()
+    # ✅ Optional: helps you de-dupe spikes later if you implement it in compute_metrics
+    state["spike_notified_suds"] = state.get("suds_latest")
     return state
 
 

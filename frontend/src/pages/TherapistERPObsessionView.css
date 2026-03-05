@@ -373,3 +373,59 @@
   white-space: pre-wrap;
   word-break: break-all;
 }
+
+/* Cross-session overview block */
+.terp-ov-cross-session {
+  background: linear-gradient(135deg, rgba(44,95,77,0.08) 0%, rgba(44,95,77,0.03) 100%);
+  border-color: rgba(44,95,77,0.22);
+}
+.terp-ov-cross-session > .terp-ov-fb-label {
+  color: #2C5F4D;
+  font-size: 0.72rem;
+}
+.terp-ov-cross-session-summary {
+  font-size: 0.84rem;
+  color: #1a3d30;
+  line-height: 1.6;
+  margin: 0.4rem 0 0.3rem;
+}
+.terp-ov-cross-session-group {
+  margin-top: 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.terp-ov-cross-session-blockers .terp-ov-fb-label { color: #b45309; }
+.terp-ov-cross-session-blockers .terp-ov-fb-list li { color: #92400e; }
+.terp-ov-cross-session-empty {
+  font-size: 0.82rem;
+  color: #7aab96;
+  font-style: italic;
+  margin: 0.4rem 0 0;
+  line-height: 1.5;
+}
+.terp-ov-cross-session-generate {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.terp-ov-cross-session-error {
+  font-size: 0.78rem;
+  color: #dc2626;
+  margin: 0;
+}
+.terp-ov-generate-btn {
+  align-self: flex-start;
+  background: #2C5F4D;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.45rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.terp-ov-generate-btn:hover:not(:disabled) { background: #1a3d30; }
+.terp-ov-generate-btn:disabled { opacity: 0.6; cursor: not-allowed; }

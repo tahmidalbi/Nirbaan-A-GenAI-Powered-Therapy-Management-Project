@@ -38,10 +38,11 @@ def live_intent_router(state: Dict[str, Any]) -> LiveRoute:
 
     Priority order:
       CHECK_IN:
-        1) cooldown not ok -> NO_MESSAGE
-        2) spike_flag -> SUDS_SPIKE
-        3) rate_reminder_flag -> RATE_REMINDER
-        4) otherwise -> GENERAL
+        1) spike_flag + cooldown_ok  -> SUDS_SPIKE    (bypasses engagement — clinical urgency)
+        2) recently_engaged          -> NO_MESSAGE     (suppress all non-spike check-ins during active chat)
+        3) not cooldown_ok           -> NO_MESSAGE     (anti-spam)
+        4) rate_reminder_flag        -> RATE_REMINDER  (fires only when patient is idle)
+        5) otherwise                 -> NO_MESSAGE
 
       USER_MESSAGE:
         1) if empty -> GENERAL
@@ -55,14 +56,27 @@ def live_intent_router(state: Dict[str, Any]) -> LiveRoute:
         cooldown_ok = bool(state.get("cooldown_ok", True))
         spike_flag = bool(state.get("spike_flag", False))
         rate_reminder_flag = bool(state.get("rate_reminder_flag", False))
+        recently_engaged = bool(state.get("recently_engaged", False))
 
+        # SUDS spike is clinically urgent — fire even while the patient is
+        # actively chatting, but still respect the cooldown so we don't spam.
+        if spike_flag and cooldown_ok:
+            return "SUDS_SPIKE"
+
+        # Patient is active (sent a message or rated SUDS within engagement_window).
+        # Suppress all remaining auto check-ins — don't interrupt an active chat.
+        if recently_engaged:
+            return "NO_MESSAGE"
+
+        # Patient is idle. Respect cooldown before sending anything.
         if not cooldown_ok:
             return "NO_MESSAGE"
-        if spike_flag:
-            return "SUDS_SPIKE"
+
+        # Patient has been idle long enough — send a SUDS rate reminder if due.
         if rate_reminder_flag:
             return "RATE_REMINDER"
-        return "GENERAL"
+
+        return "NO_MESSAGE"
 
     # ── USER_MESSAGE routing uses router_prompt + LLM structured output ─────────
     user_message = (state.get("user_message") or "").strip()

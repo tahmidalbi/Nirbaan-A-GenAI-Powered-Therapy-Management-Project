@@ -124,6 +124,10 @@ class ERPLiveSession(Base):
     last_agent_run_at = Column(DateTime, nullable=True)
     last_suds_at = Column(DateTime, nullable=True)
 
+    # ✅ Spike deduplication: SUDS value at the time of the last spike notification.
+    # A new spike message is only sent when suds_latest > last_spike_notified_suds.
+    last_spike_notified_suds = Column(Integer, nullable=True)
+
     # ✅ End-session debrief + reports
     patient_debrief_text = Column(Text, nullable=True)
 
