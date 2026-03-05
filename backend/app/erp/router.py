@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
+from sqlalchemy import desc
 
 from app.auth.utils import get_current_patient, get_current_therapist
 from app.database.deps import get_db
@@ -48,9 +49,13 @@ from app.erp.schemas import (
     # Session detail
     ERPSessionDetailResponse,
     TherapistSessionDetailResponse,
+    CrossSessionOverviewResult,
 )
 
 from app.erp.ERPCoach.graph import invoke_erp_coach
+from app.erp.ERPCoach.llm.client import LLMClient
+from app.erp.ERPCoach.nodes.report_bundle import build_prior_reports_block, format_session_report_block
+from app.erp.ERPCoach.prompts.report_prompts import build_cross_session_overview_prompt
 
 router = APIRouter(prefix="/erp", tags=["ERP Workspace"])
 
@@ -965,3 +970,72 @@ async def therapist_get_session_report(
         )
 
     return TherapistReportJSON.model_validate(session.therapist_report_json)
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Generate (or backfill) cross-session overview for an existing report
+# ──────────────────────────────────────────────────────────────────────────────
+
+@router.post(
+    "/therapist/sessions/{session_id}/cross-session-overview",
+    response_model=CrossSessionOverviewResult,
+)
+async def therapist_generate_cross_session_overview(
+    session_id: int,
+    db: Session = Depends(get_db),
+    current_therapist: Therapist = Depends(get_current_therapist),
+):
+    """
+    Computes (or recomputes) the cross_session_overview for a session whose
+    therapist_report_json was generated before the feature existed.
+    Patches the stored JSON and returns the new cross_session_overview.
+    """
+    session = db.query(ERPLiveSession).filter(ERPLiveSession.id == session_id).first()
+    if not session:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Session not found")
+
+    _therapist_owns_patient(session.patient_id, current_therapist.id, db)
+
+    if not session.therapist_report_json:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No therapist report available for this session",
+        )
+
+    # Fetch prior ended sessions for the same obsession item (up to 5, with reports)
+    prior_sessions = (
+        db.query(ERPLiveSession)
+        .filter(
+            ERPLiveSession.erp_item_id == session.erp_item_id,
+            ERPLiveSession.status == "ended",
+            ERPLiveSession.id != session_id,
+            ERPLiveSession.therapist_report_json.isnot(None),
+        )
+        .order_by(desc(ERPLiveSession.ended_at))
+        .limit(5)
+        .all()
+    )
+
+    prior_reports_block = build_prior_reports_block(prior_sessions)
+
+    if not prior_reports_block.strip():
+        # First session — no cross-session data possible
+        result = CrossSessionOverviewResult()
+        overview_dict = None
+    else:
+        current_session_block = format_session_report_block(session.therapist_report_json)
+        prompt = build_cross_session_overview_prompt(
+            current_session_block=current_session_block,
+            prior_reports_block=prior_reports_block,
+        )
+        llm = LLMClient()
+        result = llm.structured_call(schema=CrossSessionOverviewResult, prompt=prompt)
+        overview_dict = result.model_dump()
+
+    # Patch only the cross_session_overview field in the stored JSON
+    updated_json = dict(session.therapist_report_json)
+    updated_json["cross_session_overview"] = overview_dict
+    session.therapist_report_json = updated_json
+    db.commit()
+
+    return result

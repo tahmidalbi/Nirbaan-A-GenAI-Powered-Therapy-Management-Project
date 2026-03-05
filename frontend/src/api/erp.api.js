@@ -346,3 +346,12 @@ export const therapistGetSessionReport = async (sessionId) => {
     throw error.response?.data?.detail || 'Failed to fetch session report';
   }
 };
+
+export const therapistGenerateCrossSessionOverview = async (sessionId) => {
+  try {
+    const response = await axiosInstance.post(`/erp/therapist/sessions/${sessionId}/cross-session-overview`);
+    return { data: response.data };
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to generate cross-session overview';
+  }
+};

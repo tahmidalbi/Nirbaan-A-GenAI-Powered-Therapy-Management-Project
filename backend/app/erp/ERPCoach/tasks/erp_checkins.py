@@ -102,15 +102,15 @@ def run_checkin(session_id: int) -> dict:
         # result should include a CoachResponse-like dict under "coach_response_json"
         coach_resp = result.get("coach_response_json") or result.get("response") or result
 
-        # If graph decides NO_MESSAGE, stop here
+        # If graph decides NO_MESSAGE, stop here.
+        # last_agent_run_at is NOT updated — no real message was sent, so the
+        # cooldown timer should not reset.
         if not coach_resp or coach_resp.get("type") == "NO_MESSAGE":
-            storage.update_last_agent_run_at(session_id, when=datetime.utcnow(), commit=True)
             return {"ok": True, "session_id": session_id, "type": "NO_MESSAGE"}
 
-        # NOTE: The graph's log_coach node already persisted the message —
-        # do NOT save again here or the message will appear twice.
-
-        storage.update_last_agent_run_at(session_id, when=datetime.utcnow(), commit=True)
+        # NOTE: The graph's log_coach node already persisted the message AND
+        # updated last_agent_run_at (via persist.log_coach_message).
+        # No further writes needed here.
 
         return {"ok": True, "session_id": session_id, "type": coach_resp.get("type", "COACH_MESSAGE")}
     finally:

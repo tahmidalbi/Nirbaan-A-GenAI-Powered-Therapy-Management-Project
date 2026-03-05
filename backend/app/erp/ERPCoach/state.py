@@ -67,6 +67,11 @@ class CoachState(TypedDict, total=False):
     cooldown_ok: bool
     since_last_suds_seconds: Optional[float]
     since_last_agent_seconds: Optional[float]
+    recently_engaged: bool
+    since_last_patient_msg_seconds: Optional[float]
+    last_patient_message_at: Any          # datetime from DB (loaded in load_context)
+    last_spike_notified_suds: Optional[int]  # loaded from session column
+    spike_notified_suds: Optional[int]       # set by handle_suds_spike, read by persist
 
     # --- Report bundle ---
     suds_points_block: str

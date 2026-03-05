@@ -62,6 +62,18 @@ def log_coach_message(state: Dict[str, Any], *, storage: CoachStorage) -> Dict[s
         tags=resp.get("tags") or [],
         commit=True,
     )
+
+    # Track when any real coach message was sent (API response OR Celery check-in).
+    # This is what compute_metrics uses for `cooldown_ok` — keeps it accurate
+    # so Celery won't pile on within 60 s of an API coach reply.
+    storage.update_last_agent_run_at(session.id, commit=True)
+
+    # If this was a spike notification, record the SUDS level so the same
+    # spike doesn't fire again (deduplication across Celery invocations).
+    spike_notified_suds = state.get("spike_notified_suds")
+    if spike_notified_suds is not None:
+        storage.update_last_spike_notified_suds(session.id, int(spike_notified_suds))
+
     return state
 
 

@@ -208,6 +208,32 @@ class CoachStorage:
         if commit:
             self.db.commit()
 
+    def update_last_spike_notified_suds(self, session_id: int, suds_value: int, *, commit: bool = True) -> None:
+        """
+        Record the SUDS value at which we last sent a spike notification.
+        Prevents the same spike from triggering a second message.
+        """
+        session = self._require_session(session_id)
+        session.last_spike_notified_suds = int(suds_value)
+        if commit:
+            self.db.commit()
+
+    def get_last_patient_message_at(self, session_id: int) -> Optional[datetime]:
+        """
+        Returns the timestamp of the most recent message sent by the patient
+        (role='patient') in this session, or None if the patient hasn't sent one.
+        """
+        row = (
+            self.db.query(ERPChatMessage.created_at)
+            .filter(
+                ERPChatMessage.session_id == session_id,
+                ERPChatMessage.role == "patient",
+            )
+            .order_by(desc(ERPChatMessage.created_at))
+            .first()
+        )
+        return row[0] if row else None
+
     def save_end_session_reports(
         self,
         *,

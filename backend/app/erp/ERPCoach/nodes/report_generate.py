@@ -4,13 +4,15 @@ from __future__ import annotations
 from typing import Any, Dict
 
 from app.erp.ERPCoach.llm.client import LLMClient
-from app.erp.schemas import TherapistReportJSON, PatientFeedbackJSON
+from app.erp.schemas import TherapistReportJSON, PatientFeedbackJSON, CrossSessionOverviewResult
 
 from app.erp.ERPCoach.prompts.report_prompts import (
     build_session_facts_prompt,
     build_therapist_report_prompt,
     build_patient_feedback_prompt,
+    build_cross_session_overview_prompt,
 )
+from app.erp.ERPCoach.nodes.report_bundle import format_session_report_block
 
 
 def compress_session_facts(state: Dict[str, Any], *, llm: LLMClient) -> Dict[str, Any]:
@@ -48,12 +50,14 @@ def generate_therapist_report(state: Dict[str, Any], *, llm: LLMClient) -> Dict[
     """
     inputs = state.get("report_inputs") or {}
     facts = state.get("session_facts_text", "")
+    prior_reports_block = inputs.get("prior_reports_block", "")
 
     prompt = build_therapist_report_prompt(
         session_facts=facts,
         elapsed_seconds=float(inputs.get("elapsed_seconds", 0.0)),
         suds_peak=inputs.get("suds_peak"),
         suds_latest=inputs.get("suds_latest"),
+        prior_reports_block=prior_reports_block,
     )
 
     report = llm.structured_call(
@@ -63,6 +67,27 @@ def generate_therapist_report(state: Dict[str, Any], *, llm: LLMClient) -> Dict[
         repair_attempts=1,
         repair_context=facts,
     )
+
+    # If the LLM left cross_session_overview null despite having prior session data,
+    # run a dedicated focused call to populate it. This handles cases where the LLM
+    # ignores the instruction buried in the large combined prompt.
+    if report.cross_session_overview is None and prior_reports_block.strip():
+        current_block = format_session_report_block(report.model_dump())
+        cso_prompt = build_cross_session_overview_prompt(
+            current_session_block=current_block,
+            prior_reports_block=prior_reports_block,
+        )
+        cso_result = llm.structured_call(
+            schema=CrossSessionOverviewResult,
+            prompt=cso_prompt,
+            attempts=3,
+        )
+        # Only patch if the dedicated call produced actual content
+        cso_dict = cso_result.model_dump()
+        if cso_dict.get("summary") or cso_dict.get("common_patterns") or cso_dict.get("blockers_to_progress"):
+            report_dict = report.model_dump()
+            report_dict["cross_session_overview"] = cso_dict
+            report = TherapistReportJSON.model_validate(report_dict)
 
     state["therapist_report"] = report
     state["therapist_report_json"] = report.model_dump()

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { therapistGetERPItemDetail, therapistListItemSessions, therapistGetSessionDetail } from '../api/erp.api';
+import { therapistGetERPItemDetail, therapistListItemSessions, therapistGetSessionDetail, therapistGenerateCrossSessionOverview } from '../api/erp.api';
 import {
   ResponsiveContainer,
   LineChart,
@@ -35,6 +35,8 @@ const TherapistERPObsessionView = () => {
   const [sessionDetail, setSessionDetail] = useState(null);
   const [sessionDetailLoading, setSessionDetailLoading] = useState(false);
   const [activeTab, setActiveTab]         = useState('sessions'); // 'sessions' | 'report'
+  const [crossSessionLoading, setCrossSessionLoading] = useState(false);
+  const [crossSessionError, setCrossSessionError]     = useState('');
 
   useEffect(() => {
     therapistGetERPItemDetail(patientId, itemId)
@@ -58,6 +60,8 @@ const TherapistERPObsessionView = () => {
     if (!selectedSessionId) return;
     setSessionDetail(null);
     setSessionDetailLoading(true);
+    setCrossSessionLoading(false);
+    setCrossSessionError('');
     therapistGetSessionDetail(selectedSessionId)
       .then(({ data }) => setSessionDetail(data))
       .catch(() => {})
@@ -68,6 +72,31 @@ const TherapistERPObsessionView = () => {
     navigate(`/therapist/dashboard/erp/patient/${patientId}`, {
       state: { patientName, patientEmail },
     });
+
+  const handleGenerateCrossSession = async () => {
+    if (!selectedSessionId) return;
+    setCrossSessionLoading(true);
+    setCrossSessionError('');
+    try {
+      const { data } = await therapistGenerateCrossSessionOverview(selectedSessionId);
+      // If the result has no content (no prior session data was available), keep null
+      const hasContent = data && (data.summary || data.common_patterns?.length > 0 || data.blockers_to_progress?.length > 0 || data.progress_signs?.length > 0);
+      setSessionDetail((prev) => ({
+        ...prev,
+        therapist_report: {
+          ...prev.therapist_report,
+          cross_session_overview: hasContent ? data : null,
+        },
+      }));
+      if (!hasContent) {
+        setCrossSessionError('No prior session reports found to generate cross-session analysis from.');
+      }
+    } catch (err) {
+      setCrossSessionError(typeof err === 'string' ? err : 'Failed to generate cross-session overview.');
+    } finally {
+      setCrossSessionLoading(false);
+    }
+  };
 
   return (
     <div className="terp-ov-container">
@@ -360,6 +389,67 @@ const TherapistERPObsessionView = () => {
                         AI Clinical Report —{' '}
                         {new Date(sessionDetail.session.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}
                       </h4>
+
+                      <div className="terp-ov-section terp-ov-cross-session">
+                        <span className="terp-ov-fb-label">Cross-Session Overview</span>
+                        {sessionDetail.therapist_report.cross_session_overview &&
+                         (sessionDetail.therapist_report.cross_session_overview.summary ||
+                          sessionDetail.therapist_report.cross_session_overview.common_patterns?.length > 0 ||
+                          sessionDetail.therapist_report.cross_session_overview.blockers_to_progress?.length > 0 ||
+                          sessionDetail.therapist_report.cross_session_overview.progress_signs?.length > 0) ? (
+                          <>
+                            {sessionDetail.therapist_report.cross_session_overview.summary && (
+                              <p className="terp-ov-cross-session-summary">{sessionDetail.therapist_report.cross_session_overview.summary}</p>
+                            )}
+                            {sessionDetail.therapist_report.cross_session_overview.common_patterns?.length > 0 && (
+                              <div className="terp-ov-cross-session-group">
+                                <span className="terp-ov-fb-label">Common Patterns</span>
+                                <ul className="terp-ov-fb-list">
+                                  {sessionDetail.therapist_report.cross_session_overview.common_patterns.map((x, i) => <li key={i}>{x}</li>)}
+                                </ul>
+                              </div>
+                            )}
+                            {sessionDetail.therapist_report.cross_session_overview.blockers_to_progress?.length > 0 && (
+                              <div className="terp-ov-cross-session-group terp-ov-cross-session-blockers">
+                                <span className="terp-ov-fb-label">Blockers to Progress</span>
+                                <ul className="terp-ov-fb-list">
+                                  {sessionDetail.therapist_report.cross_session_overview.blockers_to_progress.map((x, i) => <li key={i}>{x}</li>)}
+                                </ul>
+                              </div>
+                            )}
+                            {sessionDetail.therapist_report.cross_session_overview.progress_signs?.length > 0 && (
+                              <div className="terp-ov-cross-session-group">
+                                <span className="terp-ov-fb-label">Signs of Progress</span>
+                                <ul className="terp-ov-fb-list">
+                                  {sessionDetail.therapist_report.cross_session_overview.progress_signs.map((x, i) => <li key={i}>{x}</li>)}
+                                </ul>
+                              </div>
+                            )}
+                          </>
+                        ) : (
+                          <div>
+                            <p className="terp-ov-cross-session-empty">
+                              {sessions.filter(s => s.status === 'ended').length <= 1
+                                ? 'This is the first session — cross-session analysis will appear from the second session onwards.'
+                                : 'Cross-session analysis has not been generated for this session yet.'}
+                            </p>
+                            {sessions.filter(s => s.status === 'ended').length > 1 && (
+                              <div className="terp-ov-cross-session-generate">
+                                {crossSessionError && (
+                                  <p className="terp-ov-cross-session-error">{crossSessionError}</p>
+                                )}
+                                <button
+                                  className="terp-ov-generate-btn"
+                                  onClick={handleGenerateCrossSession}
+                                  disabled={crossSessionLoading}
+                                >
+                                  {crossSessionLoading ? 'Generating…' : 'Generate cross-session analysis'}
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
 
                       {sessionDetail.therapist_report.suds_curve_summary && (
                         <div className="terp-ov-section">
