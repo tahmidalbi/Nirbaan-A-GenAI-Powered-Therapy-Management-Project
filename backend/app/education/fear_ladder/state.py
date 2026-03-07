@@ -6,7 +6,7 @@ class KBChunk(TypedDict):
     chunk_text: str
     resource_title: str
     resource_id: int
-    similarity_score: float
+    metadata: Dict[str, Any]
 
 class EducationState(TypedDict, total=False):
     therapist_id: int
