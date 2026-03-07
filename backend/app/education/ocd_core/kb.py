@@ -1,16 +1,14 @@
 # app/education/ocd_core/kb.py
 from __future__ import annotations
 from typing import List
-from sqlalchemy.orm import Session
 
 from app.resources.rag_service import rag_service
 from app.education.ocd_core.state import KBChunk
 from app.education.ocd_core.config import KB_TOP_K
 
 
-def retrieve_kb(db: Session, therapist_id: int, query: str) -> List[KBChunk]:
+def retrieve_kb(therapist_id: int, query: str) -> List[KBChunk]:
     return rag_service.retrieve_chunks(
-        db=db,
         therapist_id=therapist_id,
         query=query,
         top_k=KB_TOP_K,
