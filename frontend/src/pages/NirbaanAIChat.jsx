@@ -1,109 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react'; // useRef kept for bottomRef + inputRef
 import { useNavigate } from 'react-router-dom';
 import { sendNirbaanAIMessage, listNirbaanAIThreads, getNirbaanAIThread } from '../api/nirbaanai.api';
 import './NirbaanAIChat.css';
 
-// ── Flower canvas animation ──────────────────────────────────────────────────
-const PETAL_COUNT = 55;
-
-function randomBetween(a, b) {
-  return a + Math.random() * (b - a);
-}
-
-function useFlowerCanvas(canvasRef) {
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-
-    let animId;
-    let flowers = [];
-
-    function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    resize();
-    window.addEventListener('resize', resize);
-
-    function createFlower() {
-      const size = randomBetween(12, 24);
-      return {
-        x: randomBetween(0, canvas.width),
-        y: randomBetween(-60, -10),
-        size,
-        speed: randomBetween(1.2, 2.8),
-        swing: randomBetween(0.4, 1.2),
-        swingOffset: randomBetween(0, Math.PI * 2),
-        swingSpeed: randomBetween(0.01, 0.025),
-        rotation: randomBetween(0, Math.PI * 2),
-        rotSpeed: randomBetween(-0.025, 0.025),
-        opacity: randomBetween(0.6, 0.95),
-        hue: randomBetween(300, 340), // pink-magenta petals
-      };
-    }
-
-    flowers = Array.from({ length: PETAL_COUNT }, createFlower);
-
-    function drawPetal(ctx, size, hue, opacity) {
-      ctx.save();
-      ctx.globalAlpha = opacity;
-      const petalCount = 5;
-      for (let i = 0; i < petalCount; i++) {
-        const angle = (i / petalCount) * Math.PI * 2;
-        ctx.save();
-        ctx.rotate(angle);
-        ctx.beginPath();
-        ctx.ellipse(0, -size * 0.5, size * 0.28, size * 0.55, 0, 0, Math.PI * 2);
-        ctx.fillStyle = `hsl(${hue}, 85%, 75%)`;
-        ctx.fill();
-        ctx.restore();
-      }
-      // centre dot
-      ctx.beginPath();
-      ctx.arc(0, 0, size * 0.15, 0, Math.PI * 2);
-      ctx.fillStyle = `hsl(50, 100%, 80%)`;
-      ctx.fill();
-      ctx.restore();
-    }
-
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      flowers.forEach((f) => {
-        f.y += f.speed;
-        f.x += Math.sin(f.swingOffset) * f.swing;
-        f.swingOffset += f.swingSpeed;
-        f.rotation += f.rotSpeed;
-
-        if (f.y > canvas.height + 30) {
-          Object.assign(f, createFlower(), { x: randomBetween(0, canvas.width) });
-        }
-
-        ctx.save();
-        ctx.translate(f.x, f.y);
-        ctx.rotate(f.rotation);
-        drawPetal(ctx, f.size, f.hue, f.opacity);
-        ctx.restore();
-      });
-
-      animId = requestAnimationFrame(animate);
-    }
-
-    animate();
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener('resize', resize);
-    };
-  }, [canvasRef]);
-}
-
-// ── Main component ────────────────────────────────────────────────────────────
 export default function NirbaanAIChat() {
   const navigate = useNavigate();
-  const canvasRef = useRef(null);
-  useFlowerCanvas(canvasRef);
 
   const [threads, setThreads] = useState([]);
   const [activeThreadId, setActiveThreadId] = useState(null);
@@ -199,16 +100,12 @@ export default function NirbaanAIChat() {
 
   return (
     <div className="nai-root">
-      {/* Animated flower canvas */}
-      <canvas ref={canvasRef} className="nai-canvas" />
-
       {/* Top bar */}
       <header className="nai-header">
         <button className="nai-back-btn" onClick={() => navigate('/patient/dashboard')}>
           ← Back
         </button>
         <div className="nai-header-title">
-          <span className="nai-logo-icon">🌸</span>
           <span className="nai-logo-text">NirbaanAI</span>
         </div>
         <button className="nai-sidebar-toggle" onClick={() => setSidebarOpen((v) => !v)}>

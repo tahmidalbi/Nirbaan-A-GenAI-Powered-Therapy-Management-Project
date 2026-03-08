@@ -85,7 +85,7 @@ const PatientDashboard = () => {
               className="nav-btn nav-btn-ai"
               onClick={handleNirbaanAIClick}
             >
-              🌸 NirbaanAI
+              NirbaanAI
             </button>
           </nav>
           <button onClick={handleLogout} className="logout-btn">Logout</button>
