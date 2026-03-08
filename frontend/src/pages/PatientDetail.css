@@ -416,3 +416,180 @@
     flex: 1;
   }
 }
+
+/* ── Tab bar ── */
+.detail-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.detail-tab-btn {
+  padding: 10px 24px;
+  border: 2px solid rgba(255,255,255,0.5);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  font-family: 'Georgia', serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.detail-tab-btn:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+.detail-tab-btn.active {
+  background: rgba(255,255,255,0.9);
+  border-color: transparent;
+  color: #2c5f54;
+  font-weight: bold;
+}
+
+/* ── Progress history section (therapist view) ── */
+.progress-history-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.progress-history-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  font-size: 0.95rem;
+  padding: 24px 0;
+}
+
+.progress-history-empty {
+  background: rgba(255,255,255,0.85);
+  border-radius: 12px;
+  padding: 28px;
+  text-align: center;
+  color: #4a7a72;
+  font-size: 0.95rem;
+}
+
+.progress-history-card {
+  background: rgba(255,255,255,0.92);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+}
+
+.progress-history-card-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.progress-history-card-header:hover { background: rgba(0,0,0,0.04); }
+
+.progress-history-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ph-week-badge {
+  background: #3d7a6a;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+}
+
+.ph-week-date {
+  font-size: 0.9rem;
+  color: #4a7a72;
+}
+
+.ph-chevron {
+  font-size: 0.8rem;
+  color: #7a9b96;
+}
+
+.progress-history-card-body {
+  padding: 0 20px 20px;
+  border-top: 1px solid #e0eeeb;
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ph-section h4 {
+  margin: 0 0 6px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #2c5f54;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ph-text {
+  margin: 0;
+  font-size: 0.92rem;
+  color: #2c4a45;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.ph-suds-table {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #c8ddd9;
+}
+
+.ph-suds-header {
+  display: grid;
+  grid-template-columns: 1fr 70px;
+  gap: 12px;
+  padding: 8px 12px;
+  background: #e8f5f2;
+  font-size: 0.78rem;
+  font-weight: bold;
+  color: #4a7a72;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ph-suds-row {
+  display: grid;
+  grid-template-columns: 1fr 70px;
+  gap: 12px;
+  align-items: center;
+  padding: 9px 12px;
+  background: #f8fdfb;
+  border-top: 1px solid #e0eeeb;
+  font-size: 0.88rem;
+  color: #2c4a45;
+}
+
+.ph-suds-value {
+  font-weight: bold;
+  color: #3d7a6a;
+  text-align: center;
+}
+
+.ph-submitted-at {
+  font-size: 0.78rem;
+  color: #8aada8;
+  margin: 0;
+  text-align: right;
+}
