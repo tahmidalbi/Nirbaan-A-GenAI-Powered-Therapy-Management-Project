@@ -30,13 +30,6 @@ class RetrievedChunk(TypedDict, total=False):
     metadata: Dict[str, Any]
 
 
-class WebResult(TypedDict, total=False):
-    title: str
-    content: str
-    url: str
-    source: str
-
-
 class GeneralSupportState(TypedDict, total=False):
     # ------------------------------------------------------------------
     # Core request/session info
@@ -90,19 +83,6 @@ class GeneralSupportState(TypedDict, total=False):
     # ------------------------------------------------------------------
     kb_chunks: List[RetrievedChunk]
     kb_context_summary: str
-
-    # ------------------------------------------------------------------
-    # Sufficiency checking
-    # ------------------------------------------------------------------
-    retrieval_sufficient: bool
-    insufficiency_reason: str
-
-    # ------------------------------------------------------------------
-    # Web fallback
-    # ------------------------------------------------------------------
-    web_used: bool
-    web_results: List[WebResult]
-    web_context_summary: str
 
     # ------------------------------------------------------------------
     # Final generation

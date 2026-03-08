@@ -23,22 +23,11 @@ def generate_node(state: GeneralSupportState) -> Dict[str, Any]:
 
     selected_db_context_summary = (state.get("selected_db_context_summary") or "").strip()
     kb_context_summary = (state.get("kb_context_summary") or "").strip()
-    web_context_summary = (state.get("web_context_summary") or "").strip()
 
     support_type = (state.get("support_type") or "other").strip()
     support_goal = (state.get("support_goal") or "").strip()
 
-    web_used = state.get("web_used", False)
-
-    grounding_context = _build_grounding_context(
-        kb_context_summary,
-        web_context_summary,
-    )
-
-    used_sources = _collect_sources(
-        state.get("kb_chunks") or [],
-        state.get("web_results") or [],
-    )
+    used_sources = _collect_sources(state.get("kb_chunks") or [])
 
     llm = _get_llm()
     structured_llm = llm.with_structured_output(GenerateOutput)
@@ -47,18 +36,21 @@ def generate_node(state: GeneralSupportState) -> Dict[str, Any]:
         user_message=user_message,
         recent_chat_history=recent_chat_history,
         selected_db_context_summary=selected_db_context_summary,
-        grounding_context=grounding_context,
+        kb_context_summary=kb_context_summary,
         support_type=support_type,
         support_goal=support_goal,
-        web_used=web_used,
     )
 
     result: GenerateOutput = structured_llm.invoke(prompt)
 
+    final_response = (result.final_response or "").strip()
+    if not final_response:
+        final_response = "I’m sorry you’re having a hard time. Try taking one small next step without getting pulled into rituals or overthinking."
+
     return {
-        "final_response": result.final_response.strip(),
+        "final_response": final_response,
         "used_sources": used_sources,
-        "final_grounding_summary": grounding_context,
+        "final_grounding_summary": kb_context_summary,
     }
 
 
@@ -69,37 +61,11 @@ def _get_llm() -> ChatOpenAI:
     )
 
 
-def _build_grounding_context(
-    kb_context_summary: str,
-    web_context_summary: str,
-) -> str:
-
-    if kb_context_summary and web_context_summary:
-        return kb_context_summary + "\n\n---\n\n" + web_context_summary
-
-    if kb_context_summary:
-        return kb_context_summary
-
-    if web_context_summary:
-        return web_context_summary
-
-    return ""
-
-
-def _collect_sources(
-    kb_chunks: List[Dict[str, Any]],
-    web_results: List[Dict[str, Any]],
-) -> List[str]:
-
+def _collect_sources(kb_chunks: List[Dict[str, Any]]) -> List[str]:
     sources: List[str] = []
 
     for c in kb_chunks:
         src = c.get("source")
-        if src and src not in sources:
-            sources.append(src)
-
-    for r in web_results:
-        src = r.get("url")
         if src and src not in sources:
             sources.append(src)
 
@@ -111,12 +77,10 @@ def _build_prompt(
     user_message: str,
     recent_chat_history: List[Dict[str, str]],
     selected_db_context_summary: str,
-    grounding_context: str,
+    kb_context_summary: str,
     support_type: str,
     support_goal: str,
-    web_used: bool,
 ) -> str:
-
     recent_history_text = _format_chat_history(recent_chat_history)
 
     return f"""
@@ -126,13 +90,17 @@ Your role is to provide grounded support consistent with OCD treatment principle
 
 CRITICAL RULES:
 
-1. DO NOT provide reassurance about feared outcomes.
-2. DO NOT guarantee safety or certainty.
-3. DO NOT help the patient neutralize intrusive thoughts.
-4. Encourage tolerance of uncertainty.
-5. Encourage response prevention rather than rituals.
-6. Validate emotional difficulty without validating OCD fears.
-7. Focus on coping, perspective, and sustainable steps.
+1. You must use the therapist KB guidance as the foundation for your response.
+2. DO NOT provide reassurance about feared outcomes.
+3. DO NOT guarantee safety or certainty.
+4. DO NOT help the patient neutralize intrusive thoughts.
+5. Encourage tolerance of uncertainty.
+6. Encourage response prevention rather than rituals.
+7. Validate emotional difficulty without validating OCD fears.
+8. No need to ask patient if they are feeling any self-harm urge, just provide support consistent with OCD treatment principles all grounded on therapist KB
+
+
+
 
 Support type:
 {support_type}
@@ -149,29 +117,23 @@ Recent conversation:
 Relevant patient context:
 {selected_db_context_summary}
 
-Grounding knowledge sources:
-{grounding_context}
+Therapist KB grounding:
+{kb_context_summary or "No therapist KB grounding available."}
 
 Instructions:
 
-• Provide compassionate, calm support.
-• Help the patient tolerate uncertainty rather than eliminate it.
-• Encourage ERP-consistent responses when relevant.
-• Avoid sounding clinical or robotic.
-• Speak naturally like a supportive coach.
-
-The response should be:
-• supportive
-• grounded in therapy principles
-• not overly long
-• not giving reassurance.
+- Provide compassionate, calm support.
+- Help the patient tolerate uncertainty rather than eliminate it.
+- Encourage ERP-consistent responses when relevant.
+- Avoid sounding clinical or robotic.
+- Speak naturally like a supportive coach.
+- Keep the response supportive, grounded, and not overly long.
 
 Write the final response to the patient.
-"""
+""".strip()
 
 
 def _format_chat_history(history: List[Dict[str, str]]) -> str:
-
     if not history:
         return "No recent history."
 
