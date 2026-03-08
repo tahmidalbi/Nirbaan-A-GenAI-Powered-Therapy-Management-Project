@@ -5,17 +5,413 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: linear-gradient(160deg, #0a3d1f 0%, #145a32 40%, #1e8449 80%, #239b56 100%);
+  /* Rich layered green: deep base + a radial highlight in the top-right */
+  background:
+    radial-gradient(ellipse 70% 55% at 80% 10%, rgba(52, 168, 83, 0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 10% 90%, rgba(27, 94, 32, 0.35) 0%, transparent 65%),
+    linear-gradient(160deg, #0b2e18 0%, #0f3d22 35%, #133a25 65%, #0d2b1a 100%);
   font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
-/* Flower canvas sits behind everything */
-.nai-canvas {
+/* Subtle dot-grid texture overlay — pure CSS, no canvas */
+.nai-root::before {
+  content: '';
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.045) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.nai-header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 56px;
+  background: rgba(8, 28, 14, 0.8);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(52, 168, 83, 0.18);
+  flex-shrink: 0;
+}
+
+.nai-header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nai-logo-text {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #e8f5e9;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.nai-back-btn,
+.nai-sidebar-toggle {
+  background: rgba(52, 168, 83, 0.12);
+  border: 1px solid rgba(52, 168, 83, 0.3);
+  color: #a5d6a7;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nai-back-btn:hover,
+.nai-sidebar-toggle:hover {
+  background: rgba(52, 168, 83, 0.22);
+  color: #e8f5e9;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────────────────── */
+.nai-sidebar {
+  position: fixed;
+  top: 0;
+  right: -320px;
+  width: 300px;
+  height: 100%;
+  background: rgba(8, 26, 12, 0.96);
+  backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(52, 168, 83, 0.2);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.28s ease;
+  padding-top: 1rem;
+}
+
+.nai-sidebar.open {
+  right: 0;
+}
+
+.nai-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem 0.75rem;
+  color: #81c784;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(52, 168, 83, 0.15);
+  margin-bottom: 0.5rem;
+}
+
+.nai-new-btn {
+  background: rgba(52, 168, 83, 0.2);
+  border: 1px solid rgba(52, 168, 83, 0.4);
+  color: #a5d6a7;
+  padding: 0.28rem 0.75rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.nai-new-btn:hover {
+  background: rgba(52, 168, 83, 0.35);
+  color: #e8f5e9;
+}
+
+.nai-thread-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 0.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.nai-thread-empty {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.82rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.nai-thread-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: 7px;
+  cursor: pointer;
+  color: #c8e6c9;
+  font-size: 0.85rem;
+  margin-bottom: 0.2rem;
+  transition: background 0.15s;
+}
+
+.nai-thread-item:hover { background: rgba(52, 168, 83, 0.1); }
+.nai-thread-item.active { background: rgba(52, 168, 83, 0.22); color: #e8f5e9; }
+
+.nai-thread-icon { font-size: 0.9rem; opacity: 0.6; }
+
+.nai-thread-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nai-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: transparent;
+}
+
+/* ── Main area ───────────────────────────────────────────────────────────── */
+.nai-main {
+  position: relative;
+  z-index: 5;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0 1.25rem 1.25rem;
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* Scrollable message window */
+.nai-chat-window {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem 0 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  scroll-behavior: smooth;
+}
+
+.nai-chat-window::-webkit-scrollbar { width: 4px; }
+.nai-chat-window::-webkit-scrollbar-track { background: transparent; }
+.nai-chat-window::-webkit-scrollbar-thumb { background: rgba(52,168,83,0.25); border-radius: 10px; }
+
+/* ── Welcome screen ──────────────────────────────────────────────────────── */
+.nai-welcome {
+  margin: auto;
+  text-align: center;
+  color: #c8e6c9;
+  animation: fadeUp 0.5s ease both;
+  max-width: 460px;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.nai-welcome-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+  opacity: 0.75;
+}
+
+.nai-welcome h2 {
+  font-size: 1.45rem;
+  font-weight: 700;
+  margin: 0 0 0.6rem;
+  color: #e8f5e9;
+  letter-spacing: 0.02em;
+}
+
+.nai-welcome p {
+  font-size: 0.9rem;
+  color: rgba(200, 230, 201, 0.65);
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* ── Chat bubbles ────────────────────────────────────────────────────────── */
+.nai-bubble-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.65rem;
+  animation: fadeUp 0.25s ease both;
+}
+
+.nai-bubble-row.user { flex-direction: row-reverse; }
+
+.nai-avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  background: rgba(52, 168, 83, 0.15);
+  border: 1px solid rgba(52, 168, 83, 0.25);
+  color: #81c784;
+  font-weight: 700;
+}
+
+.nai-avatar.user-avatar {
+  font-size: 0.65rem;
+  color: #c8e6c9;
+  background: rgba(27, 94, 32, 0.4);
+  border-color: rgba(52, 168, 83, 0.3);
+}
+
+.nai-bubble {
+  max-width: 70%;
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  position: relative;
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.nai-bubble.assistant {
+  background: rgba(15, 45, 22, 0.85);
+  border: 1px solid rgba(52, 168, 83, 0.2);
+  color: #dcedc8;
+  border-bottom-left-radius: 3px;
+  backdrop-filter: blur(6px);
+}
+
+.nai-bubble.user {
+  background: rgba(30, 80, 40, 0.9);
+  border: 1px solid rgba(52, 168, 83, 0.35);
+  color: #e8f5e9;
+  border-bottom-right-radius: 3px;
+  backdrop-filter: blur(6px);
+}
+
+.nai-bubble p {
+  margin: 0 0 0.2rem;
+  font-size: 0.91rem;
+  white-space: pre-wrap;
+}
+
+.nai-ts {
+  font-size: 0.65rem;
+  opacity: 0.4;
+  display: block;
+  text-align: right;
+  margin-top: 0.3rem;
+}
+
+/* Typing indicator */
+.nai-typing {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.85rem 1rem;
+  min-width: 56px;
+}
+
+.nai-typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #81c784;
+  display: inline-block;
+  animation: bounce 1.2s ease-in-out infinite;
+}
+
+.nai-typing span:nth-child(2) { animation-delay: 0.2s; }
+.nai-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0.55); opacity: 0.5; }
+  40%           { transform: scale(1);    opacity: 1; }
+}
+
+/* ── Divider between chat area and input ────────────────────────────────── */
+.nai-main::before {
+  content: '';
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(52,168,83,0.2), transparent);
+  margin: 0 0 0;
+  flex-shrink: 0;
+}
+
+/* ── Input bar ───────────────────────────────────────────────────────────── */
+.nai-input-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.6rem;
+  background: rgba(10, 32, 16, 0.85);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(52, 168, 83, 0.25);
+  border-radius: 10px;
+  padding: 0.55rem 0.6rem 0.55rem 1rem;
+  margin-top: 0.75rem;
+  transition: border-color 0.2s;
+}
+
+.nai-input-bar:focus-within {
+  border-color: rgba(52, 168, 83, 0.5);
+}
+
+.nai-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #e8f5e9;
+  font-size: 0.91rem;
+  resize: none;
+  line-height: 1.5;
+  font-family: inherit;
+  max-height: 130px;
+  overflow-y: auto;
+}
+
+.nai-input::placeholder { color: rgba(200, 230, 201, 0.35); }
+
+.nai-send-btn {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 8px;
+  background: #2e7d32;
+  border: 1px solid rgba(52, 168, 83, 0.4);
+  color: #e8f5e9;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.18s;
+}
+
+.nai-send-btn:hover:not(:disabled) {
+  background: #388e3c;
+}
+
+.nai-send-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .nai-bubble { max-width: 85%; }
+  .nai-logo-text { font-size: 1rem; }
+  .nai-welcome h2 { font-size: 1.15rem; }
+  .nai-header { padding: 0 1rem; }
+}
+
 
 /* ── Header ──────────────────────────────────────────────────────────────── */
 .nai-header {
