@@ -17,6 +17,14 @@ const PatientDashboard = () => {
     navigate('/patient/dashboard/tools/ocd');
   };
 
+  const handleProgressClick = () => {
+    navigate('/patient/dashboard/progress');
+  };
+
+  const handleNirbaanAIClick = () => {
+    navigate('/patient/nirbaanai');
+  };
+
   return (
     <div className="patient-dashboard-container">
       {/* Vintage background */}
@@ -37,9 +45,9 @@ const PatientDashboard = () => {
             >
               Sessions
             </button>
-            <button 
-              className={`nav-btn ${activeSection === 'progress' ? 'active' : ''}`}
-              onClick={() => setActiveSection('progress')}
+            <button
+              className="nav-btn"
+              onClick={handleProgressClick}
             >
               Progress
             </button>
@@ -73,6 +81,12 @@ const PatientDashboard = () => {
             >
               Chat
             </button>
+            <button
+              className="nav-btn nav-btn-ai"
+              onClick={handleNirbaanAIClick}
+            >
+              🌸 NirbaanAI
+            </button>
           </nav>
           <button onClick={handleLogout} className="logout-btn">Logout</button>
         </div>
@@ -89,12 +103,6 @@ const PatientDashboard = () => {
 
       {/* Main Content - Empty sections */}
       <main className="dashboard-main">
-        {activeSection === 'progress' && (
-          <div className="empty-section">
-            {/* Empty Progress section */}
-          </div>
-        )}
-
         {activeSection === 'homework' && (
           <div className="empty-section">
             {/* Empty Homework section */}

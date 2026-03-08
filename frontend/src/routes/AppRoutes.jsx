@@ -11,6 +11,7 @@ import OCDTools from '../dashboards/OCDPatientDashboard';
 import PatientAssessmentPage from '../pages/PatientAssessmentPage';
 import PatientOCDEducation from '../pages/PatientOCDEducation';
 import PatientDetail from '../pages/PatientDetail';
+import PatientWeeklyProgress from '../pages/PatientWeeklyProgress';
 import TherapistDashboard from '../dashboards/TherapistDashboard';
 import TherapistToolsPage from '../dashboards/TherapistToolsPage';
 import PatientSelfMonitoring from '../components/PatientSelfMonitoring';
@@ -33,6 +34,7 @@ import ERPAIReport from '../pages/ERPAIReport';
 import TherapistERPPatientList from '../pages/TherapistERPPatientList';
 import TherapistERPObsessionList from '../pages/TherapistERPObsessionList';
 import TherapistERPObsessionView from '../pages/TherapistERPObsessionView';
+import NirbaanAIChat from '../pages/NirbaanAIChat';
 
 const AppRoutes = () => {
   return (
@@ -91,6 +93,16 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['patient']}>
             <PatientSelfMonitoring />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Patient Weekly Progress */}
+      <Route
+        path="/patient/dashboard/progress"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <PatientWeeklyProgress />
           </ProtectedRoute>
         }
       />
@@ -181,6 +193,16 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['patient']}>
             <ERPAIReport />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - NirbaanAI Chat */}
+      <Route
+        path="/patient/nirbaanai"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <NirbaanAIChat />
           </ProtectedRoute>
         }
       />

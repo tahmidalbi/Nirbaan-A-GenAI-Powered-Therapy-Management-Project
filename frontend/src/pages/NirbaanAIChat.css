@@ -1,0 +1,383 @@
+/* ── Layout ──────────────────────────────────────────────────────────────── */
+.nai-root {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: linear-gradient(160deg, #0a3d1f 0%, #145a32 40%, #1e8449 80%, #239b56 100%);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Flower canvas sits behind everything */
+.nai-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.nai-header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  background: rgba(5, 40, 15, 0.65);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
+}
+
+.nai-header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nai-logo-icon {
+  font-size: 1.6rem;
+  animation: spin-slow 8s linear infinite;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.nai-logo-text {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #d5f5e3;
+  letter-spacing: 0.05em;
+}
+
+.nai-back-btn,
+.nai-sidebar-toggle {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #d5f5e3;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.2s;
+}
+
+.nai-back-btn:hover,
+.nai-sidebar-toggle:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────────────────── */
+.nai-sidebar {
+  position: fixed;
+  top: 0;
+  right: -320px;
+  width: 300px;
+  height: 100%;
+  background: rgba(5, 40, 15, 0.92);
+  backdrop-filter: blur(16px);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.3s ease;
+  padding-top: 1rem;
+}
+
+.nai-sidebar.open {
+  right: 0;
+}
+
+.nai-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem 0.5rem;
+  color: #a9dfbf;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 0.5rem;
+}
+
+.nai-new-btn {
+  background: #1e8449;
+  border: none;
+  color: #fff;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background 0.2s;
+}
+
+.nai-new-btn:hover { background: #239b56; }
+
+.nai-thread-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 0.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.nai-thread-empty {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.82rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+.nai-thread-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #d5f5e3;
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+  transition: background 0.15s;
+}
+
+.nai-thread-item:hover { background: rgba(255, 255, 255, 0.1); }
+.nai-thread-item.active { background: rgba(39, 174, 96, 0.35); }
+
+.nai-thread-icon { font-size: 1rem; }
+
+.nai-thread-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nai-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: transparent;
+}
+
+/* ── Main area ───────────────────────────────────────────────────────────── */
+.nai-main {
+  position: relative;
+  z-index: 5;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0 1rem 1rem;
+}
+
+/* Scrollable message window */
+.nai-chat-window {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem 0.5rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  scroll-behavior: smooth;
+}
+
+.nai-chat-window::-webkit-scrollbar { width: 5px; }
+.nai-chat-window::-webkit-scrollbar-track { background: transparent; }
+.nai-chat-window::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+/* ── Welcome screen ──────────────────────────────────────────────────────── */
+.nai-welcome {
+  margin: auto;
+  text-align: center;
+  color: #d5f5e3;
+  animation: fadeUp 0.6s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.nai-welcome-icon {
+  font-size: 4rem;
+  margin-bottom: 0.75rem;
+  animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+.nai-welcome h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+
+.nai-welcome p {
+  font-size: 0.95rem;
+  color: rgba(213, 245, 227, 0.75);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── Chat bubbles ────────────────────────────────────────────────────────── */
+.nai-bubble-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.6rem;
+  animation: fadeUp 0.3s ease both;
+}
+
+.nai-bubble-row.user { flex-direction: row-reverse; }
+
+.nai-avatar {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.nai-avatar.user-avatar {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #d5f5e3;
+  background: rgba(39, 174, 96, 0.4);
+}
+
+.nai-bubble {
+  max-width: 68%;
+  padding: 0.75rem 1.1rem;
+  border-radius: 18px;
+  position: relative;
+  line-height: 1.55;
+  word-break: break-word;
+}
+
+.nai-bubble.assistant {
+  background: rgba(10, 61, 31, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #d5f5e3;
+  border-bottom-left-radius: 4px;
+  backdrop-filter: blur(8px);
+}
+
+.nai-bubble.user {
+  background: rgba(39, 174, 96, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+  backdrop-filter: blur(8px);
+}
+
+.nai-bubble p {
+  margin: 0 0 0.25rem;
+  font-size: 0.92rem;
+  white-space: pre-wrap;
+}
+
+.nai-ts {
+  font-size: 0.68rem;
+  opacity: 0.5;
+  display: block;
+  text-align: right;
+}
+
+/* Typing indicator */
+.nai-typing {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.9rem 1.2rem;
+  min-width: 60px;
+}
+
+.nai-typing span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #a9dfbf;
+  display: inline-block;
+  animation: bounce 1.2s ease-in-out infinite;
+}
+
+.nai-typing span:nth-child(2) { animation-delay: 0.2s; }
+.nai-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+  40%           { transform: scale(1);   opacity: 1; }
+}
+
+/* ── Input bar ───────────────────────────────────────────────────────────── */
+.nai-input-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.6rem;
+  background: rgba(5, 40, 15, 0.65);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 18px;
+  padding: 0.5rem 0.6rem 0.5rem 1rem;
+  margin-top: 0.5rem;
+}
+
+.nai-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #d5f5e3;
+  font-size: 0.92rem;
+  resize: none;
+  line-height: 1.5;
+  font-family: inherit;
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+.nai-input::placeholder { color: rgba(213, 245, 227, 0.4); }
+
+.nai-send-btn {
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  background: #27ae60;
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.nai-send-btn:hover:not(:disabled) {
+  background: #2ecc71;
+  transform: scale(1.06);
+}
+
+.nai-send-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .nai-bubble { max-width: 85%; }
+  .nai-logo-text { font-size: 1.1rem; }
+  .nai-welcome h2 { font-size: 1.2rem; }
+}

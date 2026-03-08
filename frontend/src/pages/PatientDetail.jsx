@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getPatient, updatePatient } from '../api/patient.api';
+import { getPatientProgress } from '../api/progress.api';
 import './PatientDetail.css';
 
 const PatientDetail = () => {
@@ -12,6 +13,10 @@ const PatientDetail = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
   const [saving, setSaving] = useState(false);
+  const [activeTab, setActiveTab] = useState('info'); // 'info' | 'progress'
+  const [progressHistory, setProgressHistory] = useState([]);
+  const [progressLoading, setProgressLoading] = useState(false);
+  const [expandedProgressCard, setExpandedProgressCard] = useState(null);
 
   useEffect(() => {
     fetchPatient();
@@ -72,6 +77,25 @@ const PatientDetail = () => {
     setError('');
   };
 
+  const handleTabChange = async (tab) => {
+    setActiveTab(tab);
+    if (tab === 'progress' && progressHistory.length === 0) {
+      setProgressLoading(true);
+      try {
+        const data = await getPatientProgress(patientId);
+        setProgressHistory(data);
+      } catch (err) {
+        console.error('Failed to load progress:', err);
+      } finally {
+        setProgressLoading(false);
+      }
+    }
+  };
+
+  const toggleProgressCard = (id) => {
+    setExpandedProgressCard((prev) => (prev === id ? null : id));
+  };
+
   if (loading) {
     return (
       <div className="patient-detail-container">
@@ -115,11 +139,12 @@ const PatientDetail = () => {
           <button className="back-btn" onClick={() => navigate('/therapist/dashboard')}>
             ← Back to Dashboard
           </button>
-          {!isEditing ? (
+          {activeTab === 'info' && !isEditing && (
             <button className="edit-btn" onClick={() => setIsEditing(true)}>
               Edit Information
             </button>
-          ) : (
+          )}
+          {activeTab === 'info' && isEditing && (
             <div className="edit-actions">
               <button className="cancel-btn" onClick={handleCancel}>Cancel</button>
               <button className="save-btn" onClick={handleSave} disabled={saving}>
@@ -131,6 +156,24 @@ const PatientDetail = () => {
 
         {error && <div className="error-banner">{error}</div>}
 
+        {/* Tab bar */}
+        <div className="detail-tabs">
+          <button
+            className={`detail-tab-btn ${activeTab === 'info' ? 'active' : ''}`}
+            onClick={() => handleTabChange('info')}
+          >
+            Patient Info
+          </button>
+          <button
+            className={`detail-tab-btn ${activeTab === 'progress' ? 'active' : ''}`}
+            onClick={() => handleTabChange('progress')}
+          >
+            Progress History
+          </button>
+        </div>
+
+        {/* Patient Info Tab */}
+        {activeTab === 'info' && (
         <div className="patient-detail-card">
           <div className="patient-header">
             <div className="patient-avatar-large">
@@ -233,6 +276,82 @@ const PatientDetail = () => {
             </div>
           </div>
         </div>
+        )}
+
+        {/* Progress History Tab */}
+        {activeTab === 'progress' && (
+          <div className="progress-history-section">
+            {progressLoading ? (
+              <div className="progress-history-loading">
+                <div className="spinner"></div>
+                <p>Loading progress history...</p>
+              </div>
+            ) : progressHistory.length === 0 ? (
+              <div className="progress-history-empty">
+                <p>This patient has not submitted any weekly progress updates yet.</p>
+              </div>
+            ) : (
+              progressHistory.map((entry) => (
+                <div key={entry.id} className="progress-history-card">
+                  <button
+                    className="progress-history-card-header"
+                    onClick={() => toggleProgressCard(entry.id)}
+                  >
+                    <div className="progress-history-card-meta">
+                      <span className="ph-week-badge">Week {entry.week_number}</span>
+                      <span className="ph-week-date">
+                        {new Date(entry.week_start_date).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                      </span>
+                    </div>
+                    <span className="ph-chevron">{expandedProgressCard === entry.id ? '▲' : '▼'}</span>
+                  </button>
+
+                  {expandedProgressCard === entry.id && (
+                    <div className="progress-history-card-body">
+                      <div className="ph-section">
+                        <h4>Weekly Progress</h4>
+                        <p className="ph-text">{entry.detailed_progress}</p>
+                      </div>
+                      <div className="ph-section">
+                        <h4>Homework Reflection</h4>
+                        <p className="ph-text">{entry.homework_reflection}</p>
+                      </div>
+                      {entry.suds_snapshot && entry.suds_snapshot.length > 0 && (
+                        <div className="ph-section">
+                          <h4>Fear Ladder SUDS Snapshot</h4>
+                          <div className="ph-suds-table">
+                            <div className="ph-suds-header">
+                              <span>Situation</span>
+                              <span>SUDS</span>
+                            </div>
+                            {entry.suds_snapshot.map((snap, idx) => (
+                              <div key={idx} className="ph-suds-row">
+                                <span>{snap.item_text}</span>
+                                <span className="ph-suds-value">{snap.suds}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      <p className="ph-submitted-at">
+                        Submitted:{' '}
+                        {new Date(entry.created_at).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
