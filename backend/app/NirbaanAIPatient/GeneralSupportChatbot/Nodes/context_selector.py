@@ -22,6 +22,10 @@ class ContextSelectorOutput(BaseModel):
         default=False,
         description="Whether the full latest weekly progress report should be included."
     )
+    include_last_therapy_session: bool = Field(
+        default=False,
+        description="Whether the last therapy session transcript should be included."
+    )
     support_type: str = Field(
         ...,
         description=(
@@ -61,6 +65,7 @@ def context_selector_node(state: GeneralSupportState) -> Dict[str, Any]:
     recent_chat_history = state.get("recent_chat_history") or []
     db_pairs = state.get("db_obsession_compulsion_pairs") or []
     latest_progress = state.get("db_latest_weekly_progress")
+    db_last_therapy_session = state.get("db_last_therapy_session")
 
     if not user_message:
         return {
@@ -68,6 +73,7 @@ def context_selector_node(state: GeneralSupportState) -> Dict[str, Any]:
             "selected_obsession_compulsion_pairs": [],
             "selected_progress_snippets": [],
             "selected_db_context_summary": "",
+            "selected_last_therapy_session": None,
             "support_type": "other",
             "support_goal": "",
         }
@@ -80,6 +86,7 @@ def context_selector_node(state: GeneralSupportState) -> Dict[str, Any]:
         recent_chat_history=recent_chat_history,
         db_pairs=db_pairs,
         latest_progress=latest_progress,
+        last_therapy_session=db_last_therapy_session,
     )
 
     result: ContextSelectorOutput = structured_llm.invoke(prompt)
@@ -94,8 +101,10 @@ def context_selector_node(state: GeneralSupportState) -> Dict[str, Any]:
         latest_progress=latest_progress,
     )
 
+    selected_last_therapy_session = db_last_therapy_session if result.include_last_therapy_session else None
+
     actually_needs_personalization = bool(
-        result.needs_personalization and (selected_pairs or selected_progress_snippets)
+        result.needs_personalization and (selected_pairs or selected_progress_snippets or selected_last_therapy_session)
     )
 
     support_type = _normalize_support_type(result.support_type)
@@ -107,6 +116,7 @@ def context_selector_node(state: GeneralSupportState) -> Dict[str, Any]:
         "selected_obsession_compulsion_pairs": selected_pairs,
         "selected_progress_snippets": selected_progress_snippets,
         "selected_db_context_summary": selected_db_context_summary,
+        "selected_last_therapy_session": selected_last_therapy_session,
         "support_type": support_type,
         "support_goal": support_goal,
     }
@@ -125,10 +135,12 @@ def _build_prompt(
     recent_chat_history: List[Dict[str, str]],
     db_pairs: List[Dict[str, Any]],
     latest_progress: Optional[Dict[str, Any]],
+    last_therapy_session: Optional[Dict[str, Any]],
 ) -> str:
     recent_history_text = _format_recent_chat_history(recent_chat_history)
     erp_pairs_text = _format_erp_pairs(db_pairs)
     weekly_progress_text = _format_weekly_progress(latest_progress)
+    last_session_text = _format_last_therapy_session(last_therapy_session)
 
     return f"""
 You are selecting patient-specific database context for an OCD between-session general support chatbot.
@@ -171,10 +183,14 @@ Available ERP obsession-compulsion pairs:
 Latest weekly progress:
 {weekly_progress_text}
 
+Last therapy session:
+{last_session_text}
+
 Return structured output with:
 - needs_personalization
 - selected_erp_item_ids
 - include_latest_progress_report
+- include_last_therapy_session
 - support_type
 - support_goal
 - selected_db_context_summary
@@ -240,6 +256,24 @@ def _format_weekly_progress(latest_progress: Optional[Dict[str, Any]]) -> str:
         parts.append(f"suds_snapshot: {suds_snapshot}")
 
     return "\n".join(parts)
+
+
+def _format_last_therapy_session(last_therapy_session: Optional[Dict[str, Any]]) -> str:
+    if not last_therapy_session:
+        return "No therapy session available."
+
+    session_number = last_therapy_session.get("session_number", "?")
+    title = (last_therapy_session.get("title") or "").strip()
+    session_date = last_therapy_session.get("session_date", "")
+    transcript = (last_therapy_session.get("transcript") or "").strip()
+
+    lines = [
+        f"session_number: {session_number}",
+        f"title: {title or 'N/A'}",
+        f"session_date: {session_date}",
+        f"transcript: {transcript[:500]}{'...' if len(transcript) > 500 else ''}",
+    ]
+    return "\n".join(lines)
 
 
 def _map_selected_pairs(

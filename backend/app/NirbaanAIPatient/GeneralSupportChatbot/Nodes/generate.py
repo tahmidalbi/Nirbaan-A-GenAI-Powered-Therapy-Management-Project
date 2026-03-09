@@ -26,6 +26,7 @@ def generate_node(state: GeneralSupportState) -> Dict[str, Any]:
 
     support_type = (state.get("support_type") or "other").strip()
     support_goal = (state.get("support_goal") or "").strip()
+    selected_last_therapy_session = state.get("selected_last_therapy_session")
 
     used_sources = _collect_sources(state.get("kb_chunks") or [])
 
@@ -39,6 +40,7 @@ def generate_node(state: GeneralSupportState) -> Dict[str, Any]:
         kb_context_summary=kb_context_summary,
         support_type=support_type,
         support_goal=support_goal,
+        selected_last_therapy_session=selected_last_therapy_session,
     )
 
     result: GenerateOutput = structured_llm.invoke(prompt)
@@ -62,14 +64,8 @@ def _get_llm() -> ChatOpenAI:
 
 
 def _collect_sources(kb_chunks: List[Dict[str, Any]]) -> List[str]:
-    sources: List[str] = []
-
-    for c in kb_chunks:
-        src = c.get("source")
-        if src and src not in sources:
-            sources.append(src)
-
-    return sources
+    # dict.fromkeys maintains insertion order while ensuring uniqueness efficiently
+    return list(dict.fromkeys(c.get("source") for c in kb_chunks if c.get("source")))
 
 
 def _build_prompt(
@@ -80,13 +76,26 @@ def _build_prompt(
     kb_context_summary: str,
     support_type: str,
     support_goal: str,
+    selected_last_therapy_session: Dict[str, Any] | None,
 ) -> str:
     recent_history_text = _format_chat_history(recent_chat_history)
+
+    if selected_last_therapy_session:
+        session_text = (
+            f"Session {selected_last_therapy_session.get('session_number', '?')}"
+            f" — {selected_last_therapy_session.get('title', '')}"
+            f" ({selected_last_therapy_session.get('session_date', '')})"
+            f"\n{selected_last_therapy_session.get('transcript', '')}"
+        ).strip()
+    else:
+        session_text = "Not included."
 
     return f"""
 You are a supportive OCD therapy assistant helping a patient between therapy sessions.
 
-Your role is to provide grounded support consistent with OCD treatment principles.
+Your role is to provide therapist KB grounded support consistent with OCD treatment principles.
+
+Patient is already doing therapy under a therapist, so do not suggest to see a therapist or a crisis line. Just provide support consistent with what a therapist-assistant might say to help them cope in the moment, based on the therapist KB.
 
 CRITICAL RULES:
 
@@ -97,10 +106,8 @@ CRITICAL RULES:
 5. Encourage tolerance of uncertainty.
 6. Encourage response prevention rather than rituals.
 7. Validate emotional difficulty without validating OCD fears.
-8. No need to ask patient if they are feeling any self-harm urge, just provide support consistent with OCD treatment principles all grounded on therapist KB
-
-
-
+8. No need to ask patient if they are feeling any self-harm urge, just provide support consistent with OCD treatment principles all grounded on therapist KB.
+9. Do not ask to do something for a certain time, like don't respond with timer based instructions.
 
 Support type:
 {support_type}
@@ -116,6 +123,9 @@ Recent conversation:
 
 Relevant patient context:
 {selected_db_context_summary}
+
+Last therapy session:
+{session_text}
 
 Therapist KB grounding:
 {kb_context_summary or "No therapist KB grounding available."}

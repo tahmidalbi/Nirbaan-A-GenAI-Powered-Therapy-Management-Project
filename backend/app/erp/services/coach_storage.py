@@ -234,6 +234,26 @@ class CoachStorage:
         )
         return row[0] if row else None
 
+    def get_last_therapy_session(self, patient_id: int) -> Optional[str]:
+        """
+        Returns a formatted string of the patient's most recent therapy session
+        (session number, title, date, and transcript), or None if not found.
+        therapist_notes are intentionally excluded.
+        """
+        from app.therapy_sessions.models import TherapySession
+        session = (
+            self.db.query(TherapySession)
+            .filter(TherapySession.patient_id == patient_id)
+            .order_by(TherapySession.session_date.desc(), TherapySession.id.desc())
+            .first()
+        )
+        if not session:
+            return None
+        return (
+            f"Session {session.session_number} — {session.title} ({session.session_date})\n"
+            f"{(session.transcript or '').strip()}"
+        )
+
     def save_end_session_reports(
         self,
         *,

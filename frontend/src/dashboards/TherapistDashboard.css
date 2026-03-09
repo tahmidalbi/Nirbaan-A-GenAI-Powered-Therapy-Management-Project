@@ -615,3 +615,441 @@
     font-size: 0.85rem;
   }
 }
+
+/* =========================================
+   SESSIONS SECTION
+   ========================================= */
+
+.sessions-section {
+  padding: 2rem 0;
+}
+
+/* Section header — title + action button */
+.sessions-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.sessions-section-title {
+  font-size: 1.8rem;
+  color: #2C4F4A;
+  font-family: 'Garamond', serif;
+  font-weight: 400;
+  margin: 0;
+}
+
+/* Breadcrumb bar (step 2) */
+.sessions-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sessions-back-btn {
+  background: none;
+  border: 1px solid #6B9B8D;
+  color: #3d7a6a;
+  padding: 0.45rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.sessions-back-btn:hover {
+  background: rgba(107, 155, 141, 0.12);
+}
+
+.sessions-breadcrumb-sep {
+  color: #9aaba8;
+  font-size: 1.1rem;
+}
+
+.sessions-breadcrumb-patient {
+  font-family: 'Georgia', serif;
+  font-size: 1.1rem;
+  color: #2C4F4A;
+  font-weight: 600;
+}
+
+/* Add Session button */
+.add-session-btn {
+  background: #3d7a6a;
+  color: #fff;
+  border: none;
+  padding: 0.65rem 1.4rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+  transition: background 0.2s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.add-session-btn:hover {
+  background: #2C5F52;
+  transform: translateY(-1px);
+}
+
+/* "view sessions" hint on patient card */
+.view-sessions-hint {
+  display: inline-block;
+  margin-top: 0.4rem;
+  font-size: 0.82rem;
+  color: #3d7a6a;
+  font-family: 'Georgia', serif;
+  font-style: italic;
+}
+
+.sessions-patient-card {
+  cursor: pointer;
+}
+
+/* Empty state for sessions list */
+.sessions-empty {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(107, 155, 141, 0.25);
+  border-radius: 4px;
+  padding: 2rem;
+  text-align: center;
+  color: #5A6E68;
+  font-family: 'Georgia', serif;
+  margin-bottom: 1.5rem;
+}
+
+/* Sessions list */
+.sessions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Individual session card */
+.session-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(107, 155, 141, 0.3);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s;
+}
+
+.session-card:hover {
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+}
+
+.session-card-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.session-card-header:hover {
+  background: rgba(107, 155, 141, 0.07);
+}
+
+.session-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.session-badge {
+  background: #3d7a6a;
+  color: #fff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-family: 'Georgia', serif;
+  white-space: nowrap;
+}
+
+.session-title-text {
+  font-size: 1rem;
+  font-family: 'Georgia', serif;
+  color: #2C4F4A;
+  font-weight: 600;
+}
+
+.session-date-text {
+  font-size: 0.85rem;
+  color: #7a9a94;
+  font-family: 'Georgia', serif;
+}
+
+.session-chevron {
+  font-size: 0.75rem;
+  color: #6B9B8D;
+  flex-shrink: 0;
+}
+
+/* Session card body (expanded) */
+.session-card-body {
+  padding: 1.25rem;
+  border-top: 1px solid rgba(107, 155, 141, 0.2);
+  background: rgba(248, 251, 250, 0.9);
+}
+
+.session-body-section {
+  margin-bottom: 1.25rem;
+}
+
+.session-body-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #5A6E68;
+  font-family: 'Georgia', serif;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.session-transcript {
+  font-family: 'Georgia', serif;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: #3A4A47;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(107, 155, 141, 0.15);
+  border-radius: 4px;
+  padding: 1rem;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.notes-private-badge {
+  background: #c0392b;
+  color: #fff;
+  font-size: 0.7rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-family: 'Georgia', serif;
+  font-weight: normal;
+}
+
+.session-notes-text {
+  font-family: 'Georgia', serif;
+  font-size: 0.9rem;
+  color: #4A5A57;
+  line-height: 1.6;
+}
+
+.session-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+}
+
+.session-delete-btn {
+  background: none;
+  border: 1px solid #c0392b;
+  color: #c0392b;
+  padding: 0.4rem 0.9rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+  font-size: 0.85rem;
+  transition: background 0.15s, color 0.15s;
+}
+
+.session-delete-btn:hover {
+  background: #c0392b;
+  color: #fff;
+}
+
+/* =========================================
+   MODAL (shared by sessions & other modals)
+   ========================================= */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 35, 32, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  backdrop-filter: blur(3px);
+}
+
+.modal-box {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(107, 155, 141, 0.3);
+  border-radius: 8px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 740px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(107, 155, 141, 0.2);
+}
+
+.modal-header h3 {
+  font-family: 'Garamond', serif;
+  font-size: 1.4rem;
+  color: #2C4F4A;
+  font-weight: 400;
+  margin: 0;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #8a9e9a;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.modal-close-btn:hover {
+  color: #2C4F4A;
+  background: rgba(107, 155, 141, 0.1);
+}
+
+.modal-error {
+  background: rgba(192, 57, 43, 0.08);
+  border: 1px solid rgba(192, 57, 43, 0.3);
+  color: #c0392b;
+  padding: 0.65rem 1rem;
+  border-radius: 4px;
+  font-family: 'Georgia', serif;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.modal-field {
+  margin-bottom: 1.25rem;
+}
+
+.modal-field label {
+  display: block;
+  font-family: 'Georgia', serif;
+  font-size: 0.85rem;
+  color: #5A6E68;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.4rem;
+}
+
+.field-hint {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.8rem;
+  color: #8a9e9a;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  font-family: 'Georgia', serif;
+  font-size: 0.95rem;
+  color: #2C4F4A;
+  border: 1px solid rgba(107, 155, 141, 0.4);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.modal-input:focus {
+  border-color: #3d7a6a;
+}
+
+.modal-textarea {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  font-family: 'Georgia', serif;
+  font-size: 0.9rem;
+  color: #2C4F4A;
+  border: 1px solid rgba(107, 155, 141, 0.4);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  box-sizing: border-box;
+  outline: none;
+  resize: vertical;
+  line-height: 1.6;
+  transition: border-color 0.2s;
+}
+
+.modal-textarea:focus {
+  border-color: #3d7a6a;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(107, 155, 141, 0.15);
+}
+
+.modal-cancel-btn {
+  background: none;
+  border: 1px solid #9aaba8;
+  color: #5A6E68;
+  padding: 0.6rem 1.4rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+  font-size: 0.9rem;
+  transition: background 0.15s;
+}
+
+.modal-cancel-btn:hover {
+  background: rgba(107, 155, 141, 0.1);
+}
+
+.modal-save-btn {
+  background: #3d7a6a;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.modal-save-btn:hover:not(:disabled) {
+  background: #2C5F52;
+}
+
+.modal-save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

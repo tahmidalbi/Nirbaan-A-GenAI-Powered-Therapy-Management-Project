@@ -12,26 +12,13 @@ from app.NirbaanAIPatient.GeneralSupportChatbot.state import GeneralSupportState
 class RefineQueryOutput(BaseModel):
     retrieval_query: str = Field(
         ...,
-        description="A retrieval-friendly therapist-KB search query for the support situation."
+        description="A keyword-rich, declarative retrieval query optimized for vector similarity search."
     )
 
 
 def refine_query_node(state: GeneralSupportState) -> Dict[str, Any]:
     """
     Build a strong retrieval query for general support messages.
-
-    Inputs expected in state:
-    - user_message
-    - recent_chat_history
-    - selected_obsession_compulsion_pairs
-    - selected_progress_snippets
-    - selected_db_context_summary
-    - support_type
-    - support_goal
-
-    Outputs:
-    - retrieval_query
-    - original_retrieval_query
     """
     user_message = (state.get("user_message") or "").strip()
     recent_chat_history = state.get("recent_chat_history") or []
@@ -97,23 +84,30 @@ def _build_prompt(
     )
 
     return f"""
-You are writing a therapist-knowledge-base retrieval query for an OCD between-session support chatbot.
+You are an AI assistant optimizing queries for a vector database containing therapist knowledge base documents and clinical guidelines for OCD treatment.
 
 Your task is NOT to answer the patient.
-Your task is ONLY to convert the patient's vague support message into a strong retrieval query for the therapist KB.
+Your task is ONLY to convert the patient's vague support message into a strong, declarative, keyword-rich retrieval query.
+
+Vector similarity search works best when the query semantically matches the tone, phrasing, and terminology of clinical manuals.
+Instead of conversational questions (e.g., "What to say if the patient feels down"), generate conceptual, clinical queries.
+
+Examples:
+- Patient: "I'm feeling down" -> Query: "between-session support interventions for low mood and depressive symptoms in OCD patients"
+- Patient: "I can't stop checking the stove" -> Query: "ERP response prevention strategies for checking compulsions and doubting obsessions"
+- Patient: "I just need to know it will be okay" -> Query: "therapist guidance on avoiding reassurance and encouraging tolerance of uncertainty"
 
 Goal:
-Write a retrieval-friendly query that will help find therapist guidance relevant to the patient's current support need.
+Write a retrieval-friendly, keyword-rich query that will help find therapist guidance relevant to the patient's current support need.
 
 Rules:
 1. The query should reflect the support_type and support_goal.
-2. Use OCD / ERP / support terminology when relevant.
+2. Use clinical OCD / ERP terminology (e.g., "response prevention", "tolerance of uncertainty", "intrusive thoughts").
 3. If selected patient context is relevant, incorporate it naturally into the retrieval query.
 4. Do not invent patient facts.
 5. Do not write a supportive response.
 6. Output a single retrieval query string.
-7. Make the query semantically rich enough for vector retrieval.
-8. Support messages are often vague, so infer the likely therapeutic support topic carefully.
+7. Maximize semantic richness for cosine similarity matching against clinical texts.
 
 Patient current message:
 {user_message}

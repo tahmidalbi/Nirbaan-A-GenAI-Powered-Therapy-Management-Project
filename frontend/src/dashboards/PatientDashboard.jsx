@@ -1,12 +1,28 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
+import { getMyTherapySessions } from '../api/sessions.api';
 import './PatientDashboard.css';
 
 const PatientDashboard = () => {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
   const [activeSection, setActiveSection] = useState(null);
+  const [sessions, setSessions] = useState([]);
+  const [sessionsLoading, setSessionsLoading] = useState(false);
+  const [sessionsError, setSessionsError] = useState('');
+  const [expandedSession, setExpandedSession] = useState(null);
+
+  useEffect(() => {
+    if (activeSection === 'sessions' && sessions.length === 0) {
+      setSessionsLoading(true);
+      setSessionsError('');
+      getMyTherapySessions()
+        .then((data) => setSessions(data))
+        .catch((err) => setSessionsError(typeof err === 'string' ? err : 'Failed to load sessions'))
+        .finally(() => setSessionsLoading(false));
+    }
+  }, [activeSection]);
 
   const handleLogout = () => {
     logout();
@@ -122,8 +138,52 @@ const PatientDashboard = () => {
         )}
 
         {activeSection === 'sessions' && (
-          <div className="empty-section">
-            {/* Empty Sessions section */}
+          <div className="pd-sessions-panel">
+            <h2 className="pd-sessions-title">My Therapy Sessions</h2>
+
+            {sessionsLoading && (
+              <div className="pd-sessions-loading">
+                <div className="spinner"></div>
+                <p>Loading sessions...</p>
+              </div>
+            )}
+
+            {sessionsError && (
+              <div className="pd-sessions-error">{sessionsError}</div>
+            )}
+
+            {!sessionsLoading && !sessionsError && sessions.length === 0 && (
+              <div className="pd-sessions-empty">
+                <p>No sessions have been added yet. Your therapist will log sessions here after each appointment.</p>
+              </div>
+            )}
+
+            {!sessionsLoading && sessions.map((s) => (
+              <div key={s.id} className="pd-session-card">
+                <button
+                  className="pd-session-header"
+                  onClick={() => setExpandedSession(expandedSession === s.id ? null : s.id)}
+                >
+                  <div className="pd-session-meta">
+                    <span className="pd-session-badge">Session {s.session_number}</span>
+                    <span className="pd-session-title-text">{s.title}</span>
+                    <span className="pd-session-date">
+                      {new Date(s.session_date).toLocaleDateString('en-US', {
+                        year: 'numeric', month: 'long', day: 'numeric',
+                      })}
+                    </span>
+                  </div>
+                  <span className="pd-session-chevron">{expandedSession === s.id ? '▲' : '▼'}</span>
+                </button>
+
+                {expandedSession === s.id && (
+                  <div className="pd-session-body">
+                    <h4 className="pd-section-label">Session Transcript</h4>
+                    <pre className="pd-session-transcript">{s.transcript}</pre>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         )}
 

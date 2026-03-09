@@ -53,10 +53,6 @@ def run_ladder_review_agent_v2_task(
                 f"requested={requested_by_therapist_id}"
             )
 
-        # Idempotency: skip if already completed with suggestions
-        if review.status == AILadderReviewStatus.completed and review.suggestions:
-            return {"review_id": review_id, "status": "already_completed", "skipped": True}
-
         # Mark running
         review.status = AILadderReviewStatus.running
         review.error_message = None

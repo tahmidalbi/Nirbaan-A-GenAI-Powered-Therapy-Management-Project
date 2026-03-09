@@ -57,6 +57,7 @@ def load_context_node(state: Dict[str, Any]) -> Dict[str, Any]:
     )
 
     exercise_text = safe_text_clip(bundle.exercise_text, max_chars=1200)
+    last_therapy_session_text = storage.get_last_therapy_session(bundle.session.patient_id)
 
     last_patient_message_at = storage.get_last_patient_message_at(session_id)
     last_spike_notified_suds = getattr(bundle.session, "last_spike_notified_suds", None)
@@ -70,6 +71,7 @@ def load_context_node(state: Dict[str, Any]) -> Dict[str, Any]:
             "obsession": bundle.obsession,
             "compulsions": bundle.compulsions or [],
             "exercise_text": exercise_text,
+            "last_therapy_session_text": last_therapy_session_text,
             "messages_tail": bundle.messages,
             "transcript_block": transcript_block,
             "suds_recent": bundle.suds_recent,

@@ -35,6 +35,7 @@ def _ctx(state: Dict[str, Any]) -> Dict[str, Any]:
         "rate_reminder_flag": bool(state.get("rate_reminder_flag", False)),
         "spike_flag": bool(state.get("spike_flag", False)),
         "cooldown_ok": bool(state.get("cooldown_ok", True)),
+        "last_therapy_session_text": state.get("last_therapy_session_text"),
     }
 
 
