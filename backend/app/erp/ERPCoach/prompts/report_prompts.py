@@ -313,11 +313,10 @@ Provide a practical next step for the next session.
 
 Important:
 - Do NOT write rigid instructions like "do this for 60 seconds".
-- Write like a therapist plan, for example:
-  "Repeat the same exposure step while practicing not responding to the first rumination urge."
+- Write like a therapist-assistant plan
 
 reminder:
-Optional short therapist-style reminder emphasizing willingness rather than anxiety reduction.
+Optional short therapist-assistant-style reminder emphasizing willingness rather than anxiety reduction.
 Example:
 "Progress comes from practicing a new response, not from making anxiety disappear."
 """.strip()

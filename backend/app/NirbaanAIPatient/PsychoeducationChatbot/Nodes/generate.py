@@ -49,6 +49,7 @@ def generate_node(state: PsychoeducationState) -> Dict[str, Any]:
     kb_chunks = state.get("kb_chunks") or []
     web_used = bool(state.get("web_used", False))
     web_results = state.get("web_results") or []
+    selected_last_therapy_session = state.get("selected_last_therapy_session")
 
     if not user_message:
         return {
@@ -80,6 +81,7 @@ def generate_node(state: PsychoeducationState) -> Dict[str, Any]:
         selected_db_context_summary=selected_db_context_summary,
         kb_chunks=kb_chunks,
         web_results=web_results if has_web else [],
+        selected_last_therapy_session=selected_last_therapy_session,
     )
 
     result: GenerateOutput = structured_llm.invoke(prompt)
@@ -117,6 +119,7 @@ def _build_prompt(
     selected_db_context_summary: str,
     kb_chunks: List[Dict[str, Any]],
     web_results: List[Dict[str, Any]],
+    selected_last_therapy_session: Dict[str, Any] | None,
 ) -> str:
     recent_history_text = _format_recent_chat_history(recent_chat_history)
     db_context_text = _format_selected_db_context(
@@ -126,6 +129,16 @@ def _build_prompt(
     )
     kb_text = _format_kb_chunks(kb_chunks)
     web_text = _format_web_results(web_results)
+
+    if selected_last_therapy_session:
+        session_text = (
+            f"Session {selected_last_therapy_session.get('session_number', '?')}"
+            f" — {selected_last_therapy_session.get('title', '')}"
+            f" ({selected_last_therapy_session.get('session_date', '')})"
+            f"\n{selected_last_therapy_session.get('transcript', '')}"
+        ).strip()
+    else:
+        session_text = "Not included."
 
     return f"""
 You are an OCD psychoeducation assistant for a therapy platform.
@@ -158,6 +171,9 @@ Recent chat history:
 
 Selected patient DB context:
 {db_context_text}
+
+Last therapy session:
+{session_text}
 
 Therapist KB evidence:
 {kb_text}

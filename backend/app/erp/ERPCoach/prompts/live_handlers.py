@@ -46,6 +46,7 @@ def _base_live_header(
     rate_reminder_flag: bool = False,
     spike_flag: bool = False,
     cooldown_ok: bool = True,
+    last_therapy_session_text: Optional[str] = None,
 ) -> str:
     """
     Shared context header.
@@ -110,6 +111,9 @@ Session stats (for your situational awareness; don't obsess over them):
 Continuity (recent prior sessions for THIS obsession item):
 {_bullet_list(prior_summaries, max_items=3)}
 
+Last therapy session (from therapist records):
+{_clip(last_therapy_session_text, 1500) if last_therapy_session_text else "(none)"}
+
 Recent chat transcript (most recent at bottom):
 {transcript_block or "(no prior messages)"}
 
@@ -135,6 +139,7 @@ def prompt_general_coaching(
     rate_reminder_flag: bool = False,
     spike_flag: bool = False,
     cooldown_ok: bool = True,
+    last_therapy_session_text: Optional[str] = None,
 ) -> str:
     header = _base_live_header(
         obsession=obsession,
@@ -151,6 +156,7 @@ def prompt_general_coaching(
         rate_reminder_flag=rate_reminder_flag,
         spike_flag=spike_flag,
         cooldown_ok=cooldown_ok,
+        last_therapy_session_text=last_therapy_session_text,
     )
 
     return f"""
@@ -236,6 +242,7 @@ def prompt_reassurance_block(
     rate_reminder_flag: bool = False,
     spike_flag: bool = False,
     cooldown_ok: bool = True,
+    last_therapy_session_text: Optional[str] = None,
 ) -> str:
     header = _base_live_header(
         obsession=obsession,
@@ -252,6 +259,7 @@ def prompt_reassurance_block(
         rate_reminder_flag=rate_reminder_flag,
         spike_flag=spike_flag,
         cooldown_ok=cooldown_ok,
+        last_therapy_session_text=last_therapy_session_text,
     )
 
     return f"""
@@ -298,6 +306,7 @@ def prompt_compulsion_urge(
     rate_reminder_flag: bool = False,
     spike_flag: bool = False,
     cooldown_ok: bool = True,
+    last_therapy_session_text: Optional[str] = None,
 ) -> str:
     header = _base_live_header(
         obsession=obsession,
@@ -314,6 +323,7 @@ def prompt_compulsion_urge(
         rate_reminder_flag=rate_reminder_flag,
         spike_flag=spike_flag,
         cooldown_ok=cooldown_ok,
+        last_therapy_session_text=last_therapy_session_text,
     )
 
     return f"""
@@ -328,9 +338,6 @@ Run a tiny "urge coaching" moment—supportive, not interrogative.
 Do:
 - Reflect + normalize the urge in one line.
 - Give ONE response-prevention plan for the next short round (varied wording; avoid rigid timers).
-  Examples: "read the next few lines while labeling 'rumination'",
-            "keep hands still and let the urge crest",
-            "do one small valued action while letting the fear ride along".
 - Optional: ONE brief question only if needed to choose the plan:
   - "Which compulsion is it pushing for—rumination, checking, or something else?"
   - "Urge strength 0–10?" (prefer this over repeated SUDS)
@@ -362,6 +369,7 @@ def prompt_avoidance_or_quit(
     rate_reminder_flag: bool = False,
     spike_flag: bool = False,
     cooldown_ok: bool = True,
+    last_therapy_session_text: Optional[str] = None,
 ) -> str:
     header = _base_live_header(
         obsession=obsession,
@@ -378,6 +386,7 @@ def prompt_avoidance_or_quit(
         rate_reminder_flag=rate_reminder_flag,
         spike_flag=spike_flag,
         cooldown_ok=cooldown_ok,
+        last_therapy_session_text=last_therapy_session_text,
     )
 
     return f"""
@@ -387,7 +396,7 @@ User message (wants to stop / feels done / is avoiding):
 {_clip(user_message, 1500)}
 
 Task:
-Respond like a real therapist who knows when to push gently and when to let go.
+Respond like a real therapist-assistant who knows when to push gently and when to let go.
 Read their message + the last few transcript lines carefully before deciding your approach.
 
 Choose ONE of these response shapes — do NOT always use A/B options:
@@ -452,6 +461,7 @@ def prompt_checkin_general(
     rate_reminder_flag: bool = False,
     spike_flag: bool = False,
     cooldown_ok: bool = True,
+    last_therapy_session_text: Optional[str] = None,
 ) -> str:
     header = _base_live_header(
         obsession=obsession,
@@ -468,6 +478,7 @@ def prompt_checkin_general(
         rate_reminder_flag=rate_reminder_flag,
         spike_flag=spike_flag,
         cooldown_ok=cooldown_ok,
+        last_therapy_session_text=last_therapy_session_text,
     )
 
     return f"""
@@ -510,6 +521,7 @@ def prompt_rate_reminder(
     rate_reminder_flag: bool = True,
     spike_flag: bool = False,
     cooldown_ok: bool = True,
+    last_therapy_session_text: Optional[str] = None,
 ) -> str:
     header = _base_live_header(
         obsession=obsession,
@@ -526,6 +538,7 @@ def prompt_rate_reminder(
         rate_reminder_flag=rate_reminder_flag,
         spike_flag=spike_flag,
         cooldown_ok=cooldown_ok,
+        last_therapy_session_text=last_therapy_session_text,
     )
 
     if since_last_suds_seconds is None:
@@ -574,6 +587,7 @@ def prompt_suds_spike(
     rate_reminder_flag: bool = False,
     spike_flag: bool = True,
     cooldown_ok: bool = True,
+    last_therapy_session_text: Optional[str] = None,
 ) -> str:
     header = _base_live_header(
         obsession=obsession,
@@ -590,6 +604,7 @@ def prompt_suds_spike(
         rate_reminder_flag=rate_reminder_flag,
         spike_flag=spike_flag,
         cooldown_ok=cooldown_ok,
+        last_therapy_session_text=last_therapy_session_text,
     )
 
     return f"""

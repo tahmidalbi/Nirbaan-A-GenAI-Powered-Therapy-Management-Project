@@ -39,6 +39,7 @@ class CoachState(TypedDict, total=False):
     obsession: str
     compulsions: List[str]
     exercise_text: Optional[str]
+    last_therapy_session_text: Optional[str]
 
     messages_tail: List[Any]         # ERPChatMessage ORM objects
     transcript_block: str

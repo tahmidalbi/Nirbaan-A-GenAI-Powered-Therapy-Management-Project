@@ -49,6 +49,7 @@ class GeneralSupportState(TypedDict, total=False):
     # ------------------------------------------------------------------
     db_obsession_compulsion_pairs: List[ObsessionCompulsionPair]
     db_latest_weekly_progress: Optional[WeeklyProgressData]
+    db_last_therapy_session: Optional[Dict[str, Any]]
 
     # ------------------------------------------------------------------
     # Selected DB context chosen by context_selector.py
@@ -57,6 +58,7 @@ class GeneralSupportState(TypedDict, total=False):
     selected_obsession_compulsion_pairs: List[ObsessionCompulsionPair]
     selected_progress_snippets: List[str]
     selected_db_context_summary: str
+    selected_last_therapy_session: Optional[Dict[str, Any]]
 
     # ------------------------------------------------------------------
     # General-support-specific interpretation

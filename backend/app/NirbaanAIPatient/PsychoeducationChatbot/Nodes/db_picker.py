@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.erp.models import ERPItem
 from app.progress.models import WeeklyProgress
+from app.therapy_sessions.models import TherapySession
 from app.NirbaanAIPatient.PsychoeducationChatbot.state import PsychoeducationState
 
 
@@ -24,10 +25,12 @@ def db_picker_node(state: PsychoeducationState, db: Session) -> Dict[str, Any]:
 
     obsession_compulsion_pairs = _load_erp_pairs(db=db, patient_id=patient_id)
     latest_weekly_progress = _load_latest_weekly_progress(db=db, patient_id=patient_id)
+    last_therapy_session = _load_last_therapy_session(db=db, patient_id=patient_id)
 
     return {
         "db_obsession_compulsion_pairs": obsession_compulsion_pairs,
         "db_latest_weekly_progress": latest_weekly_progress,
+        "db_last_therapy_session": last_therapy_session,
     }
 
 
@@ -87,4 +90,30 @@ def _load_latest_weekly_progress(db: Session, patient_id: int) -> Optional[Dict[
         "detailed_progress": (latest.detailed_progress or "").strip(),
         "homework_reflection": (latest.homework_reflection or "").strip(),
         "suds_snapshot": suds_snapshot,
+    }
+
+
+def _load_last_therapy_session(
+    db: Session,
+    patient_id: int,
+) -> Optional[Dict[str, Any]]:
+    """
+    Load the most recent therapy session transcript for the patient.
+    therapist_notes are excluded (private).
+    """
+    session = (
+        db.query(TherapySession)
+        .filter(TherapySession.patient_id == patient_id)
+        .order_by(TherapySession.session_date.desc(), TherapySession.id.desc())
+        .first()
+    )
+
+    if not session:
+        return None
+
+    return {
+        "session_number": session.session_number,
+        "title": (session.title or "").strip(),
+        "session_date": session.session_date,
+        "transcript": (session.transcript or "").strip(),
     }

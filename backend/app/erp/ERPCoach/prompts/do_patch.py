@@ -3,7 +3,7 @@
 path = "live_handlers.py"
 raw = open(path, "rb").read()
 
-old_marker_start = "Sound like a helpful therapist, not a questionnaire.".encode("utf-8")
+old_marker_start = "Sound like a helpful therapist-assistant, not a questionnaire.".encode("utf-8")
 old_marker_end = (
     '- tags: must include ["general_coaching"] and optionally '
     '["education_snippet"] / ["mindful_noticing"] / ["rumination_block"]'
@@ -28,7 +28,7 @@ print("Old snippet:", repr(raw[ti:ti+60]))
 
 new_text = (
     "Task:\r\n"
-    "Respond like a skilled ERP therapist in the room with the patient, not a chatbot following a script.\r\n"
+    "Respond like a skilled ERP therapist-assistant in the room with the patient, not a chatbot following a script.\r\n"
     "\r\n"
     "First, read the user\u2019s message carefully along with the last 4\u20136 lines of transcript.\r\n"
     "Then pick the response style that actually fits THIS moment:\r\n"
