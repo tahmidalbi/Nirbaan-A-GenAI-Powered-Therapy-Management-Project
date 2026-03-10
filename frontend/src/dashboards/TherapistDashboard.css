@@ -229,6 +229,18 @@
   width: 100%;
 }
 
+/* NirbaanAI therapist chat — full-height wrapper inside the dashboard */
+.nait-section-wrapper {
+  height: calc(100vh - 8rem);
+  min-height: 500px;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+}
+
 .dashboard-main {
   position: relative;
   z-index: 1;

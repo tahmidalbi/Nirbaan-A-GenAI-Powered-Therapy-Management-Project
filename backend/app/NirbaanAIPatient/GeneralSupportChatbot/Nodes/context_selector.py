@@ -124,7 +124,7 @@ def context_selector_node(state: GeneralSupportState) -> Dict[str, Any]:
 
 def _get_llm() -> ChatOpenAI:
     return ChatOpenAI(
-        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.2"),
+        model=("gpt-5-mini"),
         temperature=0,
     )
 

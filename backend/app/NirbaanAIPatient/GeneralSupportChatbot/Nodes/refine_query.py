@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 from langchain_openai import ChatOpenAI
@@ -22,11 +22,8 @@ def refine_query_node(state: GeneralSupportState) -> Dict[str, Any]:
     """
     user_message = (state.get("user_message") or "").strip()
     recent_chat_history = state.get("recent_chat_history") or []
-    selected_pairs = state.get("selected_obsession_compulsion_pairs") or []
-    selected_progress_snippets = state.get("selected_progress_snippets") or []
-    selected_db_context_summary = (state.get("selected_db_context_summary") or "").strip()
-    support_type = (state.get("support_type") or "other").strip()
-    support_goal = (state.get("support_goal") or "").strip()
+    db_pairs = state.get("db_obsession_compulsion_pairs") or []
+    db_latest_progress = state.get("db_latest_weekly_progress")
 
     if not user_message:
         return {
@@ -40,11 +37,8 @@ def refine_query_node(state: GeneralSupportState) -> Dict[str, Any]:
     prompt = _build_prompt(
         user_message=user_message,
         recent_chat_history=recent_chat_history,
-        selected_pairs=selected_pairs,
-        selected_progress_snippets=selected_progress_snippets,
-        selected_db_context_summary=selected_db_context_summary,
-        support_type=support_type,
-        support_goal=support_goal,
+        db_pairs=db_pairs,
+        db_latest_progress=db_latest_progress,
     )
 
     result: RefineQueryOutput = structured_llm.invoke(prompt)
@@ -61,7 +55,7 @@ def refine_query_node(state: GeneralSupportState) -> Dict[str, Any]:
 
 def _get_llm() -> ChatOpenAI:
     return ChatOpenAI(
-        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.2"),
+        model=("gpt-5.2"),
         temperature=0,
     )
 
@@ -70,18 +64,11 @@ def _build_prompt(
     *,
     user_message: str,
     recent_chat_history: List[Dict[str, str]],
-    selected_pairs: List[Dict[str, Any]],
-    selected_progress_snippets: List[str],
-    selected_db_context_summary: str,
-    support_type: str,
-    support_goal: str,
+    db_pairs: List[Dict[str, Any]],
+    db_latest_progress: Optional[Dict[str, Any]],
 ) -> str:
     recent_history_text = _format_recent_chat_history(recent_chat_history)
-    selected_db_text = _format_selected_db_context(
-        selected_pairs=selected_pairs,
-        selected_progress_snippets=selected_progress_snippets,
-        selected_db_context_summary=selected_db_context_summary,
-    )
+    db_context_text = _format_db_context(db_pairs=db_pairs, db_latest_progress=db_latest_progress)
 
     return f"""
 You are an AI assistant optimizing queries for a vector database containing therapist knowledge base documents and clinical guidelines for OCD treatment.
@@ -101,13 +88,12 @@ Goal:
 Write a retrieval-friendly, keyword-rich query that will help find therapist guidance relevant to the patient's current support need.
 
 Rules:
-1. The query should reflect the support_type and support_goal.
-2. Use clinical OCD / ERP terminology (e.g., "response prevention", "tolerance of uncertainty", "intrusive thoughts").
-3. If selected patient context is relevant, incorporate it naturally into the retrieval query.
-4. Do not invent patient facts.
-5. Do not write a supportive response.
-6. Output a single retrieval query string.
-7. Maximize semantic richness for cosine similarity matching against clinical texts.
+1. Use clinical OCD / ERP terminology (e.g., "response prevention", "tolerance of uncertainty", "intrusive thoughts").
+2. If patient DB context is relevant to the message, incorporate it naturally into the retrieval query.
+3. Do not invent patient facts.
+4. Do not write a supportive response.
+5. Output a single retrieval query string.
+6. Maximize semantic richness for cosine similarity matching against clinical texts.
 
 Patient current message:
 {user_message}
@@ -115,14 +101,8 @@ Patient current message:
 Recent chat history:
 {recent_history_text}
 
-Support type:
-{support_type}
-
-Support goal:
-{support_goal or "Not provided."}
-
-Selected patient DB context:
-{selected_db_text}
+Patient DB context:
+{db_context_text}
 
 Return structured output with:
 - retrieval_query
@@ -143,38 +123,32 @@ def _format_recent_chat_history(recent_chat_history: List[Dict[str, str]]) -> st
     return "\n".join(lines) if lines else "No recent chat history."
 
 
-def _format_selected_db_context(
+def _format_db_context(
     *,
-    selected_pairs: List[Dict[str, Any]],
-    selected_progress_snippets: List[str],
-    selected_db_context_summary: str,
+    db_pairs: List[Dict[str, Any]],
+    db_latest_progress: Optional[Dict[str, Any]],
 ) -> str:
     parts: List[str] = []
 
-    if selected_pairs:
+    if db_pairs:
         pair_lines: List[str] = []
-        for pair in selected_pairs:
+        for pair in db_pairs:
             erp_item_id = pair.get("erp_item_id")
             obsession = (pair.get("obsession") or "").strip()
             compulsions = pair.get("compulsions") or []
-
             comp_text = ", ".join(
-                str(c).strip()
-                for c in compulsions
-                if c and str(c).strip()
+                str(c).strip() for c in compulsions if c and str(c).strip()
             )
-
             line = f"- erp_item_id: {erp_item_id} | obsession: {obsession or 'N/A'}"
             if comp_text:
                 line += f" | compulsions: {comp_text}"
             pair_lines.append(line)
+        parts.append("Obsession-compulsion pairs:\n" + "\n".join(pair_lines))
 
-        parts.append("Selected obsession-compulsion pairs:\n" + "\n".join(pair_lines))
+    if db_latest_progress:
+        week = db_latest_progress.get("week_number")
+        detail = (db_latest_progress.get("detailed_progress") or "").strip()
+        if detail:
+            parts.append(f"Latest weekly progress (week {week}):\n{detail}")
 
-    if selected_progress_snippets:
-        parts.append("Selected latest progress report:\n" + "\n".join(f"- {x}" for x in selected_progress_snippets))
-
-    if selected_db_context_summary:
-        parts.append(f"Why this DB context was selected:\n- {selected_db_context_summary}")
-
-    return "\n\n".join(parts).strip() if parts else "No selected patient DB context."
+    return "\n\n".join(parts).strip() if parts else "No patient DB context available."

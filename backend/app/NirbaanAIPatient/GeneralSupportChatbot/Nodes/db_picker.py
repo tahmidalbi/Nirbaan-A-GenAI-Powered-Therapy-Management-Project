@@ -17,7 +17,7 @@ def db_picker_node(state: Dict[str, Any], db: Session) -> Dict[str, Any]:
     - all ERP obsession/compulsion pairs for the patient
     - the latest weekly progress report for the patient
 
-    It does NOT decide relevance. That is the job of context_selector.py.
+    It does NOT decide relevance — downstream nodes use this data directly.
     """
     patient_id = state["patient_id"]
 

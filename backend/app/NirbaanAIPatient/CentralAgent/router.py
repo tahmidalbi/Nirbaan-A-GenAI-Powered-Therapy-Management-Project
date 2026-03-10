@@ -12,7 +12,7 @@ class RouterOutput(BaseModel):
 def router_node(state: Dict):
 
     llm = ChatOpenAI(
-        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.2"),
+        model=("gpt-5-nano"),
         temperature=0,
     ).with_structured_output(RouterOutput)
 
