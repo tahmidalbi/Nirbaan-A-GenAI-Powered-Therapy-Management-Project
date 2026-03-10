@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuthStore } from '../store/authStore';
+import { transcribeAudio } from '../api/therapy-session.api';
 import './VideoCall.css';
 
 const VideoCall = ({ 
@@ -19,6 +20,24 @@ const VideoCall = ({
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOff, setIsVideoOff] = useState(false);
 
+  // Device selection
+  const [audioInputs, setAudioInputs] = useState([]);   // microphones
+  const [videoInputs, setVideoInputs] = useState([]);   // cameras
+  const [audioOutputs, setAudioOutputs] = useState([]); // speakers
+  const [selectedMic, setSelectedMic] = useState('');
+  const [selectedCamera, setSelectedCamera] = useState('');
+  const [selectedSpeaker, setSelectedSpeaker] = useState('');
+  const [showDevices, setShowDevices] = useState(false);
+  const [audioLevel, setAudioLevel] = useState(0); // 0-100
+
+  // Transcript state
+  const [transcript, setTranscript] = useState([]);   // [{speaker, text, timestamp}]
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const [showTranscript, setShowTranscript] = useState(true);
+
+  const audioContextRef = useRef(null);
+  const analyserRef = useRef(null);
+  const audioLevelTimerRef = useRef(null);
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const wsRef = useRef(null);
@@ -27,16 +46,158 @@ const VideoCall = ({
   const iceCandidateQueue = useRef([]);
   const callStateRef = useRef('idle');
   const pendingOfferRef = useRef(false);
+  const mediaRecorderRef = useRef(null);
+  const chunkTimerRef = useRef(null);
+  const isTranscribingRef = useRef(false);
 
   // Keep callStateRef in sync
   callStateRef.current = callState;
+
+  // Start/stop transcription when call connects or ends
+  useEffect(() => {
+    if (callState === 'connected') {
+      startTranscription();
+    } else if (callState === 'idle' || callState === 'ended') {
+      stopTranscription();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [callState]);
 
   // Log identity on mount
   useEffect(() => {
     console.log(`[VideoCall] Mounted — sessionId=${sessionId}, userId=${userId}, userType=${userType}`);
   }, [sessionId, userId, userType]);
 
+  // Enumerate devices on mount (and after any device change)
+  const refreshDevices = useCallback(async () => {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const mics = devices.filter(d => d.kind === 'audioinput');
+      const cams = devices.filter(d => d.kind === 'videoinput');
+      const speakers = devices.filter(d => d.kind === 'audiooutput');
+      setAudioInputs(mics);
+      setVideoInputs(cams);
+      setAudioOutputs(speakers);
+      // Set defaults only if nothing selected yet
+      setSelectedMic(prev => prev || mics[0]?.deviceId || '');
+      setSelectedCamera(prev => prev || cams[0]?.deviceId || '');
+      setSelectedSpeaker(prev => prev || speakers[0]?.deviceId || '');
+    } catch (err) {
+      console.warn('[VideoCall] Could not enumerate devices:', err);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Devices may have no labels until media permission granted; re-enumerate after that
+    refreshDevices();
+    navigator.mediaDevices.addEventListener('devicechange', refreshDevices);
+    return () => navigator.mediaDevices.removeEventListener('devicechange', refreshDevices);
+  }, [refreshDevices]);
+
+  // Audio level meter — runs while local stream is active
+  const startAudioMeter = useCallback((stream) => {
+    try {
+      const ctx = new AudioContext();
+      const source = ctx.createMediaStreamSource(stream);
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 256;
+      source.connect(analyser);
+      audioContextRef.current = ctx;
+      analyserRef.current = analyser;
+      const buf = new Uint8Array(analyser.frequencyBinCount);
+      audioLevelTimerRef.current = setInterval(() => {
+        analyser.getByteFrequencyData(buf);
+        const avg = buf.reduce((s, v) => s + v, 0) / buf.length;
+        setAudioLevel(Math.min(100, Math.round(avg * 2)));
+      }, 100);
+    } catch (err) {
+      console.warn('[VideoCall] Audio meter error:', err);
+    }
+  }, []);
+
+  const stopAudioMeter = useCallback(() => {
+    if (audioLevelTimerRef.current) clearInterval(audioLevelTimerRef.current);
+    if (audioContextRef.current) { audioContextRef.current.close(); audioContextRef.current = null; }
+    setAudioLevel(0);
+  }, []);
+
+  const stopTranscription = useCallback(() => {
+    isTranscribingRef.current = false;
+    if (chunkTimerRef.current) clearTimeout(chunkTimerRef.current);
+    const rec = mediaRecorderRef.current;
+    if (rec && rec.state === 'recording') {
+      rec.stop(); // fires onstop to flush last chunk
+    }
+    mediaRecorderRef.current = null;
+    setIsTranscribing(false);
+  }, []);
+
+  const startTranscription = useCallback(() => {
+    if (!sessionId || !userType) return;
+    const stream = localStreamRef.current;
+    if (!stream) return;
+    if (isTranscribingRef.current) return;
+
+    const audioTracks = stream.getAudioTracks();
+    if (audioTracks.length === 0) return;
+
+    const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+      ? 'audio/webm;codecs=opus'
+      : MediaRecorder.isTypeSupported('audio/webm')
+      ? 'audio/webm'
+      : 'audio/mp4';
+    const format = mimeType.includes('webm') ? 'webm' : 'mp4';
+
+    const recordChunk = () => {
+      if (!isTranscribingRef.current) return;
+      const audioStream = new MediaStream(localStreamRef.current?.getAudioTracks() ?? []);
+      if (audioStream.getAudioTracks().length === 0) return;
+
+      let chunks = [];
+      let rec;
+      try { rec = new MediaRecorder(audioStream, { mimeType }); }
+      catch { rec = new MediaRecorder(audioStream); }
+
+      rec.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
+      rec.onstop = async () => {
+        if (chunks.length > 0) {
+          const blob = new Blob(chunks, { type: mimeType });
+          try {
+            const result = await transcribeAudio(blob, {
+              sessionId, speaker: userType, language: 'en', format
+            });
+            if (result?.text?.trim()) {
+              setTranscript(prev => [...prev, {
+                speaker: userType, text: result.text.trim(), timestamp: new Date()
+              }]);
+            }
+          } catch (err) {
+            console.warn('[Transcript] Chunk failed:', err);
+          }
+        }
+        // Schedule next chunk if still going
+        if (isTranscribingRef.current) {
+          chunkTimerRef.current = setTimeout(recordChunk, 0);
+        }
+      };
+
+      rec.start();
+      mediaRecorderRef.current = rec;
+      // Stop after 10 seconds to flush
+      chunkTimerRef.current = setTimeout(() => {
+        if (rec.state === 'recording') rec.stop();
+      }, 10000);
+    };
+
+    isTranscribingRef.current = true;
+    setIsTranscribing(true);
+    console.log('[Transcript] Starting chunked recording…');
+    recordChunk();
+  }, [sessionId, userType]);
+
   const cleanupMedia = useCallback(() => {
+    stopTranscription();
+    stopAudioMeter();
     if (localStreamRef.current) {
       localStreamRef.current.getTracks().forEach(track => track.stop());
       localStreamRef.current = null;
@@ -48,7 +209,7 @@ const VideoCall = ({
     if (localVideoRef.current) localVideoRef.current.srcObject = null;
     if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
     iceCandidateQueue.current = [];
-  }, []);
+  }, [stopAudioMeter, stopTranscription]);
 
   const sendMessage = useCallback((msg) => {
     const ws = wsRef.current;
@@ -60,12 +221,89 @@ const VideoCall = ({
     }
   }, []);
 
+  // Switch microphone mid-call
+  const switchMic = useCallback(async (deviceId) => {
+    setSelectedMic(deviceId);
+    const stream = localStreamRef.current;
+    const pc = peerConnectionRef.current;
+    if (!stream || !pc) return;
+    try {
+      const newStream = await navigator.mediaDevices.getUserMedia({
+        audio: { deviceId: { exact: deviceId } },
+        video: false,
+      });
+      const newAudioTrack = newStream.getAudioTracks()[0];
+      const sender = pc.getSenders().find(s => s.track?.kind === 'audio');
+      if (sender) await sender.replaceTrack(newAudioTrack);
+      // Stop old audio track
+      stream.getAudioTracks().forEach(t => t.stop());
+      // Replace in local stream
+      stream.removeTrack(stream.getAudioTracks()[0]);
+      stream.addTrack(newAudioTrack);
+      stopAudioMeter();
+      startAudioMeter(stream);
+      console.log('[VideoCall] Switched mic to:', newAudioTrack.label);
+    } catch (err) {
+      console.error('[VideoCall] Failed to switch mic:', err);
+    }
+  }, [startAudioMeter, stopAudioMeter]);
+
+  // Switch camera mid-call
+  const switchCamera = useCallback(async (deviceId) => {
+    setSelectedCamera(deviceId);
+    const stream = localStreamRef.current;
+    const pc = peerConnectionRef.current;
+    if (!stream || !pc) return;
+    try {
+      const newStream = await navigator.mediaDevices.getUserMedia({
+        video: { deviceId: { exact: deviceId } },
+        audio: false,
+      });
+      const newVideoTrack = newStream.getVideoTracks()[0];
+      const sender = pc.getSenders().find(s => s.track?.kind === 'video');
+      if (sender) await sender.replaceTrack(newVideoTrack);
+      stream.getVideoTracks().forEach(t => t.stop());
+      if (localVideoRef.current) {
+        const newStream2 = new MediaStream([newVideoTrack, ...stream.getAudioTracks()]);
+        localVideoRef.current.srcObject = newStream2;
+        localStreamRef.current = newStream2;
+      }
+      console.log('[VideoCall] Switched camera to:', newVideoTrack.label);
+    } catch (err) {
+      console.error('[VideoCall] Failed to switch camera:', err);
+    }
+  }, []);
+
+  // Switch speaker (output device)
+  const switchSpeaker = useCallback(async (deviceId) => {
+    setSelectedSpeaker(deviceId);
+    if (remoteVideoRef.current && remoteVideoRef.current.setSinkId) {
+      try {
+        await remoteVideoRef.current.setSinkId(deviceId);
+        console.log('[VideoCall] Switched speaker to:', deviceId);
+      } catch (err) {
+        console.error('[VideoCall] Failed to switch speaker:', err);
+      }
+    }
+  }, []);
+
   const setupPeerConnection = useCallback(async () => {
     console.log('[VideoCall] Setting up peer connection, requesting camera/mic...');
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    console.log('[VideoCall] Got local media stream');
+    const constraints = {
+      audio: selectedMic ? { deviceId: { exact: selectedMic } } : true,
+      video: selectedCamera ? { deviceId: { exact: selectedCamera } } : true,
+    };
+    console.log('[VideoCall] getUserMedia constraints:', constraints);
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    // Re-enumerate now that we have permission — labels will become available
+    refreshDevices();
+    const audioTrack = stream.getAudioTracks()[0];
+    const videoTrack = stream.getVideoTracks()[0];
+    console.log('[VideoCall] Audio track:', audioTrack?.label, '| enabled:', audioTrack?.enabled);
+    console.log('[VideoCall] Video track:', videoTrack?.label, '| enabled:', videoTrack?.enabled);
     localStreamRef.current = stream;
     if (localVideoRef.current) localVideoRef.current.srcObject = stream;
+    startAudioMeter(stream);
 
     const pc = new RTCPeerConnection({
       iceServers: [
@@ -328,6 +566,24 @@ const VideoCall = ({
     }
   };
 
+  // For debugging: print full device/track info to console
+  const debugAudio = () => {
+    const stream = localStreamRef.current;
+    if (!stream) { console.log('[AudioDebug] No local stream yet'); return; }
+    stream.getTracks().forEach(t => {
+      const settings = t.getSettings();
+      console.log(`[AudioDebug] Track: kind=${t.kind}, label=${t.label}, enabled=${t.enabled}`);
+      console.log(`[AudioDebug]   deviceId=${settings.deviceId}, sampleRate=${settings.sampleRate}, channelCount=${settings.channelCount}`);
+    });
+    if (remoteVideoRef.current?.srcObject) {
+      remoteVideoRef.current.srcObject.getTracks().forEach(t => {
+        console.log(`[AudioDebug] Remote track: kind=${t.kind}, label=${t.label}, readyState=${t.readyState}`);
+      });
+    } else {
+      console.log('[AudioDebug] No remote stream yet');
+    }
+  };
+
   const toggleVideo = () => {
     if (localStreamRef.current) {
       const videoTrack = localStreamRef.current.getVideoTracks()[0];
@@ -403,6 +659,20 @@ const VideoCall = ({
 
         {(callState === 'connected' || callState === 'calling') && (
           <>
+            {/* Audio level meter */}
+            <div className="audio-meter" title="Your microphone level">
+              <span style={{ fontSize: '0.75em', marginRight: 4 }}>🎤</span>
+              <div className="audio-meter-bar">
+                <div
+                  className="audio-meter-fill"
+                  style={{
+                    width: `${audioLevel}%`,
+                    backgroundColor: audioLevel > 70 ? '#4caf50' : audioLevel > 30 ? '#8bc34a' : '#ccc'
+                  }}
+                />
+              </div>
+            </div>
+
             <button 
               className={`control-btn ${isMuted ? 'active' : ''}`}
               onClick={toggleMute}
@@ -419,12 +689,137 @@ const VideoCall = ({
               {isVideoOff ? '📹' : '📷'}
             </button>
 
+            <button
+              className="control-btn"
+              onClick={() => setShowDevices(v => !v)}
+              title="Device settings"
+            >
+              ⚙️
+            </button>
+
             <button className="end-call-btn" onClick={endCall}>
               End Call
             </button>
           </>
         )}
+
+        {/* Device selector panel — visible in idle OR during call */}
+        {showDevices && (
+          <div className="device-panel">
+            <div className="device-row">
+              <label>🎤 Microphone</label>
+              <select
+                value={selectedMic}
+                onChange={e => callState === 'idle' ? setSelectedMic(e.target.value) : switchMic(e.target.value)}
+              >
+                {audioInputs.map(d => (
+                  <option key={d.deviceId} value={d.deviceId}>
+                    {d.label || `Microphone ${d.deviceId.slice(0, 8)}`}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="device-row">
+              <label>📷 Camera</label>
+              <select
+                value={selectedCamera}
+                onChange={e => callState === 'idle' ? setSelectedCamera(e.target.value) : switchCamera(e.target.value)}
+              >
+                {videoInputs.map(d => (
+                  <option key={d.deviceId} value={d.deviceId}>
+                    {d.label || `Camera ${d.deviceId.slice(0, 8)}`}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="device-row">
+              <label>🔊 Speaker</label>
+              <select
+                value={selectedSpeaker}
+                onChange={e => switchSpeaker(e.target.value)}
+              >
+                {audioOutputs.length > 0
+                  ? audioOutputs.map(d => (
+                      <option key={d.deviceId} value={d.deviceId}>
+                        {d.label || `Speaker ${d.deviceId.slice(0, 8)}`}
+                      </option>
+                    ))
+                  : <option value="">Default (browser-controlled)</option>
+                }
+              </select>
+            </div>
+            <button
+              className="control-btn"
+              style={{ marginTop: 8, width: '100%', fontSize: '0.8em' }}
+              onClick={debugAudio}
+            >
+              Print track info to console
+            </button>
+          </div>
+        )}
+
+        {/* Show gear icon in idle too so user can pre-select devices */}
+        {callState === 'idle' && (
+          <button
+            className="control-btn"
+            onClick={() => setShowDevices(v => !v)}
+            title="Select camera / microphone"
+            style={{ marginLeft: 8 }}
+          >
+            ⚙️ Devices
+          </button>
+        )}
       </div>
+
+      {/* Transcript panel — visible once session has entries */}
+      {(transcript.length > 0 || isTranscribing) && (
+        <div className="transcript-panel">
+          <div className="transcript-header">
+            <span className="transcript-title">
+              📝 Session Transcript
+              {isTranscribing && (
+                <span className="recording-indicator"> ● Recording</span>
+              )}
+            </span>
+            <div className="transcript-controls">
+              <button
+                className="control-btn transcript-toggle-btn"
+                onClick={() => setShowTranscript(v => !v)}
+                title={showTranscript ? 'Collapse transcript' : 'Expand transcript'}
+              >
+                {showTranscript ? '▲' : '▼'}
+              </button>
+              {transcript.length > 0 && (
+                <button
+                  className="control-btn transcript-clear-btn"
+                  onClick={() => setTranscript([])}
+                  title="Clear transcript"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          </div>
+
+          {showTranscript && (
+            <div className="transcript-entries">
+              {transcript.length === 0 ? (
+                <div className="transcript-empty">Waiting for speech…</div>
+              ) : (
+                transcript.map((entry, i) => (
+                  <div key={i} className={`transcript-entry ${entry.speaker}`}>
+                    <span className="transcript-speaker">{entry.speaker}</span>
+                    <span className="transcript-text">{entry.text}</span>
+                    <span className="transcript-time">
+                      {entry.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                    </span>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

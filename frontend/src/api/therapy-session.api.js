@@ -44,6 +44,14 @@ export const getUserCallStatus = async (userId) => {
 };
 
 /**
+ * Get all transcript entries for a session
+ */
+export const getSessionTranscripts = async (sessionId) => {
+  const response = await axiosInstance.get(`${API_BASE}/${sessionId}/transcripts`);
+  return response.data;
+};
+
+/**
  * Transcribe audio file
  */
 export const transcribeAudio = async (audioBlob, options = {}) => {

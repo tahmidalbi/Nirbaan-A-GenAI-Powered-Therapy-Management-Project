@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -124,23 +124,46 @@ async def get_session(
     
     return session
 
+@router.get("/{session_id}/transcripts", response_model=List[TranscriptResponse])
+async def get_transcripts(
+    session_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Get all transcript entries for a session, ordered by timestamp.
+    """
+    session = db.query(TherapySession).filter(TherapySession.id == session_id).first()
+    if not session:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Session {session_id} not found")
+    return sorted(session.transcripts, key=lambda t: t.timestamp)
+
+
 @router.post("/transcribe-audio")
 async def transcribe_audio(
     audio: UploadFile = File(...),
-    language: str = None,
-    session_id: int = None,
-    speaker: str = None,
+    language: str = Form(None),
+    session_id: int = Form(None),
+    speaker: str = Form(None),
     db: Session = Depends(get_db)
 ):
     """
     Transcribe audio using OpenAI Whisper API.
-    
-    Accepts audio file upload and returns transcribed text.
-    Optionally saves the transcript to a session if session_id and speaker are provided.
-    
-    Supported formats: mp3, mp4, mpeg, mpga, m4a, wav, webm
+
+    Accepts multipart/form-data with:
+      - audio: audio file (webm, wav, mp3, ...)
+      - session_id: therapy session id (optional — saves to DB if provided)
+      - speaker: "therapist" or "patient" (required when session_id given)
+      - language: BCP-47 language code, e.g. "en" (optional)
+
+    Returns { success, text, transcript_id }
     """
-    # Validate file format
+    if not transcription_service.is_available:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Transcription service unavailable: OPENAI_API_KEY not configured"
+        )
+
     allowed_formats = ["mp3", "mp4", "mpeg", "mpga", "m4a", "wav", "webm"]
     file_ext = audio.filename.split(".")[-1].lower() if audio.filename else "webm"
     

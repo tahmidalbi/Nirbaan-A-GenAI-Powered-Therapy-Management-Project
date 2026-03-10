@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { transcribeAudio } from '../api/therapy-session.api';
 import './AudioRecorder.css';
 
 const AudioRecorder = ({ 
@@ -169,54 +170,30 @@ const AudioRecorder = ({
     setError(null);
 
     try {
-      // Create blob from audio chunks
-      const audioBlob = new Blob(audioChunksRef.current, { 
-        type: mediaRecorderRef.current.mimeType 
+      const mimeType = mediaRecorderRef.current.mimeType;
+      const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
+      const format = mimeType.split('/')[1].split(';')[0];
+
+      const result = await transcribeAudio(audioBlob, {
+        language: language || undefined,
+        sessionId: sessionId || undefined,
+        speaker: speaker || undefined,
+        format,
       });
 
-      // Create FormData
-      const formData = new FormData();
-      const fileExtension = mediaRecorderRef.current.mimeType.split('/')[1].split(';')[0];
-      formData.append('audio', audioBlob, `recording.${fileExtension}`);
-      
-      if (language) {
-        formData.append('language', language);
-      }
-
-      if (autoSave && sessionId) {
-        formData.append('session_id', sessionId.toString());
-        formData.append('speaker', speaker);
-      }
-
-      // Send to backend
-      const response = await fetch('http://127.0.0.1:8000/sessions/transcribe-audio', {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Authorization': `Bearer ${getAuthToken()}`
-        }
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Transcription failed');
-      }
-
-      const result = await response.json();
-      
       if (result.success && result.text) {
         const newTranscript = {
+          id: result.transcript_id,
+          speaker,
           text: result.text,
           timestamp: new Date().toISOString(),
-          transcriptId: result.transcript_id
         };
 
         setTranscripts(prev => [...prev, newTranscript]);
         setCurrentTranscript(result.text);
 
-        // Call callback if provided
         if (onTranscription) {
-          onTranscription(result.text, result.transcript_id);
+          onTranscription(newTranscript);
         }
       }
 
@@ -227,19 +204,6 @@ const AudioRecorder = ({
       setIsProcessing(false);
       audioChunksRef.current = [];
     }
-  };
-
-  const getAuthToken = () => {
-    try {
-      const authStorage = localStorage.getItem('auth-storage');
-      if (authStorage) {
-        const { state } = JSON.parse(authStorage);
-        return state?.token || '';
-      }
-    } catch (e) {
-      console.error('Error getting auth token:', e);
-    }
-    return '';
   };
 
   const clearTranscripts = () => {

@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import VideoCall from '../components/VideoCall';
+import AudioRecorder from '../components/AudioRecorder';
 import TranscriptDisplay from '../components/TranscriptDisplay';
-import { startSession, getSession } from '../api/therapy-session.api';
+import { startSession } from '../api/therapy-session.api';
 import './VideoSessionWithTranscript.css';
 
 /**
- * Example: Video call with live transcript display
- * 
+ * Video call with live audio transcription.
+ *
  * Route: /video-session-transcript/:therapistId/:patientId
  */
 const VideoSessionWithTranscript = ({ therapistId, patientId, userType }) => {
@@ -31,27 +32,10 @@ const VideoSessionWithTranscript = ({ therapistId, patientId, userType }) => {
     initializeSession();
   }, [initializeSession]);
 
-  const refreshTranscripts = useCallback(async () => {
-    if (!sessionId) return;
-    
-    try {
-      const session = await getSession(sessionId);
-      setTranscripts(session.transcripts || []);
-    } catch (error) {
-      console.error('Failed to refresh transcripts:', error);
-    }
-  }, [sessionId]);
-
-  useEffect(() => {
-    // Auto-refresh transcripts every 5 seconds during session
-    const interval = setInterval(() => {
-      if (sessionId) {
-        refreshTranscripts();
-      }
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [sessionId, refreshTranscripts]);
+  // Append each new chunk returned by AudioRecorder immediately — no polling needed.
+  const handleTranscription = useCallback((transcriptEntry) => {
+    setTranscripts(prev => [...prev, transcriptEntry]);
+  }, []);
 
   if (isLoading) {
     return <div className="loading">Loading session...</div>;
@@ -61,12 +45,11 @@ const VideoSessionWithTranscript = ({ therapistId, patientId, userType }) => {
     <div className="video-session-transcript-page">
       <div className="session-header">
         <h1>Video Therapy Session</h1>
-        <div className="session-meta">
-          <span>Session ID: {sessionId}</span>
-          <button onClick={refreshTranscripts} className="refresh-btn">
-            Refresh Transcripts
-          </button>
-        </div>
+        {sessionId && (
+          <div className="session-meta">
+            <span>Session ID: {sessionId}</span>
+          </div>
+        )}
       </div>
 
       <div className="session-content">
@@ -75,8 +58,21 @@ const VideoSessionWithTranscript = ({ therapistId, patientId, userType }) => {
             userId={userType === 'therapist' ? therapistId : patientId}
             userType={userType}
             targetUserId={userType === 'therapist' ? patientId : null}
+            sessionId={sessionId}
             onCallEnd={() => console.log('Call ended')}
           />
+
+          {/* AudioRecorder sits beneath the video controls */}
+          {sessionId && (
+            <AudioRecorder
+              sessionId={sessionId}
+              speaker={userType}
+              language="en"
+              chunkDuration={5000}
+              autoSave={true}
+              onTranscription={handleTranscription}
+            />
+          )}
         </div>
 
         <div className="transcript-sidebar">
@@ -84,7 +80,8 @@ const VideoSessionWithTranscript = ({ therapistId, patientId, userType }) => {
             transcripts={transcripts}
             autoScroll={true}
             maxHeight="calc(100vh - 200px)"
-            showClear={false}
+            showClear={true}
+            onClear={() => setTranscripts([])}
           />
         </div>
       </div>
