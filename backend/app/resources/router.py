@@ -23,11 +23,15 @@ from app.resources.schemas import (
     ChunkResult,
     SourceReference,
     ResourceFromURLRequest,
+    PatientResourceListItem,
+    PatientResourceDownloadResponse,
 )
 from app.resources.r2_storage import r2_storage
 from app.resources.rag_service import rag_service
 from app.resources.tasks import ingest_resource_task
 from app.resources.url_processor import url_processor
+from app.auth.utils import get_current_patient
+from app.patients.models import Patient
 
 router = APIRouter(prefix="/resources", tags=["resources"])
 
@@ -280,6 +284,7 @@ def create_resource_from_url(
             mime_type="text/plain",
             size_bytes=len(content.encode("utf-8")),
             status="uploaded",
+            source_url=request.url,
         )
         db.add(resource)
         db.flush()
@@ -396,3 +401,63 @@ def generate_answer(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"RAG error: {str(e)}",
         )
+
+
+# ============ PATIENT-FACING ENDPOINTS ============
+
+@router.get("/patient", response_model=List[PatientResourceListItem])
+def list_patient_resources(
+    db: Session = Depends(get_db),
+    current_patient: Patient = Depends(get_current_patient),
+):
+    """
+    Return all ready resources uploaded by the patient's assigned therapist.
+    """
+    resources = (
+        db.query(Resource)
+        .filter(
+            Resource.therapist_id == current_patient.therapist_id,
+            Resource.status == "ready",
+        )
+        .order_by(Resource.created_at.desc())
+        .all()
+    )
+    return [PatientResourceListItem.model_validate(r) for r in resources]
+
+
+@router.get("/patient/{resource_id}/download-url", response_model=PatientResourceDownloadResponse)
+def get_patient_resource_download_url(
+    resource_id: int,
+    db: Session = Depends(get_db),
+    current_patient: Patient = Depends(get_current_patient),
+):
+    """
+    Generate a presigned download URL for a file resource belonging to the
+    patient's assigned therapist. Only works for file-backed resources (PDF/TXT).
+    """
+    resource = (
+        db.query(Resource)
+        .filter(
+            Resource.id == resource_id,
+            Resource.therapist_id == current_patient.therapist_id,
+            Resource.status == "ready",
+        )
+        .first()
+    )
+
+    if not resource:
+        raise HTTPException(status_code=404, detail="Resource not found")
+
+    if not resource.r2_key:
+        raise HTTPException(status_code=400, detail="No file available for this resource")
+
+    download_url = r2_storage.generate_presigned_download_url(
+        r2_key=resource.r2_key,
+        expiration=3600,
+    )
+
+    return PatientResourceDownloadResponse(
+        resource_id=resource.id,
+        download_url=download_url,
+        expires_in_seconds=3600,
+    )

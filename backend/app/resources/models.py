@@ -34,6 +34,9 @@ class Resource(Base):
     mime_type: Mapped[str] = mapped_column(String(100), nullable=False)
     size_bytes: Mapped[int] = mapped_column(BigInteger, nullable=False)
 
+    # Original web URL (set when resource is created from a URL)
+    source_url: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+
     # Processing status
     status: Mapped[str] = mapped_column(String(50), nullable=False, default="initiated")
     # Status values: initiated, uploaded, processing, ready, failed

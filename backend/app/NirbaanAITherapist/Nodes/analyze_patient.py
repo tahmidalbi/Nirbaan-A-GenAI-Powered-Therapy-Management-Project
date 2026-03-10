@@ -146,7 +146,8 @@ CRITICAL RULES:
 10. Ask at most one concise, high-value clarification question.
 11. If clarification is not needed, set clarification_question to an empty string.
 12. Prefer finalizing the analysis unless the missing detail would meaningfully change formulation or recommendation.
-
+13. If relevant patient information already exists in the provided context (such as ERP obsession-compulsion pairs, fear ladder items, or weekly progress), do not ask clarification questions that simply repeat or request the same information.
+14. In patients already undergoing ERP treatment for OCD, assume intrusive harm thoughts are ego-dystonic unless the provided context explicitly suggests otherwise. Do not ask clarification questions about ego-dystonicity unless the case description contradicts typical OCD patterns.
 
 Therapist current message:
 {user_message}

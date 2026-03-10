@@ -110,3 +110,23 @@ export const uploadFromUrl = async (url, title, resourceType = 'webpage') => {
     throw error.response?.data?.detail || 'Failed to add URL resource';
   }
 };
+
+// ============ PATIENT ENDPOINTS ============
+
+export const listPatientResources = async () => {
+  try {
+    const response = await axiosInstance.get('/resources/patient');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to fetch resources';
+  }
+};
+
+export const getPatientResourceDownloadUrl = async (resourceId) => {
+  try {
+    const response = await axiosInstance.get(`/resources/patient/${resourceId}/download-url`);
+    return response.data; // { resource_id, download_url, expires_in_seconds }
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to get download URL';
+  }
+};
