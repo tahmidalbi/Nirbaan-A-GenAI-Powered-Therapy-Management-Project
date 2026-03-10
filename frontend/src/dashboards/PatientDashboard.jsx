@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { getMyTherapySessions } from '../api/sessions.api';
+import PatientResourceLibrary from '../components/PatientResourceLibrary';
 import './PatientDashboard.css';
 
 const PatientDashboard = () => {
@@ -126,8 +127,8 @@ const PatientDashboard = () => {
         )}
 
         {activeSection === 'resources' && (
-          <div className="empty-section">
-            {/* Empty Resources section */}
+          <div className="pd-resources-panel">
+            <PatientResourceLibrary />
           </div>
         )}
 

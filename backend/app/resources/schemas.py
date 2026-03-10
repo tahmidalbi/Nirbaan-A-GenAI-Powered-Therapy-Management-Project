@@ -52,10 +52,31 @@ class ResourceListItem(BaseModel):
     file_type: str
     size_bytes: int
     status: str
+    source_url: Optional[str] = None
     total_pages: Optional[int]
     total_chunks: Optional[int]
     created_at: datetime
     updated_at: datetime
+
+
+class PatientResourceListItem(BaseModel):
+    """Patient-facing resource list item (read-only)"""
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    title: str
+    original_filename: str
+    file_type: str
+    size_bytes: int
+    source_url: Optional[str] = None
+    created_at: datetime
+
+
+class PatientResourceDownloadResponse(BaseModel):
+    """Presigned download URL for a resource file"""
+    resource_id: int
+    download_url: str
+    expires_in_seconds: int = 3600
 
 
 class ResourceDeleteResponse(BaseModel):
