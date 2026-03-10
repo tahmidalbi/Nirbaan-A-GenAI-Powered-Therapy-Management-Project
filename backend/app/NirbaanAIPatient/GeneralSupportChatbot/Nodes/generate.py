@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 from langchain_openai import ChatOpenAI
@@ -21,12 +21,10 @@ def generate_node(state: GeneralSupportState) -> Dict[str, Any]:
     user_message = (state.get("user_message") or "").strip()
     recent_chat_history = state.get("recent_chat_history") or []
 
-    selected_db_context_summary = (state.get("selected_db_context_summary") or "").strip()
+    db_pairs = state.get("db_obsession_compulsion_pairs") or []
+    db_latest_progress = state.get("db_latest_weekly_progress")
+    db_last_therapy_session = state.get("db_last_therapy_session")
     kb_context_summary = (state.get("kb_context_summary") or "").strip()
-
-    support_type = (state.get("support_type") or "other").strip()
-    support_goal = (state.get("support_goal") or "").strip()
-    selected_last_therapy_session = state.get("selected_last_therapy_session")
 
     used_sources = _collect_sources(state.get("kb_chunks") or [])
 
@@ -36,11 +34,10 @@ def generate_node(state: GeneralSupportState) -> Dict[str, Any]:
     prompt = _build_prompt(
         user_message=user_message,
         recent_chat_history=recent_chat_history,
-        selected_db_context_summary=selected_db_context_summary,
+        db_pairs=db_pairs,
+        db_latest_progress=db_latest_progress,
+        db_last_therapy_session=db_last_therapy_session,
         kb_context_summary=kb_context_summary,
-        support_type=support_type,
-        support_goal=support_goal,
-        selected_last_therapy_session=selected_last_therapy_session,
     )
 
     result: GenerateOutput = structured_llm.invoke(prompt)
@@ -72,23 +69,17 @@ def _build_prompt(
     *,
     user_message: str,
     recent_chat_history: List[Dict[str, str]],
-    selected_db_context_summary: str,
+    db_pairs: List[Dict[str, Any]],
+    db_latest_progress: Dict[str, Any] | None,
+    db_last_therapy_session: Dict[str, Any] | None,
     kb_context_summary: str,
-    support_type: str,
-    support_goal: str,
-    selected_last_therapy_session: Dict[str, Any] | None,
 ) -> str:
     recent_history_text = _format_chat_history(recent_chat_history)
-
-    if selected_last_therapy_session:
-        session_text = (
-            f"Session {selected_last_therapy_session.get('session_number', '?')}"
-            f" — {selected_last_therapy_session.get('title', '')}"
-            f" ({selected_last_therapy_session.get('session_date', '')})"
-            f"\n{selected_last_therapy_session.get('transcript', '')}"
-        ).strip()
-    else:
-        session_text = "Not included."
+    patient_context_text = _format_patient_context(
+        db_pairs=db_pairs,
+        db_latest_progress=db_latest_progress,
+        db_last_therapy_session=db_last_therapy_session,
+    )
 
     return f"""
 You are a supportive OCD therapy assistant helping a patient between therapy sessions.
@@ -109,23 +100,14 @@ CRITICAL RULES:
 8. No need to ask patient if they are feeling any self-harm urge, just provide support consistent with OCD treatment principles all grounded on therapist KB.
 9. Do not ask to do something for a certain time, like don't respond with timer based instructions.
 
-Support type:
-{support_type}
-
-Support goal:
-{support_goal}
-
 Patient message:
 {user_message}
 
 Recent conversation:
 {recent_history_text}
 
-Relevant patient context:
-{selected_db_context_summary}
-
-Last therapy session:
-{session_text}
+Patient context:
+{patient_context_text}
 
 Therapist KB grounding:
 {kb_context_summary or "No therapist KB grounding available."}
@@ -157,3 +139,41 @@ def _format_chat_history(history: List[Dict[str, str]]) -> str:
             lines.append(f"{role}: {content}")
 
     return "\n".join(lines)
+
+
+def _format_patient_context(
+    *,
+    db_pairs: List[Dict[str, Any]],
+    db_latest_progress: Dict[str, Any] | None,
+    db_last_therapy_session: Dict[str, Any] | None,
+) -> str:
+    parts: List[str] = []
+
+    if db_pairs:
+        pair_lines: List[str] = []
+        for pair in db_pairs:
+            obs = (pair.get("obsession") or "").strip()
+            comps = pair.get("compulsions") or []
+            comp_text = ", ".join(str(c).strip() for c in comps if c and str(c).strip())
+            line = f"- Obsession: {obs or 'N/A'}"
+            if comp_text:
+                line += f" | Compulsions: {comp_text}"
+            pair_lines.append(line)
+        parts.append("Obsession-compulsion pairs:\n" + "\n".join(pair_lines))
+
+    if db_latest_progress:
+        week = db_latest_progress.get("week_number")
+        detail = (db_latest_progress.get("detailed_progress") or "").strip()
+        if detail:
+            parts.append(f"Latest weekly progress (week {week}):\n{detail}")
+
+    if db_last_therapy_session:
+        session_text = (
+            f"Session {db_last_therapy_session.get('session_number', '?')}"
+            f" — {db_last_therapy_session.get('title', '')}"
+            f" ({db_last_therapy_session.get('session_date', '')})"
+            f"\n{db_last_therapy_session.get('transcript', '')}"
+        ).strip()
+        parts.append(f"Last therapy session:\n{session_text}")
+
+    return "\n\n".join(parts).strip() if parts else "No patient context available."

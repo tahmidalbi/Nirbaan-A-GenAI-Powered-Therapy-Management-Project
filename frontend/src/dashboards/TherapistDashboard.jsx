@@ -11,7 +11,6 @@ import {
 import AddPatient from'../components/AddPatient';
 import AddEmergencyPersonnel from '../components/AddEmergencyPersonnel';
 import ResourceManager from '../components/ResourceManager';
-import RAGChat from '../components/RAGChat';
 import PatientHistory from '../components/PatientHistory';
 import './TherapistDashboard.css';
 
@@ -228,8 +227,8 @@ const TherapistDashboard = () => {
               History
             </button>
             <button 
-              className={`nav-btn ${activeSection === 'ai' ? 'active' : ''}`}
-              onClick={() => setActiveSection('ai')}
+              className="nav-btn"
+              onClick={() => navigate('/therapist/nirbaanai')}
             >
               Nirbaan AI
             </button>
@@ -373,11 +372,7 @@ const TherapistDashboard = () => {
           </div>
         )}
 
-        {activeSection === 'ai' && (
-          <div className="section-content">
-            <RAGChat />
-          </div>
-        )}
+
 
         {activeSection === 'chat' && (
           <div className="section-content-blank">

@@ -35,6 +35,7 @@ import TherapistERPPatientList from '../pages/TherapistERPPatientList';
 import TherapistERPObsessionList from '../pages/TherapistERPObsessionList';
 import TherapistERPObsessionView from '../pages/TherapistERPObsessionView';
 import NirbaanAIChat from '../pages/NirbaanAIChat';
+import TherapistNirbaanAIPage from '../pages/TherapistNirbaanAIPage';
 
 const AppRoutes = () => {
   return (
@@ -203,6 +204,16 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['patient']}>
             <NirbaanAIChat />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist NirbaanAI */}
+      <Route
+        path="/therapist/nirbaanai"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistNirbaanAIPage />
           </ProtectedRoute>
         }
       />

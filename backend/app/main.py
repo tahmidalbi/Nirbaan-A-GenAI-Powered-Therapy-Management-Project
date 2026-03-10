@@ -16,6 +16,7 @@ from app.education.ocd_core.router import router as education_ocd_core_router
 from app.erp.router import router as erp_router
 from app.progress.router import router as progress_router
 from app.NirbaanAIPatient.router import router as nirbaan_ai_patient_router
+from app.NirbaanAITherapist.router import router as nirbaan_ai_therapist_router
 from app.therapy_sessions.router import router as therapy_sessions_router
 
 # Optional: if you have SQLAlchemy Base + engine and want to ensure tables exist in dev
@@ -61,6 +62,7 @@ def create_app() -> FastAPI:
     app.include_router(erp_router)
     app.include_router(progress_router)
     app.include_router(nirbaan_ai_patient_router)
+    app.include_router(nirbaan_ai_therapist_router)
     app.include_router(therapy_sessions_router)
 
     @app.get("/", tags=["health"])
@@ -103,7 +105,7 @@ def create_app() -> FastAPI:
 
         # --- inspect registered tasks ---
         inspector = _celery.control.inspect(workers_alive, timeout=2)
-        registered_map = inspector.registered() or {}  # {worker_name: [task, ...]}
+        registered_map = inspector.registered() or {}
 
         all_registered: set[str] = set()
         for task_list in registered_map.values():
