@@ -75,6 +75,10 @@ const TherapistDashboard = () => {
     navigate(`/therapist/emergency-personnel/${personnelId}`);
   };
 
+  const handleStartCall = (patientId) => {
+    navigate(`/video-session/therapist/${user.id}/${patientId}`);
+  };
+
   return (
     <div className="therapist-dashboard-container">
       {/* Vintage background similar to landing page */}
@@ -184,7 +188,6 @@ const TherapistDashboard = () => {
                   <div 
                     key={patient.id} 
                     className="patient-card"
-                    onClick={() => handlePatientClick(patient.id)}
                   >
                     <div className="patient-avatar">
                       {patient.name.charAt(0).toUpperCase()}
@@ -198,6 +201,22 @@ const TherapistDashboard = () => {
                       <span className="patient-date">
                         Added {new Date(patient.created_at).toLocaleDateString()}
                       </span>
+                      <div className="patient-actions">
+                        <button 
+                          className="view-patient-btn"
+                          onClick={() => handlePatientClick(patient.id)}
+                          title="View Patient"
+                        >
+                          👤 View
+                        </button>
+                        <button 
+                          className="start-call-btn"
+                          onClick={() => handleStartCall(patient.id)}
+                          title="Start Video Call"
+                        >
+                          📹 Start Call
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}

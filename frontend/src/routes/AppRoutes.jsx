@@ -25,6 +25,7 @@ import TherapistFearLadderPatientView from '../pages/TherapistFearLadderPatientV
 import TherapistFearLadderMonitoring from '../pages/TherapistFearLadderMonitoring';
 import EmergencyPersonnelDashboard from '../dashboards/EmergencyPersonnelDashboard';
 import EmergencyPersonnelDetail from '../pages/EmergencyPersonnelDetail';
+import VideoSession from '../pages/VideoSession';
 
 const AppRoutes = () => {
   return (
@@ -223,6 +224,25 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['emergency_personnel']}>
             <EmergencyPersonnelDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Video Call/Session */}
+      <Route
+        path="/video-session/:userType/:userId/:patientId"
+        element={
+          <ProtectedRoute allowedRoles={['therapist', 'patient']}>
+            <VideoSession />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/video-call/:sessionId"
+        element={
+          <ProtectedRoute allowedRoles={['therapist', 'patient']}>
+            <VideoSession />
           </ProtectedRoute>
         }
       />

@@ -1,12 +1,60 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '../store/authStore';
 import './PatientDashboard.css';
 
 const PatientDashboard = () => {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
+  const user = useAuthStore((state) => state.user);
   const [activeSection, setActiveSection] = useState(null);
+  const wsRef = useRef(null);
+
+  // WebSocket connection for incoming calls
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const connectWebSocket = () => {
+      const wsUrl = `ws://127.0.0.1:8000/ws/call/${user.id}?user_type=patient`;
+      const ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        console.log('Patient WebSocket connected for incoming calls');
+      };
+
+      ws.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        console.log('Received WebSocket message:', message);
+
+        if (message.type === 'incoming_call') {
+          // Navigate to video call page when receiving incoming call
+          // Note: Backend should include sessionId in the incoming_call message
+          // For now, using caller_id as placeholder
+          const sessionId = message.session_id || message.caller_id;
+          navigate(`/video-call/${sessionId}`);
+        }
+      };
+
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+      };
+
+      ws.onclose = () => {
+        console.log('Patient WebSocket disconnected');
+      };
+
+      wsRef.current = ws;
+    };
+
+    connectWebSocket();
+
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+        wsRef.current = null;
+      }
+    };
+  }, [user?.id, navigate]);
 
   const handleLogout = () => {
     logout();

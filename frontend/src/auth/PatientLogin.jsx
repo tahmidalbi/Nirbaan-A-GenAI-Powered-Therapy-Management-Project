@@ -33,11 +33,16 @@ const PatientLogin = () => {
       // Login and get token
       const loginResponse = await loginPatient(formData);
       console.log('[LOGIN] Login response:', loginResponse);
+
+      // Decode JWT payload to get id immediately (no extra request needed)
+      const jwtPayload = JSON.parse(atob(loginResponse.access_token.split('.')[1]));
+      console.log('[LOGIN] JWT payload:', jwtPayload);
       
-      // Store token and initial data
+      // Store token and data parsed from JWT
       console.log('[LOGIN] Storing auth data with token...');
       login({ 
         email: formData.email,
+        id: jwtPayload.id,
         role: 'patient' 
       }, loginResponse.access_token);
       
@@ -45,7 +50,7 @@ const PatientLogin = () => {
       const stored = localStorage.getItem('auth-storage');
       console.log('[LOGIN] Stored auth-storage:', stored);
       
-      // Now get patient details with the stored token
+      // Fetch full patient details in background (non-blocking)
       try {
         console.log('[LOGIN] Fetching patient details...');
         const patientData = await getCurrentPatient();
@@ -59,8 +64,7 @@ const PatientLogin = () => {
         console.log('[LOGIN] Updated auth with full patient data');
       } catch (err) {
         console.error('[LOGIN] Failed to fetch patient data:', err);
-        console.error('[LOGIN] Error details:', err.response || err);
-        // Continue to dashboard even if fetching details fails
+        // id is already set from JWT so this is non-fatal
       }
       
       // Redirect to patient dashboard

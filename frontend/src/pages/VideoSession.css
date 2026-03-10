@@ -1,0 +1,144 @@
+.video-session-page {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.video-session-header {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.video-session-header h1 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-size: 2rem;
+  font-family: 'Georgia', serif;
+}
+
+.session-info {
+  display: flex;
+  gap: 2rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.error-message {
+  background: #dc3545;
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  padding: 4rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-container p {
+  margin-top: 1rem;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.video-container {
+  flex: 1;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  min-height: 500px;
+  margin-bottom: 1.5rem;
+}
+
+.session-instructions {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.session-instructions h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+  font-size: 1.3rem;
+  font-family: 'Georgia', serif;
+}
+
+.session-instructions ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: #555;
+}
+
+.session-instructions li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .video-session-page {
+    padding: 1rem;
+  }
+
+  .video-session-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .session-info {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .video-container {
+    min-height: 400px;
+  }
+
+  .session-instructions {
+    padding: 1rem;
+  }
+
+  .session-instructions h3 {
+    font-size: 1.1rem;
+  }
+
+  .session-instructions li {
+    font-size: 0.9rem;
+  }
+}

@@ -1,0 +1,228 @@
+.transcript-display-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.transcript-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #6B9B8D 0%, #5A8A7D 100%);
+  color: white;
+  border-bottom: 2px solid #4A7A6D;
+}
+
+.transcript-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  font-family: 'Georgia', serif;
+}
+
+.clear-transcript-btn {
+  padding: 0.4rem 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-transcript-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.transcript-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  background: #fafafa;
+  font-family: 'Courier New', monospace;
+}
+
+.transcript-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.transcript-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.transcript-content::-webkit-scrollbar-thumb {
+  background: #6B9B8D;
+  border-radius: 4px;
+}
+
+.transcript-content::-webkit-scrollbar-thumb:hover {
+  background: #5A8A7D;
+}
+
+.transcript-entry {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: white;
+  border-radius: 6px;
+  border-left: 4px solid #ddd;
+  transition: all 0.2s ease;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.transcript-entry:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateX(4px);
+}
+
+.transcript-entry.therapist {
+  border-left-color: #6B9B8D;
+}
+
+.transcript-entry.patient {
+  border-left-color: #9B6B8D;
+}
+
+.transcript-time {
+  color: #666;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  align-self: flex-start;
+  padding-top: 2px;
+}
+
+.transcript-speaker {
+  font-weight: 700;
+  text-transform: capitalize;
+  white-space: nowrap;
+  align-self: flex-start;
+  padding-top: 2px;
+}
+
+.transcript-entry.therapist .transcript-speaker {
+  color: #6B9B8D;
+}
+
+.transcript-entry.patient .transcript-speaker {
+  color: #9B6B8D;
+}
+
+.transcript-text {
+  flex: 1;
+  color: #333;
+  line-height: 1.6;
+  word-wrap: break-word;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.transcript-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  color: #999;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.transcript-empty p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 400px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .transcript-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .transcript-header h3 {
+    font-size: 1rem;
+  }
+
+  .transcript-content {
+    padding: 0.75rem;
+  }
+
+  .transcript-entry {
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .transcript-time {
+    font-size: 0.75rem;
+  }
+
+  .transcript-speaker {
+    font-size: 0.9rem;
+  }
+
+  .transcript-text {
+    font-size: 0.9rem;
+  }
+
+  .transcript-empty {
+    padding: 2rem 1rem;
+  }
+
+  .empty-icon {
+    font-size: 2rem;
+  }
+
+  .transcript-empty p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .transcript-header {
+    background: white;
+    color: black;
+    border-bottom: 2px solid #333;
+  }
+
+  .clear-transcript-btn {
+    display: none;
+  }
+
+  .transcript-content {
+    background: white;
+    overflow: visible;
+  }
+
+  .transcript-entry {
+    page-break-inside: avoid;
+    border: 1px solid #ddd;
+  }
+}
