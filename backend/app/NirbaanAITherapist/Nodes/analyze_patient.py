@@ -145,6 +145,8 @@ CRITICAL RULES:
 9. Only ask for clarification if one missing therapist judgment/detail would materially improve the analysis.
 10. Ask at most one concise, high-value clarification question.
 11. If clarification is not needed, set clarification_question to an empty string.
+12. Prefer finalizing the analysis unless the missing detail would meaningfully change formulation or recommendation.
+
 
 Therapist current message:
 {user_message}
