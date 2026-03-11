@@ -92,3 +92,35 @@ class EPGroupMessage(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
     group: Mapped["EPGroup"] = relationship(back_populates="messages")
+
+
+class EPPatientSession(Base):
+    """A direct 1-to-1 chat session between one EP and one patient."""
+    __tablename__ = "ep_patient_sessions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    ep_id: Mapped[int] = mapped_column(Integer, ForeignKey("emergency_personnel.id"), nullable=False)
+    patient_id: Mapped[int] = mapped_column(Integer, ForeignKey("patients.id"), nullable=False)
+    # 'active' or 'closed'
+    status: Mapped[str] = mapped_column(String(20), default="active", nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    closed_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+
+    messages: Mapped[list["EPPatientMessage"]] = relationship(
+        back_populates="session", cascade="all, delete-orphan", order_by="EPPatientMessage.created_at"
+    )
+
+
+class EPPatientMessage(Base):
+    """Message within an EP–Patient direct session."""
+    __tablename__ = "ep_patient_messages"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    session_id: Mapped[int] = mapped_column(Integer, ForeignKey("ep_patient_sessions.id"), nullable=False)
+    sender_role: Mapped[str] = mapped_column(String(30), nullable=False)  # 'ep' | 'patient'
+    sender_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    sender_name: Mapped[str] = mapped_column(String(200), nullable=False)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    session: Mapped["EPPatientSession"] = relationship(back_populates="messages")

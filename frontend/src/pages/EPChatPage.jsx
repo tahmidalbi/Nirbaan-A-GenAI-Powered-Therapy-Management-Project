@@ -9,6 +9,11 @@ import {
   getEPGroupMessages,
   claimEPGroupMessage,
   openEPGroupSocket,
+  getEPPatientsList,
+  getOrCreateEPPatientSession,
+  getEPPatientSessionMessages,
+  closeEPPatientSession,
+  openEPPatientSocket,
 } from '../api/chat.api';
 import './EPChatPage.css';
 
@@ -23,7 +28,7 @@ export default function EPChatPage() {
     try { return JSON.parse(atob(token.split('.')[1])).id; } catch { return null; }
   }, [token]);
 
-  const [activeTab, setActiveTab] = useState('direct'); // 'direct' | 'group'
+  const [activeTab, setActiveTab] = useState('direct'); // 'direct' | 'group' | 'patients'
 
   const [therapistInfo, setTherapistInfo] = useState(null); // { id, name, ep_id }
   const [loading, setLoading] = useState(true);
@@ -42,10 +47,23 @@ export default function EPChatPage() {
   const [groupInputText, setGroupInputText] = useState('');
   const [groupWsStatus, setGroupWsStatus] = useState('idle');
 
+  // ── Patients tab state ────────────────────────────────────────────────────
+  const [patients, setPatients] = useState([]);
+  const [patientsLoading, setPatientsLoading] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [patientSession, setPatientSession] = useState(null); // { id, ep_name, patient_name, … }
+  const [patientMessages, setPatientMessages] = useState([]);
+  const [patientMessagesLoading, setPatientMessagesLoading] = useState(false);
+  const [patientInputText, setPatientInputText] = useState('');
+  const [patientWsStatus, setPatientWsStatus] = useState('idle');
+  const [closingSession, setClosingSession] = useState(false);
+
   const wsRef = useRef(null);
   const groupWsRef = useRef(null);
+  const patientWsRef = useRef(null);
   const messagesEndRef = useRef(null);
   const groupMessagesEndRef = useRef(null);
+  const patientMessagesEndRef = useRef(null);
 
   // ── Load therapist info on mount ─────────────────────────────────────────
   useEffect(() => {
@@ -127,6 +145,70 @@ export default function EPChatPage() {
     groupMessagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [groupMessages]);
 
+  useEffect(() => {
+    patientMessagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [patientMessages]);
+
+  // ── Patients tab: load list when tab becomes active ───────────────────────
+  useEffect(() => {
+    if (activeTab !== 'patients') return;
+    setPatientsLoading(true);
+    getEPPatientsList()
+      .then(setPatients)
+      .catch(() => {})
+      .finally(() => setPatientsLoading(false));
+  }, [activeTab]);
+
+  // ── Open session when a patient is selected ───────────────────────────────
+  useEffect(() => {
+    if (!selectedPatient) return;
+
+    // Close any existing patient WS
+    if (patientWsRef.current) { patientWsRef.current.close(); patientWsRef.current = null; }
+
+    // If patient already has an active session, use it; otherwise create one
+    const sessionId = selectedPatient.active_session_id;
+
+    const openSession = sessionId
+      ? Promise.resolve({ id: sessionId, patient_name: selectedPatient.name, ep_name: user?.name || 'Helper' })
+      : getOrCreateEPPatientSession(selectedPatient.id);
+
+    openSession.then((sess) => {
+      setPatientSession(sess);
+      setPatientMessagesLoading(true);
+      return getEPPatientSessionMessages(sess.id).then((msgs) => {
+        setPatientMessages(msgs);
+        setPatientMessagesLoading(false);
+
+        // Open WS
+        setPatientWsStatus('connecting');
+        const ws = openEPPatientSocket(sess.id);
+        patientWsRef.current = ws;
+        ws.onopen = () => setPatientWsStatus('open');
+        ws.onmessage = (e) => {
+          const data = JSON.parse(e.data);
+          if (data.type === 'session_closed') {
+            setPatientSession(null);
+            setPatientMessages([]);
+            setSelectedPatient(null);
+            ws.close();
+          } else {
+            setPatientMessages((prev) => [...prev, data]);
+          }
+        };
+        ws.onerror = () => setPatientWsStatus('closed');
+        ws.onclose = () => setPatientWsStatus('closed');
+      });
+    }).catch(() => {
+      setPatientMessagesLoading(false);
+    });
+
+    return () => {
+      if (patientWsRef.current) { patientWsRef.current.close(); patientWsRef.current = null; }
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedPatient?.id]);
+
   // ── Send (direct) ─────────────────────────────────────────────────────────
   const handleSend = () => {
     const text = inputText.trim();
@@ -158,6 +240,35 @@ export default function EPChatPage() {
       await claimEPGroupMessage(epGroupInfo.id, msg.id);
       // WS broadcast will update local state
     } catch { /* silent */ }
+  };
+
+  // ── Send (patient session) ────────────────────────────────────────────────
+  const handlePatientSend = () => {
+    const text = patientInputText.trim();
+    if (!text || !patientWsRef.current || patientWsRef.current.readyState !== WebSocket.OPEN) return;
+    patientWsRef.current.send(JSON.stringify({ content: text }));
+    setPatientInputText('');
+  };
+
+  const handlePatientKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handlePatientSend(); }
+  };
+
+  // ── Close patient session ─────────────────────────────────────────────────
+  const handleCloseSession = async () => {
+    if (!patientSession || closingSession) return;
+    if (!window.confirm(`Close chat with ${patientSession.patient_name || selectedPatient?.name}? All messages will be deleted.`)) return;
+    setClosingSession(true);
+    try {
+      await closeEPPatientSession(patientSession.id);
+      if (patientWsRef.current) { patientWsRef.current.close(); patientWsRef.current = null; }
+      setPatientSession(null);
+      setPatientMessages([]);
+      setSelectedPatient(null);
+      // Refresh patient list so active_session_id is cleared
+      getEPPatientsList().then(setPatients).catch(() => {});
+    } catch { /* silent */ }
+    finally { setClosingSession(false); }
   };
 
   // ── Styling helpers ───────────────────────────────────────────────────────
@@ -204,17 +315,24 @@ export default function EPChatPage() {
         <div className="ecp-header-title">
           <span className="ecp-header-icon">🤝</span>
           <span className="ecp-header-text">
-            {activeTab === 'direct' ? 'Chat with Your Therapist' : 'Human Helper Group'}
+            {activeTab === 'direct' ? 'Chat with Your Therapist'
+              : activeTab === 'group' ? 'Human Helper Group'
+              : 'Patient Chats'}
           </span>
           {therapistInfo && activeTab === 'direct' && (
             <span className="ecp-header-sub">/ {therapistInfo.name}</span>
+          )}
+          {activeTab === 'patients' && selectedPatient && (
+            <span className="ecp-header-sub">/ {selectedPatient.name}</span>
           )}
         </div>
         <div className="ecp-header-right">
           <span className="ecp-ws-dot"
             style={{ background: activeTab === 'direct'
               ? (wsStatus === 'open' ? '#4ade80' : wsStatus === 'connecting' ? '#fbbf24' : '#6b7280')
-              : (groupWsStatus === 'open' ? '#4ade80' : groupWsStatus === 'connecting' ? '#fbbf24' : '#6b7280')
+              : activeTab === 'group'
+              ? (groupWsStatus === 'open' ? '#4ade80' : groupWsStatus === 'connecting' ? '#fbbf24' : '#6b7280')
+              : (patientWsStatus === 'open' ? '#4ade80' : patientWsStatus === 'connecting' ? '#fbbf24' : '#6b7280')
             }}
           />
         </div>
@@ -233,6 +351,12 @@ export default function EPChatPage() {
           onClick={() => setActiveTab('group')}
         >
           👥 Group Chat
+        </button>
+        <button
+          className={`ecp-tab-btn ${activeTab === 'patients' ? 'active' : ''}`}
+          onClick={() => setActiveTab('patients')}
+        >
+          🧑‍⚕️ Patients
         </button>
       </div>
 
@@ -430,6 +554,138 @@ export default function EPChatPage() {
                 </svg>
               </button>
             </div>
+          </div>
+        )}
+
+        {/* ── Patients tab ── */}
+        {!loading && !loadError && activeTab === 'patients' && (
+          <div className="ecp-patients-layout">
+            {/* Patient list sidebar */}
+            <aside className="ecp-patients-sidebar">
+              <div className="ecp-patients-sidebar-title">Therapist's Patients</div>
+              {patientsLoading ? (
+                <div className="ecp-patients-empty">Loading…</div>
+              ) : patients.length === 0 ? (
+                <div className="ecp-patients-empty">No patients found.</div>
+              ) : (
+                <ul className="ecp-patients-list">
+                  {patients.map((p) => (
+                    <li
+                      key={p.id}
+                      className={`ecp-patients-item ${selectedPatient?.id === p.id ? 'active' : ''}`}
+                      onClick={() => setSelectedPatient(p)}
+                    >
+                      <div className="ecp-patients-avatar">
+                        {p.name.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="ecp-patients-info">
+                        <span className="ecp-patients-name">{p.name}</span>
+                        <span className="ecp-patients-cond">{p.conditions}</span>
+                      </div>
+                      {p.active_session_id && (
+                        <span className="ecp-patients-active-dot" title="Active chat" />
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </aside>
+
+            {/* Chat panel */}
+            {selectedPatient && patientSession ? (
+              <div className="ecp-main ecp-patients-main">
+                {/* Session header */}
+                <div className="ecp-patient-session-header">
+                  <div className="ecp-therapist-avatar">
+                    {selectedPatient.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <div className="ecp-therapist-name">{selectedPatient.name}</div>
+                    <div className="ecp-therapist-role">Patient — {selectedPatient.conditions}</div>
+                  </div>
+                  <button
+                    className="ecp-close-session-btn"
+                    onClick={handleCloseSession}
+                    disabled={closingSession}
+                  >
+                    {closingSession ? 'Closing…' : '✕ Close Session'}
+                  </button>
+                </div>
+
+                {/* Messages */}
+                <div className="ecp-messages">
+                  {patientMessagesLoading && (
+                    <div className="ecp-loading-msg">
+                      <span className="ecp-dots"><span/><span/><span/></span>
+                      Loading messages…
+                    </div>
+                  )}
+                  {!patientMessagesLoading && patientMessages.length === 0 && (
+                    <div className="ecp-empty-msg">
+                      <span style={{ fontSize: '2.5rem', opacity: 0.4 }}>👋</span>
+                      <p>Session started. Say hello to {selectedPatient.name}!</p>
+                    </div>
+                  )}
+                  {patientMessages.map((msg, idx) => {
+                    const mine = msg.sender_role === 'ep';
+                    const bubbleStyle = mine ? getMeBubbleStyle() : getThemBubbleStyle();
+                    return (
+                      <div key={msg.id || idx} className={`ecp-row ${mine ? 'ecp-row-me' : ''}`}>
+                        {!mine && (
+                          <div className="ecp-avatar ecp-avatar-therapist">
+                            {(msg.sender_name || 'P').charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                        <div className="ecp-bubble-wrap">
+                          {!mine && <div className="ecp-sender-name">{msg.sender_name}</div>}
+                          <div className="ecp-bubble" style={bubbleStyle}>
+                            {msg.content}
+                            <span className="ecp-time">{fmtTime(msg.created_at)}</span>
+                          </div>
+                        </div>
+                        {mine && (
+                          <div className="ecp-avatar ecp-avatar-me">
+                            {(user?.name || 'H').charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                  <div ref={patientMessagesEndRef} />
+                </div>
+
+                {/* Input */}
+                <div className="ecp-input-bar">
+                  <textarea
+                    className="ecp-input"
+                    placeholder="Message patient… (Enter to send)"
+                    value={patientInputText}
+                    onChange={(e) => setPatientInputText(e.target.value)}
+                    onKeyDown={handlePatientKeyDown}
+                    rows={1}
+                  />
+                  <button
+                    className="ecp-send-btn"
+                    onClick={handlePatientSend}
+                    disabled={!patientInputText.trim() || patientWsStatus !== 'open'}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M2 21l21-9L2 3v7l15 2-15 2z"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            ) : selectedPatient ? (
+              <div className="ecp-no-group">
+                <div className="ecp-spinner" />
+                <p>Opening session with {selectedPatient.name}…</p>
+              </div>
+            ) : (
+              <div className="ecp-no-group">
+                <span className="ecp-no-group-icon">🧑‍⚕️</span>
+                <p>Select a patient to start a direct chat.</p>
+              </div>
+            )}
           </div>
         )}
       </div>
