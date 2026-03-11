@@ -93,8 +93,8 @@ const PatientDashboard = () => {
               Mindfulness
             </button>
             <button 
-              className={`nav-btn ${activeSection === 'chat' ? 'active' : ''}`}
-              onClick={() => setActiveSection('chat')}
+              className="nav-btn"
+              onClick={() => navigate('/patient/chat')}
             >
               Chat
             </button>
@@ -188,11 +188,6 @@ const PatientDashboard = () => {
           </div>
         )}
 
-        {activeSection === 'chat' && (
-          <div className="empty-section">
-            {/* Empty Chat section */}
-          </div>
-        )}
       </main>
     </div>
   );

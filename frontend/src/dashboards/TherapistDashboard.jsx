@@ -233,8 +233,8 @@ const TherapistDashboard = () => {
               Nirbaan AI
             </button>
             <button 
-              className={`nav-btn ${activeSection === 'chat' ? 'active' : ''}`}
-              onClick={() => setActiveSection('chat')}
+              className="nav-btn"
+              onClick={() => navigate('/therapist/chat')}
             >
               Chat
             </button>
@@ -373,12 +373,6 @@ const TherapistDashboard = () => {
         )}
 
 
-
-        {activeSection === 'chat' && (
-          <div className="section-content-blank">
-            {/* Chat section - to be implemented */}
-          </div>
-        )}
 
         {activeSection === 'sessions' && (
           <div className="sessions-section">

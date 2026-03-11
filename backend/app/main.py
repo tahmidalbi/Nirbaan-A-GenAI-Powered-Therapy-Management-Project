@@ -18,6 +18,8 @@ from app.progress.router import router as progress_router
 from app.NirbaanAIPatient.router import router as nirbaan_ai_patient_router
 from app.NirbaanAITherapist.router import router as nirbaan_ai_therapist_router
 from app.therapy_sessions.router import router as therapy_sessions_router
+from app.chat.router import router as chat_router
+from app.chat.ep_router import ep_router
 
 # Optional: if you have SQLAlchemy Base + engine and want to ensure tables exist in dev
 # from app.database.base import Base
@@ -64,6 +66,8 @@ def create_app() -> FastAPI:
     app.include_router(nirbaan_ai_patient_router)
     app.include_router(nirbaan_ai_therapist_router)
     app.include_router(therapy_sessions_router)
+    app.include_router(chat_router)
+    app.include_router(ep_router)
 
     @app.get("/", tags=["health"])
     def health_check():
