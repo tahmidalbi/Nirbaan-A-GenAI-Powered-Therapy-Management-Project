@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import {
@@ -11,6 +11,13 @@ import './PatientChatPage.css';
 export default function PatientChatPage() {
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
+  const token = useAuthStore((s) => s.token);
+
+  // Decode user ID directly from JWT — exact same value the backend writes as sender_id
+  const myUserId = useMemo(() => {
+    if (!token) return null;
+    try { return JSON.parse(atob(token.split('.')[1])).id; } catch { return null; }
+  }, [token]);
 
   const [groups, setGroups] = useState([]);
   const [groupsLoading, setGroupsLoading] = useState(true);
@@ -92,7 +99,7 @@ export default function PatientChatPage() {
     String(id).split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
 
   const getSenderStyle = (msg) => {
-    const isMe = msg.sender_role === 'patient' && msg.sender_id === user?.id;
+    const isMe = msg.sender_role === 'patient' && Number(msg.sender_id) === Number(myUserId);
     if (isMe) return {
       background: 'linear-gradient(135deg, rgba(34,120,60,0.92), rgba(20,90,48,0.96))',
       border: '1px solid rgba(52,168,83,0.4)',
@@ -204,7 +211,7 @@ export default function PatientChatPage() {
                   );
                 }
 
-                const isMe = msg.sender_role === 'patient' && msg.sender_id === user?.id;
+                const isMe = msg.sender_role === 'patient' && Number(msg.sender_id) === Number(myUserId);
                 const bubbleStyle = getSenderStyle(msg);
 
                 return (
