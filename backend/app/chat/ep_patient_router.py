@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import json
 from datetime import datetime, timezone
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect, Query
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.database.deps import get_db
@@ -17,6 +18,67 @@ from app.chat.manager import ChatConnectionManager
 ep_patient_router = APIRouter(prefix="/chat/ep-patient", tags=["EP-Patient Direct Chat"])
 
 ep_patient_manager = ChatConnectionManager()
+
+
+class PublicKeyUpload(BaseModel):
+    public_key_jwk: dict
+
+
+# ─── E2EE Public Key Endpoints ────────────────────────────────────────────────
+
+@ep_patient_router.put("/public-key")
+def upload_public_key(
+    body: PublicKeyUpload,
+    token: str = Query(...),
+    db: Session = Depends(get_db),
+):
+    """Upload caller's ECDH P-256 public key JWK for E2EE key exchange."""
+    td = decode_access_token(token)
+    jwk_str = json.dumps(body.public_key_jwk)
+    if td.role == "emergency_personnel":
+        ep = db.query(EmergencyPersonnel).filter(EmergencyPersonnel.id == td.id).first()
+        if not ep:
+            raise HTTPException(status_code=404, detail="Not found")
+        ep.public_key_jwk = jwk_str
+    elif td.role == "patient":
+        patient = db.query(Patient).filter(Patient.id == td.id).first()
+        if not patient:
+            raise HTTPException(status_code=404, detail="Not found")
+        patient.public_key_jwk = jwk_str
+    else:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+    db.commit()
+    return {"detail": "Public key stored"}
+
+
+@ep_patient_router.get("/session/{session_id}/peer-public-key")
+def get_peer_public_key(
+    session_id: int,
+    token: str = Query(...),
+    db: Session = Depends(get_db),
+):
+    """Return the other party's ECDH public key JWK for this session."""
+    td = decode_access_token(token)
+    session = db.query(EPPatientSession).filter(EPPatientSession.id == session_id).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    if td.role == "emergency_personnel":
+        if td.id != session.ep_id:
+            raise HTTPException(status_code=403, detail="Not your session")
+        patient = db.query(Patient).filter(Patient.id == session.patient_id).first()
+        if not patient or not patient.public_key_jwk:
+            raise HTTPException(status_code=404, detail="Patient has not uploaded a public key yet")
+        return {"public_key_jwk": json.loads(patient.public_key_jwk)}
+    elif td.role == "patient":
+        if td.id != session.patient_id:
+            raise HTTPException(status_code=403, detail="Not your session")
+        ep = db.query(EmergencyPersonnel).filter(EmergencyPersonnel.id == session.ep_id).first()
+        if not ep or not ep.public_key_jwk:
+            raise HTTPException(status_code=404, detail="Helper has not uploaded a public key yet")
+        return {"public_key_jwk": json.loads(ep.public_key_jwk)}
+    else:
+        raise HTTPException(status_code=403, detail="Unauthorized")
 
 
 # ─── Helpers ──────────────────────────────────────────────────────────────────
