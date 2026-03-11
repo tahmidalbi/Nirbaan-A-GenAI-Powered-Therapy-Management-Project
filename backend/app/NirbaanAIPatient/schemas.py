@@ -65,6 +65,8 @@ class PsychoeducationChatSendResponse(BaseModel):
     user_message: PsychoeducationChatMessageOut
     assistant_message: PsychoeducationChatMessageOut
     used_web_fallback: bool = False
+    is_escalation: bool = False
+    ep_group_message_id: Optional[int] = None
 
 
 class PsychoeducationChatHistoryResponse(BaseModel):

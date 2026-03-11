@@ -468,3 +468,60 @@
   max-width: 320px;
   line-height: 1.6;
 }
+
+/* ── Tab bar (Groups / Helpers) ─────────────────────────── */
+.pcp-tab-bar {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.5rem 1rem;
+  background: rgba(8, 14, 26, 0.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+
+.pcp-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.pcp-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.8);
+}
+.pcp-tab-btn.active {
+  background: rgba(52, 168, 83, 0.12);
+  border-color: rgba(52, 168, 83, 0.35);
+  color: #4ade80;
+}
+
+.pcp-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  background: rgba(251, 191, 36, 0.8);
+  color: #1c1917;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0 4px;
+}
+
+/* ── Helpers layout ──────────────────────────────────────── */
+.pcp-helpers-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  height: 100%;
+}
+

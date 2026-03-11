@@ -87,6 +87,36 @@
   flex-shrink: 0;
 }
 
+/* ── Tab bar ── */
+.ecp-tab-bar {
+  display: flex;
+  gap: 0;
+  background: rgba(11, 46, 24, 0.85);
+  border-bottom: 1px solid rgba(52, 168, 83, 0.15);
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.ecp-tab-btn {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: rgba(165, 214, 167, 0.5);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.ecp-tab-btn:hover { color: rgba(165, 214, 167, 0.8); }
+
+.ecp-tab-btn.active {
+  color: #a5d6a7;
+  border-bottom-color: rgba(52, 168, 83, 0.7);
+}
+
 /* ── Body ── */
 .ecp-body {
   flex: 1;
@@ -350,3 +380,195 @@
 
 .ecp-send-btn:hover:not(:disabled) { opacity: 0.9; transform: scale(1.05); }
 .ecp-send-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ── Group Chat extras ─────────────────────────────────────── */
+.ecp-patient-ref {
+  font-size: 0.72rem;
+  color: rgba(220, 220, 255, 0.8);
+  margin-bottom: 0.4rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.ecp-claim-badge {
+  margin-top: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  background: rgba(52, 168, 83, 0.18);
+  border: 1px solid rgba(52, 168, 83, 0.35);
+  border-radius: 6px;
+  font-size: 0.71rem;
+  color: #a5d6a7;
+}
+
+.ecp-claim-btn {
+  display: block;
+  margin-top: 0.55rem;
+  padding: 0.35rem 0.75rem;
+  background: rgba(52, 168, 83, 0.2);
+  border: 1px solid rgba(52, 168, 83, 0.45);
+  border-radius: 7px;
+  color: #a5d6a7;
+  font-size: 0.73rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  width: 100%;
+  text-align: center;
+}
+.ecp-claim-btn:hover { background: rgba(52, 168, 83, 0.35); }
+
+.ecp-ai-tag {
+  display: inline-block;
+  margin-left: 0.35rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  background: rgba(109, 40, 217, 0.25);
+  color: #c4b5fd;
+  vertical-align: middle;
+}
+
+/* ── Patients Tab ────────────────────────────────────── */
+.ecp-patients-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  height: 100%;
+}
+
+.ecp-patients-sidebar {
+  width: 260px;
+  min-width: 200px;
+  flex-shrink: 0;
+  background: rgba(12, 18, 32, 0.7);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ecp-patients-sidebar-title {
+  padding: 1rem 1.1rem 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+}
+
+.ecp-patients-empty {
+  padding: 1rem 1.1rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.ecp-patients-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.ecp-patients-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.15s;
+  position: relative;
+}
+.ecp-patients-item:hover { background: rgba(255, 255, 255, 0.05); }
+.ecp-patients-item.active { background: rgba(52, 168, 83, 0.1); border-left: 3px solid #34a853; }
+
+.ecp-patients-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(59,130,246,0.6), rgba(99,102,241,0.6));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.ecp-patients-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+.ecp-patients-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ecp-patients-cond {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.38);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ecp-patients-active-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #4ade80;
+  flex-shrink: 0;
+  margin-left: auto;
+  box-shadow: 0 0 6px rgba(74, 222, 128, 0.6);
+}
+
+.ecp-patients-main {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Session header with Close button */
+.ecp-patient-session-header {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 1.2rem;
+  background: rgba(12, 18, 32, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.ecp-close-session-btn {
+  margin-left: auto;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.ecp-close-session-btn:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+}
+.ecp-close-session-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ecp-no-group-icon {
+  font-size: 3rem;
+  opacity: 0.35;
+  display: block;
+  margin-bottom: 0.7rem;
+}

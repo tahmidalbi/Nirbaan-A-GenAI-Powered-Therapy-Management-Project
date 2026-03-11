@@ -5,6 +5,9 @@ import {
   listChatGroupsPatient,
   getChatMessages,
   openChatSocket,
+  getPatientEPSessions,
+  getEPPatientSessionMessages,
+  openEPPatientSocket,
 } from '../api/chat.api';
 import './PatientChatPage.css';
 
@@ -28,8 +31,20 @@ export default function PatientChatPage() {
   const [inputText, setInputText] = useState('');
   const [wsStatus, setWsStatus] = useState('idle');
 
+  // ── EP Direct Sessions state ──────────────────────────────────────────────
+  const [epSessions, setEpSessions] = useState([]); // [{session_id, ep_id, ep_name}]
+  const [selectedEpSession, setSelectedEpSession] = useState(null);
+  const [epMessages, setEpMessages] = useState([]);
+  const [epMessagesLoading, setEpMessagesLoading] = useState(false);
+  const [epInputText, setEpInputText] = useState('');
+  const [epWsStatus, setEpWsStatus] = useState('idle');
+  // Tab: 'groups' | 'helpers'
+  const [activeTab, setActiveTab] = useState('groups');
+
   const wsRef = useRef(null);
+  const epWsRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const epMessagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
   // ── load groups ────────────────────────────────────────────────────────────
@@ -70,6 +85,52 @@ export default function PatientChatPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  useEffect(() => {
+    epMessagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [epMessages]);
+
+  // ── Load EP sessions when tab switches to 'helpers' ───────────────────────
+  useEffect(() => {
+    if (activeTab !== 'helpers') return;
+    getPatientEPSessions()
+      .then(setEpSessions)
+      .catch(() => {});
+  }, [activeTab]);
+
+  // ── Open WS for selected EP session ──────────────────────────────────────
+  useEffect(() => {
+    if (!selectedEpSession) return;
+    if (epWsRef.current) { epWsRef.current.close(); epWsRef.current = null; }
+
+    setEpMessagesLoading(true);
+    getEPPatientSessionMessages(selectedEpSession.session_id)
+      .then(setEpMessages)
+      .catch(() => {})
+      .finally(() => setEpMessagesLoading(false));
+
+    setEpWsStatus('connecting');
+    const ws = openEPPatientSocket(selectedEpSession.session_id);
+    epWsRef.current = ws;
+    ws.onopen = () => setEpWsStatus('open');
+    ws.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      if (data.type === 'session_closed') {
+        // EP closed the session — remove from list and clear chat
+        setEpSessions((prev) => prev.filter((s) => s.session_id !== selectedEpSession.session_id));
+        setSelectedEpSession(null);
+        setEpMessages([]);
+        ws.close();
+      } else {
+        setEpMessages((prev) => [...prev, data]);
+      }
+    };
+    ws.onerror = () => setEpWsStatus('closed');
+    ws.onclose = () => setEpWsStatus('closed');
+
+    return () => { if (epWsRef.current) { epWsRef.current.close(); epWsRef.current = null; } };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedEpSession?.session_id]);
+
   // ── send message ──────────────────────────────────────────────────────────
   const handleSend = () => {
     const text = inputText.trim();
@@ -81,6 +142,18 @@ export default function PatientChatPage() {
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
+  };
+
+  // ── Send to EP ────────────────────────────────────────────────────────────
+  const handleEpSend = () => {
+    const text = epInputText.trim();
+    if (!text || !epWsRef.current || epWsRef.current.readyState !== WebSocket.OPEN) return;
+    epWsRef.current.send(JSON.stringify({ content: text }));
+    setEpInputText('');
+  };
+
+  const handleEpKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleEpSend(); }
   };
 
   // ── per-sender unique color ───────────────────────────────────────────────
@@ -133,20 +206,52 @@ export default function PatientChatPage() {
         </button>
         <div className="pcp-header-title">
           <span className="pcp-header-icon">💬</span>
-          <span className="pcp-header-text">Group Chat</span>
-          {selectedGroup && (
+          <span className="pcp-header-text">
+            {activeTab === 'groups' ? 'Group Chat' : 'My Helpers'}
+          </span>
+          {activeTab === 'groups' && selectedGroup && (
             <span className="pcp-header-group">/ {selectedGroup.name}</span>
+          )}
+          {activeTab === 'helpers' && selectedEpSession && (
+            <span className="pcp-header-group">/ {selectedEpSession.ep_name}</span>
           )}
         </div>
         <div className="pcp-header-right">
-          {selectedGroup && (
+          {activeTab === 'groups' && selectedGroup && (
             <span className="pcp-ws-indicator" style={{ background: dotColor }} title={wsStatus} />
+          )}
+          {activeTab === 'helpers' && selectedEpSession && (
+            <span className="pcp-ws-indicator"
+              style={{ background: epWsStatus === 'open' ? '#4ade80' : epWsStatus === 'connecting' ? '#fbbf24' : '#6b7280' }}
+              title={epWsStatus}
+            />
           )}
         </div>
       </header>
 
+      {/* ── Tab bar ── */}
+      <div className="pcp-tab-bar">
+        <button
+          className={`pcp-tab-btn ${activeTab === 'groups' ? 'active' : ''}`}
+          onClick={() => setActiveTab('groups')}
+        >
+          👥 Group Chat
+        </button>
+        <button
+          className={`pcp-tab-btn ${activeTab === 'helpers' ? 'active' : ''}`}
+          onClick={() => setActiveTab('helpers')}
+        >
+          🤝 My Helpers
+          {epSessions.length > 0 && (
+            <span className="pcp-tab-badge">{epSessions.length}</span>
+          )}
+        </button>
+      </div>
+
       {/* ── Body ── */}
       <div className="pcp-body">
+        {activeTab === 'groups' && (
+          <>
         {/* ── Sidebar ── */}
         <aside className="pcp-sidebar">
           <div className="pcp-sidebar-top">
@@ -274,6 +379,131 @@ export default function PatientChatPage() {
             <span className="pcp-no-group-icon">💬</span>
             <h2>Select a group to chat</h2>
             <p>Your therapist has added you to group chats where you can connect with others.</p>
+          </div>
+        )}
+          </>
+        )}
+
+        {/* ── My Helpers tab ── */}
+        {activeTab === 'helpers' && (
+          <div className="pcp-helpers-layout">
+            {/* EP contact sidebar */}
+            <aside className="pcp-sidebar">
+              <div className="pcp-sidebar-top">
+                <h3 className="pcp-sidebar-title">Active Helpers</h3>
+              </div>
+              {epSessions.length === 0 ? (
+                <div className="pcp-sidebar-empty">
+                  No human helper has started a chat with you yet.
+                </div>
+              ) : (
+                <ul className="pcp-group-list">
+                  {epSessions.map((s) => (
+                    <li
+                      key={s.session_id}
+                      className={`pcp-group-item ${selectedEpSession?.session_id === s.session_id ? 'active' : ''}`}
+                      onClick={() => setSelectedEpSession(s)}
+                    >
+                      <div className="pcp-group-dot" style={{ background: '#fbbf24' }} />
+                      <div className="pcp-group-info">
+                        <span className="pcp-group-name">{s.ep_name}</span>
+                        <span className="pcp-group-meta">Human Helper</span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </aside>
+
+            {/* Chat panel */}
+            {selectedEpSession ? (
+              <div className="pcp-main">
+                <div className="pcp-messages">
+                  {epMessagesLoading && (
+                    <div className="pcp-loading-msg">
+                      <span className="pcp-dots"><span/><span/><span/></span>
+                      Loading messages…
+                    </div>
+                  )}
+                  {!epMessagesLoading && epMessages.length === 0 && (
+                    <div className="pcp-empty-msg">
+                      <span style={{ fontSize: '2.5rem', opacity: 0.4 }}>🤝</span>
+                      <p>{selectedEpSession.ep_name} has started a chat with you. Say hello!</p>
+                    </div>
+                  )}
+                  {epMessages.map((msg, idx) => {
+                    const isMe = msg.sender_role === 'patient';
+                    const bubbleStyle = isMe
+                      ? {
+                          background: 'linear-gradient(135deg, rgba(34,120,60,0.92), rgba(20,90,48,0.96))',
+                          border: '1px solid rgba(52,168,83,0.4)',
+                          color: '#e8f5e9',
+                          borderBottomRightRadius: '3px',
+                        }
+                      : {
+                          background: 'linear-gradient(135deg, rgba(234,179,8,0.2), rgba(180,130,0,0.25))',
+                          border: '1px solid rgba(234,179,8,0.35)',
+                          color: '#fef3c7',
+                          borderBottomLeftRadius: '3px',
+                        };
+                    return (
+                      <div key={msg.id || idx} className={`pcp-row ${isMe ? 'pcp-row-me' : ''}`}>
+                        {!isMe && (
+                          <div className="pcp-avatar pcp-avatar-other"
+                            style={{ background: 'linear-gradient(135deg,rgba(234,179,8,0.6),rgba(180,130,0,0.6))' }}>
+                            {(msg.sender_name || 'H').charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                        <div className="pcp-bubble-wrap">
+                          {!isMe && (
+                            <div className="pcp-sender-meta">
+                              <span className="pcp-sender-name">{msg.sender_name}</span>
+                              <span className="pcp-therapist-tag" style={{ background: 'rgba(234,179,8,0.15)', color: '#fcd34d' }}>Helper</span>
+                            </div>
+                          )}
+                          <div className="pcp-bubble" style={bubbleStyle}>
+                            {msg.content}
+                            <span className="pcp-time">{fmtTime(msg.created_at)}</span>
+                          </div>
+                        </div>
+                        {isMe && (
+                          <div className="pcp-avatar pcp-avatar-me">
+                            {(user?.name || 'P').charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                  <div ref={epMessagesEndRef} />
+                </div>
+
+                <div className="pcp-input-bar">
+                  <textarea
+                    className="pcp-input"
+                    placeholder="Reply to your helper… (Enter to send)"
+                    value={epInputText}
+                    onChange={(e) => setEpInputText(e.target.value)}
+                    onKeyDown={handleEpKeyDown}
+                    rows={1}
+                  />
+                  <button
+                    className="pcp-send-btn"
+                    onClick={handleEpSend}
+                    disabled={!epInputText.trim() || epWsStatus !== 'open'}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M2 21l21-9L2 3v7l15 2-15 2z"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="pcp-no-group">
+                <span className="pcp-no-group-icon">🤝</span>
+                <h2>Select a helper to chat</h2>
+                <p>Your human helpers will appear here when they start a conversation with you.</p>
+              </div>
+            )}
           </div>
         )}
       </div>

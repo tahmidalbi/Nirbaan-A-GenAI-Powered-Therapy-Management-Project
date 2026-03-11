@@ -301,12 +301,20 @@
   white-space: pre-wrap;
 }
 
-.nai-ts {
-  font-size: 0.65rem;
-  opacity: 0.4;
-  display: block;
-  text-align: right;
-  margin-top: 0.3rem;
+/* Markdown renderer inside assistant bubble */
+.nai-md { font-size: 0.91rem; line-height: 1.6; }
+.nai-md p { margin: 0 0 0.55rem; }
+.nai-md p:last-child { margin-bottom: 0; }
+.nai-md ul, .nai-md ol { margin: 0.35rem 0 0.55rem 1.2rem; padding: 0; }
+.nai-md li { margin-bottom: 0.3rem; }
+.nai-md strong { font-weight: 700; opacity: 0.95; }
+.nai-md em { font-style: italic; }
+.nai-md blockquote {
+  border-left: 3px solid rgba(255,255,255,0.25);
+  margin: 0.4rem 0;
+  padding: 0 0.75rem;
+  opacity: 0.8;
+  font-style: italic;
 }
 
 /* Typing indicator */
@@ -348,15 +356,15 @@
 /* ── Input bar ───────────────────────────────────────────────────────────── */
 .nai-input-bar {
   display: flex;
-  align-items: flex-end;
-  gap: 0.6rem;
+  flex-direction: column;
   background: rgba(10, 32, 16, 0.85);
   backdrop-filter: blur(14px);
   border: 1px solid rgba(52, 168, 83, 0.25);
   border-radius: 10px;
-  padding: 0.55rem 0.6rem 0.55rem 1rem;
+  padding: 0;
   margin-top: 0.75rem;
   transition: border-color 0.2s;
+  overflow: hidden;
 }
 
 .nai-input-bar:focus-within {
@@ -400,6 +408,59 @@
 }
 
 .nai-send-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ── Escalation bubble ───────────────────────────────────────────────────── */
+.nai-bubble.escalation {
+  background: rgba(120, 30, 30, 0.88) !important;
+  border-color: rgba(239, 68, 68, 0.5) !important;
+}
+
+.nai-escalation-banner {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.02em;
+}
+
+/* ── Quick actions bar ───────────────────────────────────────────────────── */
+.nai-quick-actions {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem 0;
+}
+
+.nai-input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem 0.75rem;
+}
+
+.nai-help-btn {
+  background: rgba(160, 30, 30, 0.75);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  color: #fca5a5;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 20px;
+  padding: 0.28rem 0.9rem;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.nai-help-btn:hover:not(:disabled) {
+  background: rgba(200, 40, 40, 0.85);
+}
+
+.nai-help-btn:disabled {
   opacity: 0.35;
   cursor: not-allowed;
 }
@@ -683,6 +744,21 @@
   white-space: pre-wrap;
 }
 
+.nai-md { font-size: 0.92rem; line-height: 1.6; }
+.nai-md p { margin: 0 0 0.55rem; }
+.nai-md p:last-child { margin-bottom: 0; }
+.nai-md ul, .nai-md ol { margin: 0.35rem 0 0.55rem 1.2rem; padding: 0; }
+.nai-md li { margin-bottom: 0.3rem; }
+.nai-md strong { font-weight: 700; opacity: 0.95; }
+.nai-md em { font-style: italic; }
+.nai-md blockquote {
+  border-left: 3px solid rgba(255,255,255,0.25);
+  margin: 0.4rem 0;
+  padding: 0 0.75rem;
+  opacity: 0.8;
+  font-style: italic;
+}
+
 .nai-ts {
   font-size: 0.68rem;
   opacity: 0.5;
@@ -719,14 +795,14 @@
 /* ── Input bar ───────────────────────────────────────────────────────────── */
 .nai-input-bar {
   display: flex;
-  align-items: flex-end;
-  gap: 0.6rem;
+  flex-direction: column;
   background: rgba(5, 40, 15, 0.65);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 18px;
-  padding: 0.5rem 0.6rem 0.5rem 1rem;
+  padding: 0;
   margin-top: 0.5rem;
+  overflow: hidden;
 }
 
 .nai-input {

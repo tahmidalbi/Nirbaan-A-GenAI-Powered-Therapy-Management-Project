@@ -103,3 +103,79 @@ export function openEPChatSocket(epId) {
   const token = getToken();
   return new WebSocket(`ws://127.0.0.1:8000/chat/ep/ws/${epId}?token=${token}`);
 }
+
+// ─── EP Group Chat (shared group for all human helpers of a therapist) ────────
+
+export async function getTherapistEPGroup() {
+  const token = getToken();
+  const res = await axiosInstance.get(`${BASE}/ep-group/my-group?token=${token}`);
+  return res.data;
+}
+
+export async function getEPGroupAsEP() {
+  const token = getToken();
+  const res = await axiosInstance.get(`${BASE}/ep-group/mine?token=${token}`);
+  return res.data;
+}
+
+export async function getEPGroupMessages(groupId) {
+  const token = getToken();
+  const res = await axiosInstance.get(`${BASE}/ep-group/${groupId}/messages?token=${token}&limit=200`);
+  return res.data;
+}
+
+export async function claimEPGroupMessage(groupId, messageId) {
+  const token = getToken();
+  const res = await axiosInstance.post(
+    `${BASE}/ep-group/${groupId}/messages/${messageId}/claim?token=${token}`
+  );
+  return res.data;
+}
+
+export function openEPGroupSocket(groupId) {
+  const token = getToken();
+  return new WebSocket(`ws://127.0.0.1:8000/chat/ep-group/ws/${groupId}?token=${token}`);
+}
+
+// ─── EP-Patient Direct Chat ────────────────────────────────
+
+/** EP: list all patients belonging to their therapist */
+export async function getEPPatientsList() {
+  const token = getToken();
+  const res = await axiosInstance.get(`${BASE}/ep-patient/patients?token=${token}`);
+  return res.data;
+}
+
+/** EP: open (or resume) a direct session with a patient */
+export async function getOrCreateEPPatientSession(patientId) {
+  const token = getToken();
+  const res = await axiosInstance.post(`${BASE}/ep-patient/session/${patientId}?token=${token}`);
+  return res.data;
+}
+
+/** EP or patient: fetch messages for a session */
+export async function getEPPatientSessionMessages(sessionId) {
+  const token = getToken();
+  const res = await axiosInstance.get(`${BASE}/ep-patient/session/${sessionId}/messages?token=${token}`);
+  return res.data;
+}
+
+/** EP: close the session (deletes messages, patient loses access) */
+export async function closeEPPatientSession(sessionId) {
+  const token = getToken();
+  const res = await axiosInstance.post(`${BASE}/ep-patient/session/${sessionId}/close?token=${token}`);
+  return res.data;
+}
+
+/** Patient: see all EPs with active sessions */
+export async function getPatientEPSessions() {
+  const token = getToken();
+  const res = await axiosInstance.get(`${BASE}/ep-patient/my-sessions?token=${token}`);
+  return res.data;
+}
+
+/** WS for a session (used by both EP and patient) */
+export function openEPPatientSocket(sessionId) {
+  const token = getToken();
+  return new WebSocket(`ws://127.0.0.1:8000/chat/ep-patient/ws/${sessionId}?token=${token}`);
+}
