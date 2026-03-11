@@ -103,3 +103,36 @@ export function openEPChatSocket(epId) {
   const token = getToken();
   return new WebSocket(`ws://127.0.0.1:8000/chat/ep/ws/${epId}?token=${token}`);
 }
+
+// ─── EP Group Chat (shared group for all human helpers of a therapist) ────────
+
+export async function getTherapistEPGroup() {
+  const token = getToken();
+  const res = await axiosInstance.get(`${BASE}/ep-group/my-group?token=${token}`);
+  return res.data;
+}
+
+export async function getEPGroupAsEP() {
+  const token = getToken();
+  const res = await axiosInstance.get(`${BASE}/ep-group/mine?token=${token}`);
+  return res.data;
+}
+
+export async function getEPGroupMessages(groupId) {
+  const token = getToken();
+  const res = await axiosInstance.get(`${BASE}/ep-group/${groupId}/messages?token=${token}&limit=200`);
+  return res.data;
+}
+
+export async function claimEPGroupMessage(groupId, messageId) {
+  const token = getToken();
+  const res = await axiosInstance.post(
+    `${BASE}/ep-group/${groupId}/messages/${messageId}/claim?token=${token}`
+  );
+  return res.data;
+}
+
+export function openEPGroupSocket(groupId) {
+  const token = getToken();
+  return new WebSocket(`ws://127.0.0.1:8000/chat/ep-group/ws/${groupId}?token=${token}`);
+}

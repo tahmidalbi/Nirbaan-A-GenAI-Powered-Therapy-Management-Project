@@ -87,6 +87,36 @@
   flex-shrink: 0;
 }
 
+/* ── Tab bar ── */
+.ecp-tab-bar {
+  display: flex;
+  gap: 0;
+  background: rgba(11, 46, 24, 0.85);
+  border-bottom: 1px solid rgba(52, 168, 83, 0.15);
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.ecp-tab-btn {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: rgba(165, 214, 167, 0.5);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.ecp-tab-btn:hover { color: rgba(165, 214, 167, 0.8); }
+
+.ecp-tab-btn.active {
+  color: #a5d6a7;
+  border-bottom-color: rgba(52, 168, 83, 0.7);
+}
+
 /* ── Body ── */
 .ecp-body {
   flex: 1;
@@ -350,3 +380,51 @@
 
 .ecp-send-btn:hover:not(:disabled) { opacity: 0.9; transform: scale(1.05); }
 .ecp-send-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ── Group Chat extras ─────────────────────────────────────── */
+.ecp-patient-ref {
+  font-size: 0.72rem;
+  color: rgba(220, 220, 255, 0.8);
+  margin-bottom: 0.4rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.ecp-claim-badge {
+  margin-top: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  background: rgba(52, 168, 83, 0.18);
+  border: 1px solid rgba(52, 168, 83, 0.35);
+  border-radius: 6px;
+  font-size: 0.71rem;
+  color: #a5d6a7;
+}
+
+.ecp-claim-btn {
+  display: block;
+  margin-top: 0.55rem;
+  padding: 0.35rem 0.75rem;
+  background: rgba(52, 168, 83, 0.2);
+  border: 1px solid rgba(52, 168, 83, 0.45);
+  border-radius: 7px;
+  color: #a5d6a7;
+  font-size: 0.73rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  width: 100%;
+  text-align: center;
+}
+.ecp-claim-btn:hover { background: rgba(52, 168, 83, 0.35); }
+
+.ecp-ai-tag {
+  display: inline-block;
+  margin-left: 0.35rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  background: rgba(109, 40, 217, 0.25);
+  color: #c4b5fd;
+  vertical-align: middle;
+}
