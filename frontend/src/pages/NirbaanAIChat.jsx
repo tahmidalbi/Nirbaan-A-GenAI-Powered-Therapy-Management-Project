@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'; // useRef kept for bottomRef + inputRef
 import { useNavigate } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 import { sendNirbaanAIMessage, listNirbaanAIThreads, getNirbaanAIThread } from '../api/nirbaanai.api';
 import './NirbaanAIChat.css';
 
@@ -71,10 +72,15 @@ export default function NirbaanAIChat() {
         listNirbaanAIThreads().then(setThreads).catch(() => {});
       }
 
+      const assistantMsg = {
+        ...res.assistant_message,
+        is_escalation: res.is_escalation || false,
+      };
+
       setMessages((prev) => [
         ...prev.filter((m) => m.id !== userMsg.id), // remove optimistic
         res.user_message,
-        res.assistant_message,
+        assistantMsg,
       ]);
     } catch (err) {
       setMessages((prev) => [
@@ -158,10 +164,21 @@ export default function NirbaanAIChat() {
               className={`nai-bubble-row ${msg.role === 'user' ? 'user' : 'assistant'}`}
             >
               {msg.role === 'assistant' && (
-                <div className="nai-avatar">🌸</div>
+                <div className="nai-avatar">{msg.is_escalation ? '🚨' : '🌸'}</div>
               )}
-              <div className={`nai-bubble ${msg.role}`}>
-                <p>{msg.content}</p>
+              <div className={`nai-bubble ${msg.role}${msg.is_escalation ? ' escalation' : ''}`}>
+                {msg.is_escalation && (
+                  <div className="nai-escalation-banner">
+                    🚨 Human helpers have been alerted
+                  </div>
+                )}
+                {msg.role === 'assistant' ? (
+                  <div className="nai-md">
+                    <ReactMarkdown>{msg.content}</ReactMarkdown>
+                  </div>
+                ) : (
+                  <p>{msg.content}</p>
+                )}
                 <span className="nai-ts">
                   {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </span>
@@ -186,23 +203,26 @@ export default function NirbaanAIChat() {
 
         {/* Input bar */}
         <div className="nai-input-bar">
-          <textarea
-            ref={inputRef}
-            className="nai-input"
-            rows={2}
-            placeholder="Type your message… (Enter to send)"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            disabled={loading}
-          />
-          <button
-            className="nai-send-btn"
-            onClick={handleSend}
-            disabled={loading || !input.trim()}
-          >
-            {loading ? '…' : '➤'}
-          </button>
+          
+          <div className="nai-input-row">
+            <textarea
+              ref={inputRef}
+              className="nai-input"
+              rows={2}
+              placeholder="Type your message… (Enter to send)"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              disabled={loading}
+            />
+            <button
+              className="nai-send-btn"
+              onClick={handleSend}
+              disabled={loading || !input.trim()}
+            >
+              {loading ? '…' : '➤'}
+            </button>
+          </div>
         </div>
       </main>
     </div>
