@@ -13,6 +13,10 @@ import {
   listEPContacts,
   getEPMessages,
   openEPChatSocket,
+  getTherapistEPGroup,
+  getEPGroupMessages,
+  claimEPGroupMessage,
+  openEPGroupSocket,
 } from '../api/chat.api';
 import { getPatients } from '../api/patient.api';
 import './TherapistChatPage.css';
@@ -45,7 +49,7 @@ export default function TherapistChatPage() {
   const [wsStatus, setWsStatus] = useState('idle');
 
   // ── EP contacts state ─────────────────────────────────────────────────────
-  const [sidebarTab, setSidebarTab] = useState('groups'); // 'groups' | 'ep'
+  const [sidebarTab, setSidebarTab] = useState('groups'); // 'groups' | 'ep' | 'epgroup'
   const [epContacts, setEpContacts] = useState([]);
   const [epContactsLoading, setEpContactsLoading] = useState(false);
   const [selectedEP, setSelectedEP] = useState(null);
@@ -54,8 +58,16 @@ export default function TherapistChatPage() {
   const [epInputText, setEpInputText] = useState('');
   const [epWsStatus, setEpWsStatus] = useState('idle');
 
+  // ── EP Group state ────────────────────────────────────────────────────────
+  const [epGroupInfo, setEpGroupInfo] = useState(null); // { id, therapist_id }
+  const [epGroupMessages, setEpGroupMessages] = useState([]);
+  const [epGroupMessagesLoading, setEpGroupMessagesLoading] = useState(false);
+  const [epGroupInputText, setEpGroupInputText] = useState('');
+  const [epGroupWsStatus, setEpGroupWsStatus] = useState('idle');
+
   const wsRef = useRef(null);
   const epWsRef = useRef(null);
+  const epGroupWsRef = useRef(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -130,6 +142,45 @@ export default function TherapistChatPage() {
     ws.onclose = () => setEpWsStatus('closed');
     return () => ws.close();
   }, [selectedEP?.id]);
+
+  // ── EP Group: load group info + history + open WS when tab selected ───────
+  useEffect(() => {
+    if (sidebarTab !== 'epgroup') return;
+    if (epGroupInfo) return; // already loaded
+    getTherapistEPGroup()
+      .then((info) => {
+        setEpGroupInfo(info);
+        setEpGroupMessagesLoading(true);
+        return getEPGroupMessages(info.id);
+      })
+      .then(setEpGroupMessages)
+      .catch(() => {})
+      .finally(() => setEpGroupMessagesLoading(false));
+  }, [sidebarTab]);
+
+  useEffect(() => {
+    if (!epGroupInfo) return;
+    if (sidebarTab !== 'epgroup') return;
+    if (epGroupWsRef.current) epGroupWsRef.current.close();
+    setEpGroupWsStatus('connecting');
+    const ws = openEPGroupSocket(epGroupInfo.id);
+    epGroupWsRef.current = ws;
+    ws.onopen = () => setEpGroupWsStatus('open');
+    ws.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      // Handle claim_update: replace existing message
+      if (data.type === 'claim_update') {
+        setEpGroupMessages((prev) =>
+          prev.map((m) => (m.id === data.id ? data : m))
+        );
+      } else {
+        setEpGroupMessages((prev) => [...prev, data]);
+      }
+    };
+    ws.onerror = () => setEpGroupWsStatus('closed');
+    ws.onclose = () => setEpGroupWsStatus('closed');
+    return () => ws.close();
+  }, [epGroupInfo?.id, sidebarTab]);
 
   // ── create group ──────────────────────────────────────────────────────────
   const handleCreateGroup = async (e) => {
@@ -226,6 +277,27 @@ export default function TherapistChatPage() {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleEPSend(); }
   };
 
+  // ── EP Group send ─────────────────────────────────────────────────────────
+  const handleEPGroupSend = () => {
+    const text = epGroupInputText.trim();
+    if (!text || !epGroupWsRef.current || epGroupWsRef.current.readyState !== WebSocket.OPEN) return;
+    epGroupWsRef.current.send(JSON.stringify({ content: text }));
+    setEpGroupInputText('');
+  };
+
+  const handleEPGroupKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleEPGroupSend(); }
+  };
+
+  // ── EP Group claim ────────────────────────────────────────────────────────
+  const handleClaimMessage = async (msg) => {
+    if (!epGroupInfo || msg.is_claimed) return;
+    try {
+      await claimEPGroupMessage(epGroupInfo.id, msg.id);
+      // WS broadcast will update local state via onmessage
+    } catch { /* silent */ }
+  };
+
   // ── helpers ───────────────────────────────────────────────────────────────
   const memberIds = new Set(members.map((m) => m.patient_id));
   const nonMembers = allPatients.filter((p) => !memberIds.has(p.id));
@@ -282,7 +354,9 @@ export default function TherapistChatPage() {
         </button>
         <div className="tcp-header-title">
           <span className="tcp-header-icon">💬</span>
-          <span className="tcp-header-text">{sidebarTab === 'ep' ? 'EP Direct Chat' : 'Group Chat'}</span>
+          <span className="tcp-header-text">
+            {sidebarTab === 'ep' ? 'EP Direct Chat' : sidebarTab === 'epgroup' ? 'HH Group Chat' : 'Group Chat'}
+          </span>
           {selectedGroup && sidebarTab === 'groups' && (
             <span className="tcp-header-group">/ {selectedGroup.name}</span>
           )}
@@ -322,6 +396,12 @@ export default function TherapistChatPage() {
               onClick={() => setSidebarTab('ep')}
             >
               Contacts
+            </button>
+            <button
+              className={`tcp-tab-btn ${sidebarTab === 'epgroup' ? 'active' : ''}`}
+              onClick={() => setSidebarTab('epgroup')}
+            >
+              HH Group
             </button>
           </div>
 
@@ -402,6 +482,16 @@ export default function TherapistChatPage() {
                 </ul>
               )}
             </>
+          )}
+
+          {/* ── HH Group tab (sidebar is just a label — no sub-selection) ── */}
+          {sidebarTab === 'epgroup' && (
+            <div className="tcp-sidebar-top" style={{ padding: '1rem 1rem 0.75rem' }}>
+              <h3 className="tcp-sidebar-title">Human Helper Group</h3>
+              <p style={{ fontSize: '0.72rem', color: 'rgba(165,214,167,0.6)', marginTop: '0.4rem', lineHeight: 1.4 }}>
+                All your human helpers are in this shared group. AI agent alerts appear here.
+              </p>
+            </div>
           )}
         </aside>
 
@@ -497,7 +587,7 @@ export default function TherapistChatPage() {
             <p>Create a group and add your patients to start chatting in real time.</p>
           </div>
           )
-        ) : (
+        ) : sidebarTab === 'ep' ? (
           /* ── EP DM view ── */
           selectedEP ? (
           <div className="tcp-main">
@@ -571,7 +661,96 @@ export default function TherapistChatPage() {
             <p>Click an emergency personnel contact from the list to start a direct conversation.</p>
           </div>
           )
-        )}
+        ) : sidebarTab === 'epgroup' ? (
+          /* ── EP Group view ── */
+          <div className="tcp-main">
+            <div className="tcp-epg-header-bar">
+              <span className="tcp-epg-icon">👥</span>
+              <span className="tcp-epg-title">Human Helper Group</span>
+              <span
+                className="tcp-ws-indicator"
+                style={{ background: epGroupWsStatus === 'open' ? '#4ade80' : epGroupWsStatus === 'connecting' ? '#fbbf24' : '#6b7280', marginLeft: 'auto' }}
+                title={epGroupWsStatus}
+              />
+            </div>
+
+            <div className="tcp-messages">
+              {epGroupMessagesLoading && (
+                <div className="tcp-loading-msg">
+                  <span className="tcp-dots"><span/><span/><span/></span>
+                  Loading messages…
+                </div>
+              )}
+              {!epGroupMessagesLoading && epGroupMessages.length === 0 && (
+                <div className="tcp-empty-msg">
+                  <span style={{ fontSize: '2.5rem', opacity: 0.4 }}>👥</span>
+                  <p>No messages yet. The AI agent will post alerts here when a patient needs a visit.</p>
+                </div>
+              )}
+              {epGroupMessages.map((msg, idx) => {
+                const isMe = msg.sender_role === 'therapist' && Number(msg.sender_id) === Number(myUserId);
+                const isAI = msg.sender_role === 'ai_agent' || msg.sender_role === 'system';
+                const bubbleStyle = isMe
+                  ? getSenderStyle(msg)
+                  : isAI
+                    ? { background: 'rgba(80,40,120,0.82)', border: '1px solid rgba(168,85,247,0.4)', color: '#e0e7ff', borderBottomLeftRadius: '3px' }
+                    : getSenderStyle(msg);
+                return (
+                  <div key={msg.id || idx} className={`tcp-row ${isMe ? 'tcp-row-me' : ''}`}>
+                    {!isMe && (
+                      <div className="tcp-avatar tcp-avatar-patient" style={isAI ? { background: 'linear-gradient(135deg,#6d28d9,#4c1d95)' } : {}}>
+                        {isAI ? '🤖' : (msg.sender_name || '?').charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <div className="tcp-bubble-wrap">
+                      {!isMe && <div className="tcp-sender-name">{msg.sender_name}{isAI && <span className="tcp-therapist-tag" style={{ background: 'rgba(109,40,217,0.25)', color: '#c4b5fd' }}>AI</span>}</div>}
+                      <div className="tcp-bubble" style={bubbleStyle}>
+                        {msg.patient_name && (
+                          <div className="tcp-epg-patient-ref">
+                            👤 Patient: <strong>{msg.patient_name}</strong>
+                          </div>
+                        )}
+                        {msg.content}
+                        {msg.is_claimed && (
+                          <div className="tcp-epg-claim-badge">
+                            ✅ Being visited by <strong>{msg.claimed_by_name}</strong>
+                          </div>
+                        )}
+                        <span className="tcp-time">{fmtTime(msg.created_at)}</span>
+                      </div>
+                    </div>
+                    {isMe && (
+                      <div className="tcp-avatar tcp-avatar-me">
+                        {(user?.name || 'T').charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+              <div ref={messagesEndRef} />
+            </div>
+
+            <div className="tcp-input-bar">
+              <textarea
+                className="tcp-input"
+                placeholder="Type a message to all human helpers… (Enter to send)"
+                value={epGroupInputText}
+                onChange={(e) => setEpGroupInputText(e.target.value)}
+                onKeyDown={handleEPGroupKeyDown}
+                rows={1}
+              />
+              <button
+                className="tcp-send-btn"
+                onClick={handleEPGroupSend}
+                disabled={!epGroupInputText.trim() || epGroupWsStatus !== 'open'}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M2 21l21-9L2 3v7l15 2-15 2z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        ) : null}
       </div>
 
       {/* ── Members overlay ── */}

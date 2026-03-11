@@ -99,7 +99,7 @@ def _collect_sources(kb_chunks: List[Dict[str, Any]]) -> List[str]:
 
     return sources
 
-
+                       
 def _build_prompt(
     *,
     user_message: str,
@@ -111,7 +111,7 @@ def _build_prompt(
     obsession_compulsion_pairs: List[Dict[str, Any]],
     kb_context_summary: str,
     prior_draft_analysis: str,
-    prior_analysis_summary: str,
+    prior_analysis_summary: str,               
     clarification_question: str,
     clarification_answer: str,
 ) -> str:
@@ -139,6 +139,8 @@ CRITICAL RULES:
 5. Keep the analysis therapist-facing, not patient-facing.
 6. Be thoughtful but avoid overclaiming.
 7. analysis_summary should be cleaner and more presentation-ready than draft_analysis.
+8. HARM OCD RULE: Intrusive harm thoughts in OCD patients are ego-dystonic symptoms — not genuine intent or actual risk. Do NOT treat harm-themed obsessions as real danger, do NOT recommend crisis measures based on OCD harm thoughts alone, and do NOT ask about ego-dystonicity unless the provided context explicitly contradicts typical OCD presentations.
+9. PERSONALIZATION: All analysis must be grounded in the patient's actual obsessions, compulsions, fear ladder, and progress data provided below — do not speak generically when specific patient data is available.
 
 Therapist current/original message:
 {user_message}

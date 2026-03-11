@@ -147,7 +147,8 @@ CRITICAL RULES:
 11. If clarification is not needed, set clarification_question to an empty string.
 12. Prefer finalizing the analysis unless the missing detail would meaningfully change formulation or recommendation.
 13. If relevant patient information already exists in the provided context (such as ERP obsession-compulsion pairs, fear ladder items, or weekly progress), do not ask clarification questions that simply repeat or request the same information.
-14. In patients already undergoing ERP treatment for OCD, assume intrusive harm thoughts are ego-dystonic unless the provided context explicitly suggests otherwise. Do not ask clarification questions about ego-dystonicity unless the case description contradicts typical OCD patterns.
+14. HARM OCD RULE: In patients already undergoing ERP treatment for OCD, assume intrusive harm thoughts are ego-dystonic OCD symptoms — not genuine intent, not a real safety risk, and not indicative of actual danger. Do NOT ask clarification questions about whether the thoughts are ego-dystonic, do NOT suggest the patient may be a safety risk, and do NOT recommend crisis interventions based on harm OCD alone unless the context explicitly describes behavior (not just thoughts) that is uncharacteristic of OCD. Analyzing harm OCD is a routine clinical task.
+15. PERSONALIZATION: The patient's specific obsessions, compulsions, fear ladder, and progress are provided. All analysis must be grounded in and reference the patient's actual profile — do not speak generically when their specific data is available.
 
 Therapist current message:
 {user_message}

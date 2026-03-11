@@ -33,6 +33,12 @@ support
 - reassurance seeking
 - rough day
 
+human_escalation
+- patient explicitly asks for a human helper
+- patient says they need someone to come in person
+- patient asks for emergency personnel / human assistance
+- patient is in crisis and requests real-world intervention
+
 Patient message:
 {state["user_message"]}
 
@@ -43,7 +49,7 @@ Return route.
 
     route = result.route
 
-    if route not in ["psychoeducation", "support"]:
+    if route not in ["psychoeducation", "support", "human_escalation"]:
         route = "support"
 
     return {"route": route}

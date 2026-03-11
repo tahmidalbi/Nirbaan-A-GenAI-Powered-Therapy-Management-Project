@@ -90,6 +90,8 @@ class PsychoeducationChatService:
     user_message=user_msg,
     assistant_message=assistant_msg,
     used_web_fallback=bool(final_state.get("web_used", False)),
+    is_escalation=bool(final_state.get("ep_group_message_id")),
+    ep_group_message_id=final_state.get("ep_group_message_id"),
 )
 
     def get_thread(self, *, patient_id: int, thread_id: int) -> PsychoeducationChatThread:
