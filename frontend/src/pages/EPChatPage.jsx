@@ -14,7 +14,10 @@ import {
   getEPPatientSessionMessages,
   closeEPPatientSession,
   openEPPatientSocket,
+  uploadMyPublicKey,
+  getPeerPublicKey,
 } from '../api/chat.api';
+import { getOrCreateKeyPair, deriveSharedKey, encryptMsg, decryptMessageContent } from '../utils/epCrypto';
 import './EPChatPage.css';
 
 export default function EPChatPage() {
@@ -64,6 +67,18 @@ export default function EPChatPage() {
   const messagesEndRef = useRef(null);
   const groupMessagesEndRef = useRef(null);
   const patientMessagesEndRef = useRef(null);
+
+  // ── E2EE key material (EP-Patient chat only) ──────────────────────────────
+  const epKeyPairRef = useRef(null);       // { privateKey: CryptoKey, publicKeyJwk }
+  const patientSharedKeyRef = useRef(null); // AES-GCM CryptoKey, one per session
+
+  // ── Generate / load ECDH key pair on mount and upload public key ─────────
+  useEffect(() => {
+    getOrCreateKeyPair().then(async (kp) => {
+      epKeyPairRef.current = kp;
+      try { await uploadMyPublicKey(kp.publicKeyJwk); } catch { /* silent */ }
+    });
+  }, []);
 
   // ── Load therapist info on mount ─────────────────────────────────────────
   useEffect(() => {
@@ -163,45 +178,66 @@ export default function EPChatPage() {
   useEffect(() => {
     if (!selectedPatient) return;
 
-    // Close any existing patient WS
     if (patientWsRef.current) { patientWsRef.current.close(); patientWsRef.current = null; }
+    patientSharedKeyRef.current = null;
 
-    // If patient already has an active session, use it; otherwise create one
-    const sessionId = selectedPatient.active_session_id;
-
-    const openSession = sessionId
-      ? Promise.resolve({ id: sessionId, patient_name: selectedPatient.name, ep_name: user?.name || 'Helper' })
-      : getOrCreateEPPatientSession(selectedPatient.id);
-
-    openSession.then((sess) => {
-      setPatientSession(sess);
-      setPatientMessagesLoading(true);
-      return getEPPatientSessionMessages(sess.id).then((msgs) => {
-        setPatientMessages(msgs);
+    const run = async () => {
+      // Get or create session
+      let sess;
+      try {
+        sess = selectedPatient.active_session_id
+          ? { id: selectedPatient.active_session_id, patient_name: selectedPatient.name, ep_name: user?.name || 'Helper' }
+          : await getOrCreateEPPatientSession(selectedPatient.id);
+      } catch {
         setPatientMessagesLoading(false);
+        return;
+      }
+      setPatientSession(sess);
 
-        // Open WS
-        setPatientWsStatus('connecting');
-        const ws = openEPPatientSocket(sess.id);
-        patientWsRef.current = ws;
-        ws.onopen = () => setPatientWsStatus('open');
-        ws.onmessage = (e) => {
-          const data = JSON.parse(e.data);
-          if (data.type === 'session_closed') {
-            setPatientSession(null);
-            setPatientMessages([]);
-            setSelectedPatient(null);
-            ws.close();
-          } else {
-            setPatientMessages((prev) => [...prev, data]);
-          }
-        };
-        ws.onerror = () => setPatientWsStatus('closed');
-        ws.onclose = () => setPatientWsStatus('closed');
-      });
-    }).catch(() => {
-      setPatientMessagesLoading(false);
-    });
+      // Derive shared AES key with patient (ECDH)
+      if (epKeyPairRef.current) {
+        try {
+          const peerJwk = await getPeerPublicKey(sess.id);
+          patientSharedKeyRef.current = await deriveSharedKey(epKeyPairRef.current.privateKey, peerJwk);
+        } catch {
+          patientSharedKeyRef.current = null; // peer hasn't uploaded key yet — fallback to plain
+        }
+      }
+
+      // Load + decrypt history
+      setPatientMessagesLoading(true);
+      try {
+        const msgs = await getEPPatientSessionMessages(sess.id);
+        const decrypted = await Promise.all(msgs.map((m) => decryptMessageContent(m, patientSharedKeyRef.current)));
+        setPatientMessages(decrypted);
+      } catch {
+        setPatientMessages([]);
+      } finally {
+        setPatientMessagesLoading(false);
+      }
+
+      // Open WebSocket
+      setPatientWsStatus('connecting');
+      const ws = openEPPatientSocket(sess.id);
+      patientWsRef.current = ws;
+      ws.onopen = () => setPatientWsStatus('open');
+      ws.onmessage = async (e) => {
+        const data = JSON.parse(e.data);
+        if (data.type === 'session_closed') {
+          setPatientSession(null);
+          setPatientMessages([]);
+          setSelectedPatient(null);
+          ws.close();
+        } else {
+          const decData = await decryptMessageContent(data, patientSharedKeyRef.current);
+          setPatientMessages((prev) => [...prev, decData]);
+        }
+      };
+      ws.onerror = () => setPatientWsStatus('closed');
+      ws.onclose = () => setPatientWsStatus('closed');
+    };
+
+    run();
 
     return () => {
       if (patientWsRef.current) { patientWsRef.current.close(); patientWsRef.current = null; }
@@ -242,11 +278,16 @@ export default function EPChatPage() {
     } catch { /* silent */ }
   };
 
-  // ── Send (patient session) ────────────────────────────────────────────────
-  const handlePatientSend = () => {
+  // ── Send (patient session) — encrypts before sending ─────────────────────
+  const handlePatientSend = async () => {
     const text = patientInputText.trim();
     if (!text || !patientWsRef.current || patientWsRef.current.readyState !== WebSocket.OPEN) return;
-    patientWsRef.current.send(JSON.stringify({ content: text }));
+    let content = text;
+    if (patientSharedKeyRef.current) {
+      const encrypted = await encryptMsg(patientSharedKeyRef.current, text);
+      content = JSON.stringify(encrypted);
+    }
+    patientWsRef.current.send(JSON.stringify({ content }));
     setPatientInputText('');
   };
 

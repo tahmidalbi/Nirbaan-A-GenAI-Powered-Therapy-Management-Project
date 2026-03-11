@@ -8,7 +8,10 @@ import {
   getPatientEPSessions,
   getEPPatientSessionMessages,
   openEPPatientSocket,
+  uploadMyPublicKey,
+  getPeerPublicKey,
 } from '../api/chat.api';
+import { getOrCreateKeyPair, deriveSharedKey, encryptMsg, decryptMessageContent } from '../utils/epCrypto';
 import './PatientChatPage.css';
 
 export default function PatientChatPage() {
@@ -47,6 +50,16 @@ export default function PatientChatPage() {
   const epMessagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
+  // ── E2EE key material (EP-Patient chat only) ──────────────────────────────
+  const patientKeyPairRef = useRef(null);   // { privateKey: CryptoKey, publicKeyJwk }
+  const epSharedKeyRef = useRef(null);       // AES-GCM CryptoKey, one per session
+  // ── Generate / load ECDH key pair on mount and upload public key ─────────
+  useEffect(() => {
+    getOrCreateKeyPair().then(async (kp) => {
+      patientKeyPairRef.current = kp;
+      try { await uploadMyPublicKey(kp.publicKeyJwk); } catch { /* silent */ }
+    });
+  }, []);
   // ── load groups ────────────────────────────────────────────────────────────
   useEffect(() => {
     listChatGroupsPatient()
@@ -101,31 +114,53 @@ export default function PatientChatPage() {
   useEffect(() => {
     if (!selectedEpSession) return;
     if (epWsRef.current) { epWsRef.current.close(); epWsRef.current = null; }
+    epSharedKeyRef.current = null;
 
-    setEpMessagesLoading(true);
-    getEPPatientSessionMessages(selectedEpSession.session_id)
-      .then(setEpMessages)
-      .catch(() => {})
-      .finally(() => setEpMessagesLoading(false));
-
-    setEpWsStatus('connecting');
-    const ws = openEPPatientSocket(selectedEpSession.session_id);
-    epWsRef.current = ws;
-    ws.onopen = () => setEpWsStatus('open');
-    ws.onmessage = (e) => {
-      const data = JSON.parse(e.data);
-      if (data.type === 'session_closed') {
-        // EP closed the session — remove from list and clear chat
-        setEpSessions((prev) => prev.filter((s) => s.session_id !== selectedEpSession.session_id));
-        setSelectedEpSession(null);
-        setEpMessages([]);
-        ws.close();
-      } else {
-        setEpMessages((prev) => [...prev, data]);
+    const run = async () => {
+      // Derive shared AES key with EP (ECDH)
+      if (patientKeyPairRef.current) {
+        try {
+          const peerJwk = await getPeerPublicKey(selectedEpSession.session_id);
+          epSharedKeyRef.current = await deriveSharedKey(patientKeyPairRef.current.privateKey, peerJwk);
+        } catch {
+          epSharedKeyRef.current = null; // peer hasn't uploaded key yet — fallback to plain
+        }
       }
+
+      // Load + decrypt history
+      setEpMessagesLoading(true);
+      try {
+        const msgs = await getEPPatientSessionMessages(selectedEpSession.session_id);
+        const decrypted = await Promise.all(msgs.map((m) => decryptMessageContent(m, epSharedKeyRef.current)));
+        setEpMessages(decrypted);
+      } catch {
+        setEpMessages([]);
+      } finally {
+        setEpMessagesLoading(false);
+      }
+
+      // Open WebSocket
+      setEpWsStatus('connecting');
+      const ws = openEPPatientSocket(selectedEpSession.session_id);
+      epWsRef.current = ws;
+      ws.onopen = () => setEpWsStatus('open');
+      ws.onmessage = async (e) => {
+        const data = JSON.parse(e.data);
+        if (data.type === 'session_closed') {
+          setEpSessions((prev) => prev.filter((s) => s.session_id !== selectedEpSession.session_id));
+          setSelectedEpSession(null);
+          setEpMessages([]);
+          ws.close();
+        } else {
+          const decData = await decryptMessageContent(data, epSharedKeyRef.current);
+          setEpMessages((prev) => [...prev, decData]);
+        }
+      };
+      ws.onerror = () => setEpWsStatus('closed');
+      ws.onclose = () => setEpWsStatus('closed');
     };
-    ws.onerror = () => setEpWsStatus('closed');
-    ws.onclose = () => setEpWsStatus('closed');
+
+    run();
 
     return () => { if (epWsRef.current) { epWsRef.current.close(); epWsRef.current = null; } };
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -144,11 +179,16 @@ export default function PatientChatPage() {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
   };
 
-  // ── Send to EP ────────────────────────────────────────────────────────────
-  const handleEpSend = () => {
+  // ── Send to EP — encrypts before sending ──────────────────────────────────
+  const handleEpSend = async () => {
     const text = epInputText.trim();
     if (!text || !epWsRef.current || epWsRef.current.readyState !== WebSocket.OPEN) return;
-    epWsRef.current.send(JSON.stringify({ content: text }));
+    let content = text;
+    if (epSharedKeyRef.current) {
+      const encrypted = await encryptMsg(epSharedKeyRef.current, text);
+      content = JSON.stringify(encrypted);
+    }
+    epWsRef.current.send(JSON.stringify({ content }));
     setEpInputText('');
   };
 

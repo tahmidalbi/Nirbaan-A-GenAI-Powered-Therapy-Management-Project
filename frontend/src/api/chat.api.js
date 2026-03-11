@@ -179,3 +179,22 @@ export function openEPPatientSocket(sessionId) {
   const token = getToken();
   return new WebSocket(`ws://127.0.0.1:8000/chat/ep-patient/ws/${sessionId}?token=${token}`);
 }
+
+// ─── E2EE Public Key Exchange ───────────────────────────────────────────────
+
+/** Upload this user's ECDH P-256 public key JWK to the server. */
+export async function uploadMyPublicKey(publicKeyJwk) {
+  const token = getToken();
+  await axiosInstance.put(`${BASE}/ep-patient/public-key?token=${token}`, {
+    public_key_jwk: publicKeyJwk,
+  });
+}
+
+/** Fetch the other party's ECDH public key JWK for a given session. */
+export async function getPeerPublicKey(sessionId) {
+  const token = getToken();
+  const res = await axiosInstance.get(
+    `${BASE}/ep-patient/session/${sessionId}/peer-public-key?token=${token}`,
+  );
+  return res.data.public_key_jwk;
+}
