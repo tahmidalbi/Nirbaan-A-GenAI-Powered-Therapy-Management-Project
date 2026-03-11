@@ -36,6 +36,9 @@ import TherapistERPObsessionList from '../pages/TherapistERPObsessionList';
 import TherapistERPObsessionView from '../pages/TherapistERPObsessionView';
 import NirbaanAIChat from '../pages/NirbaanAIChat';
 import TherapistNirbaanAIPage from '../pages/TherapistNirbaanAIPage';
+import TherapistChatPage from '../pages/TherapistChatPage';
+import PatientChatPage from '../pages/PatientChatPage';
+import EPChatPage from '../pages/EPChatPage';
 
 const AppRoutes = () => {
   return (
@@ -344,6 +347,32 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['emergency_personnel']}>
             <EmergencyPersonnelDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Chat Pages */}
+      <Route
+        path="/therapist/chat"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistChatPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/patient/chat"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <PatientChatPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/emergency/chat"
+        element={
+          <ProtectedRoute allowedRoles={['emergency_personnel']}>
+            <EPChatPage />
           </ProtectedRoute>
         }
       />
