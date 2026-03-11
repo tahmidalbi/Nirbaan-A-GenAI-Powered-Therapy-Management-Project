@@ -21,6 +21,7 @@ from app.therapy_sessions.router import router as therapy_sessions_router
 from app.chat.router import router as chat_router
 from app.chat.ep_router import ep_router
 from app.chat.ep_group_router import ep_group_router
+from app.chat.ep_patient_router import ep_patient_router
 
 # Optional: if you have SQLAlchemy Base + engine and want to ensure tables exist in dev
 # from app.database.base import Base
@@ -70,6 +71,7 @@ def create_app() -> FastAPI:
     app.include_router(chat_router)
     app.include_router(ep_router)
     app.include_router(ep_group_router)
+    app.include_router(ep_patient_router)
 
     @app.get("/", tags=["health"])
     def health_check():

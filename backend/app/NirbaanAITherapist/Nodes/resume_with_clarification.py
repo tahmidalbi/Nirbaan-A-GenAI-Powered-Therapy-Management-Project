@@ -99,7 +99,7 @@ def _collect_sources(kb_chunks: List[Dict[str, Any]]) -> List[str]:
 
     return sources
 
-
+                       
 def _build_prompt(
     *,
     user_message: str,
@@ -111,7 +111,7 @@ def _build_prompt(
     obsession_compulsion_pairs: List[Dict[str, Any]],
     kb_context_summary: str,
     prior_draft_analysis: str,
-    prior_analysis_summary: str,
+    prior_analysis_summary: str,               
     clarification_question: str,
     clarification_answer: str,
 ) -> str:
