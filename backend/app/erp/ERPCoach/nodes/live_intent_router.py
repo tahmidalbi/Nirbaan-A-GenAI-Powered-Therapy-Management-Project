@@ -51,17 +51,33 @@ def live_intent_router(state: Dict[str, Any]) -> LiveRoute:
     """
     event_type = (state.get("event_type") or "").strip().upper()
 
+    # ── SUDS_SUBMITTED: only purpose is immediate spike detection ──────────────
+    # Fired by the SUDS endpoint right after saving a new reading.
+    # Does nothing except send a spike alert (if warranted); Celery handles
+    # all periodic reminders.
+    if event_type == "SUDS_SUBMITTED":
+        if bool(state.get("spike_flag", False)):
+            return "SUDS_SPIKE"
+        return "NO_MESSAGE"
+
     # ── CHECK_IN routing is deterministic (never LLM-decided) ──────────────────
     if event_type == "CHECK_IN":
         cooldown_ok = bool(state.get("cooldown_ok", True))
         spike_flag = bool(state.get("spike_flag", False))
         rate_reminder_flag = bool(state.get("rate_reminder_flag", False))
         recently_engaged = bool(state.get("recently_engaged", False))
+        since_last_suds: Optional[float] = state.get("since_last_suds_seconds")
 
         # SUDS spike is clinically urgent — fire even while the patient is
         # actively chatting, but still respect the cooldown so we don't spam.
+        # However, if SUDS was submitted very recently (<30 s), the SUDS
+        # endpoint's own graph call (SUDS_SUBMITTED) is handling the spike;
+        # skip it here to prevent double messages.
+        SUDS_SPIKE_LOCKOUT_SECONDS = 30.0
         if spike_flag and cooldown_ok:
-            return "SUDS_SPIKE"
+            if since_last_suds is None or since_last_suds >= SUDS_SPIKE_LOCKOUT_SECONDS:
+                return "SUDS_SPIKE"
+            # else: fall through — SUDS endpoint is (or was just) handling it
 
         # Patient is active (sent a message or rated SUDS within engagement_window).
         # Suppress all remaining auto check-ins — don't interrupt an active chat.
