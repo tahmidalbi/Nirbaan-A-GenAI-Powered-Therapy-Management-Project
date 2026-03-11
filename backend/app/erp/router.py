@@ -1,8 +1,11 @@
 # app/erp/router.py
 from __future__ import annotations
 
+import logging
 from datetime import datetime
 from typing import Any, Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
@@ -411,6 +414,19 @@ async def record_suds(
 
     db.commit()
     db.refresh(reading)
+
+    # Run graph immediately to check for SUDS spike
+    if session.status in ("running", "paused"):
+        try:
+            invoke_erp_coach(
+                {"session_id": session_id, "event_type": "SUDS_SUBMITTED"}
+            )
+        except Exception:
+            logger.exception(
+                "Spike check failed after SUDS recording (session=%s)",
+                session_id,
+            )
+
     return reading
 
 

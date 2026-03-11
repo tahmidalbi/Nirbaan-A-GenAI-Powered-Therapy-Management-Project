@@ -343,6 +343,8 @@ const ERPSessionPage = () => {
     try {
       await recordSUDS(session.id, sudsValue, displaySeconds);
       await loadSUDSHistory();
+      // Reload transcript to pick up any spike alert from graph
+      await loadTranscript(session.id, { silent: true });
     } catch { /* silent */ } finally { setSudsSubmitting(false); }
   };
 
