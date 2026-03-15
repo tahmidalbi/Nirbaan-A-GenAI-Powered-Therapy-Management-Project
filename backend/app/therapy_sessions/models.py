@@ -1,4 +1,4 @@
-from sqlalchemy import String, Integer, DateTime, ForeignKey, Text
+from sqlalchemy import String, Integer, DateTime, ForeignKey, Text, Float, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 from app.database.base import Base
@@ -15,6 +15,9 @@ class TherapySession(Base):
 
     # Relationships
     transcripts: Mapped[list["TherapyTranscript"]] = relationship("TherapyTranscript", back_populates="session")
+    analysis: Mapped["TherapySessionAnalysis | None"] = relationship(
+        "TherapySessionAnalysis", back_populates="session", uselist=False
+    )
 
 
 class TherapyTranscript(Base):
@@ -25,6 +28,25 @@ class TherapyTranscript(Base):
     speaker: Mapped[str] = mapped_column(String, nullable=False)  # "therapist" or "patient"
     text: Mapped[str] = mapped_column(Text, nullable=False)
     timestamp: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
+    confidence: Mapped[float | None] = mapped_column(Float, nullable=True)
 
     # Relationships
     session: Mapped["TherapySession"] = relationship("TherapySession", back_populates="transcripts")
+
+
+class TherapySessionAnalysis(Base):
+    __tablename__ = "therapy_session_analysis"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    session_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("therapy_sessions.id"), nullable=False, unique=True
+    )
+    summary: Mapped[str] = mapped_column(Text, nullable=False)
+    detected_topics: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    therapist_interventions: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    patient_emotions: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    homeworks: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
+
+    # Relationships
+    session: Mapped["TherapySession"] = relationship("TherapySession", back_populates="analysis")

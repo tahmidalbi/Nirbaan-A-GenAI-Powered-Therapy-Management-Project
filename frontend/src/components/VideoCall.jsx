@@ -8,6 +8,7 @@ const VideoCall = ({
   userType: userTypeProp, // "therapist" or "patient"
   targetUserId = null, // For therapist to call specific patient
   sessionId = null, // Therapy session ID
+  onCallStart = () => {},
   onCallEnd = () => {} 
 }) => {
   // Fall back to auth store if props are not valid numbers
@@ -57,6 +58,7 @@ const VideoCall = ({
   useEffect(() => {
     if (callState === 'connected') {
       startTranscription();
+      onCallStart();
     } else if (callState === 'idle' || callState === 'ended') {
       stopTranscription();
     }

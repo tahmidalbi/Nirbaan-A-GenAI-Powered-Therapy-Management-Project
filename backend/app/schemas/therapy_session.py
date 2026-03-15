@@ -16,6 +16,20 @@ class TranscriptResponse(BaseModel):
     speaker: str
     text: str
     timestamp: datetime
+    confidence: Optional[float] = None
+
+    class Config:
+        from_attributes = True
+
+class SessionAnalysisResponse(BaseModel):
+    id: int
+    session_id: int
+    summary: str
+    detected_topics: list
+    therapist_interventions: list
+    patient_emotions: list
+    homeworks: list
+    created_at: datetime
 
     class Config:
         from_attributes = True
@@ -27,6 +41,7 @@ class SessionResponse(BaseModel):
     started_at: datetime
     ended_at: Optional[datetime]
     transcripts: List[TranscriptResponse] = []
+    analysis: Optional[SessionAnalysisResponse] = None
 
     class Config:
         from_attributes = True

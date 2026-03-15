@@ -7,7 +7,8 @@ const TranscriptDisplay = ({
   autoScroll = true,
   maxHeight = '500px',
   showClear = false,
-  onClear = null
+  onClear = null,
+  isLive = false,
 }) => {
   const transcriptEndRef = useRef(null);
   const containerRef = useRef(null);
@@ -34,7 +35,14 @@ const TranscriptDisplay = ({
   };
 
   const getSpeakerClass = (speaker) => {
-    return speaker.toLowerCase() === 'therapist' ? 'therapist' : 'patient';
+    return speaker?.toLowerCase() === 'therapist' ? 'therapist' : 'patient';
+  };
+
+  const getConfidenceLabel = (confidence) => {
+    if (confidence == null) return null;
+    if (confidence >= 0.9) return 'high';
+    if (confidence >= 0.6) return 'medium';
+    return 'low';
   };
 
   const handleClear = () => {
@@ -46,9 +54,13 @@ const TranscriptDisplay = ({
   if (transcripts.length === 0) {
     return (
       <div className="transcript-display-container" style={{ maxHeight }}>
+        <div className="transcript-display-header">
+          <h3>Live Transcript</h3>
+          {isLive && <span className="live-badge">● LIVE</span>}
+        </div>
         <div className="transcript-empty">
           <span className="empty-icon">📝</span>
-          <p>No transcripts yet. Start recording to see transcripts appear here in real-time.</p>
+          <p>No transcripts yet. Transcripts will appear here in real-time once the call starts.</p>
         </div>
       </div>
     );
@@ -56,32 +68,45 @@ const TranscriptDisplay = ({
 
   return (
     <div className="transcript-display-container" style={{ maxHeight }}>
-      <div className="transcript-header">
+      <div className="transcript-display-header">
         <h3>Live Transcript</h3>
-        {showClear && onClear && (
-          <button className="clear-transcript-btn" onClick={handleClear}>
-            Clear
-          </button>
-        )}
+        <div className="transcript-header-actions">
+          {isLive && <span className="live-badge">● LIVE</span>}
+          {showClear && onClear && (
+            <button className="clear-transcript-btn" onClick={handleClear}>
+              Clear
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="transcript-content" ref={containerRef}>
-        {transcripts.map((transcript, index) => (
-          <div 
-            key={transcript.id || index} 
-            className={`transcript-entry ${getSpeakerClass(transcript.speaker)}`}
-          >
-            <div className="transcript-time">
-              [{formatTime(transcript.timestamp)}]
+        {transcripts.map((transcript, index) => {
+          const conf = getConfidenceLabel(transcript.confidence);
+          return (
+            <div 
+              key={transcript.id || index} 
+              className={`transcript-entry ${getSpeakerClass(transcript.speaker)}${transcript.is_partial ? ' partial' : ''}`}
+            >
+              <div className="transcript-meta-row">
+                <span className="transcript-time">
+                  [{formatTime(transcript.timestamp)}]
+                </span>
+                <span className="transcript-speaker">
+                  {transcript.speaker}:
+                </span>
+                {conf && (
+                  <span className={`confidence-badge confidence-${conf}`}>
+                    {conf}
+                  </span>
+                )}
+              </div>
+              <div className="transcript-text">
+                {transcript.text}
+              </div>
             </div>
-            <div className="transcript-speaker">
-              {transcript.speaker}:
-            </div>
-            <div className="transcript-text">
-              {transcript.text}
-            </div>
-          </div>
-        ))}
+          );
+        })}
         <div ref={transcriptEndRef} />
       </div>
     </div>
@@ -94,13 +119,16 @@ TranscriptDisplay.propTypes = {
       id: PropTypes.number,
       speaker: PropTypes.string.isRequired,
       text: PropTypes.string.isRequired,
-      timestamp: PropTypes.string.isRequired,
+      timestamp: PropTypes.string,
+      confidence: PropTypes.number,
+      is_partial: PropTypes.bool,
     })
   ),
   autoScroll: PropTypes.bool,
   maxHeight: PropTypes.string,
   showClear: PropTypes.bool,
   onClear: PropTypes.func,
+  isLive: PropTypes.bool,
 };
 
 export default TranscriptDisplay;

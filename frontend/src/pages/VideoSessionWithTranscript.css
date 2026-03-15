@@ -101,3 +101,98 @@
     min-height: 300px;
   }
 }
+
+/* ── Header live indicator ─────────────────────────────── */
+.header-live-dot {
+  color: #ef5350;
+  font-weight: 600;
+  font-size: 0.85rem;
+  animation: headerPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes headerPulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}
+
+/* ── Analysis panel ────────────────────────────────────── */
+.analysis-panel {
+  background: #fff;
+  border-top: 2px solid #6B9B8D;
+  padding: 1.25rem 1.5rem;
+}
+
+.analysis-panel.loading-analysis {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.analysis-spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid #e0e0e0;
+  border-top-color: #6B9B8D;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.analysis-panel h3 {
+  margin: 0 0 1rem;
+  color: #5A8A7D;
+  font-family: 'Georgia', serif;
+  font-size: 1.1rem;
+}
+
+.analysis-section {
+  margin-bottom: 1rem;
+}
+
+.analysis-section h4 {
+  margin: 0 0 0.4rem;
+  font-size: 0.9rem;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.analysis-section p {
+  margin: 0;
+  color: #333;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.topic-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.topic-tag {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.intervention-list {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: #333;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.intervention-list strong {
+  color: #6B9B8D;
+}

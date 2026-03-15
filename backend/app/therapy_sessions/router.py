@@ -1,18 +1,22 @@
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import func
 from typing import List
+from datetime import datetime, timezone
 
 from app.database.deps import get_db
 from app.schemas.therapy_session import (
     SessionStart,
     TranscriptAppend,
     SessionResponse,
-    TranscriptResponse
+    TranscriptResponse,
+    SessionAnalysisResponse
 )
-from app.therapy_sessions.models import TherapySession, TherapyTranscript
+from app.therapy_sessions.models import TherapySession, TherapyTranscript, TherapySessionAnalysis
 from app.therapists.models import Therapist
 from app.patients.models import Patient
 from app.therapy_sessions.transcription_service import transcription_service
+from app.therapy_sessions.analysis_service import generate_session_analysis
 
 router = APIRouter(prefix="/sessions", tags=["Therapy Sessions"])
 
@@ -228,3 +232,71 @@ async def transcribe_audio(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error processing audio: {str(e)}"
         )
+
+
+@router.post("/{session_id}/end", response_model=SessionResponse)
+async def end_session(
+    session_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    End a therapy session.
+    Sets ended_at timestamp and triggers AI analysis in the background.
+    """
+    session = db.query(TherapySession).filter(TherapySession.id == session_id).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    if session.ended_at:
+        raise HTTPException(status_code=400, detail="Session already ended")
+
+    session.ended_at = func.now()
+    db.commit()
+    db.refresh(session)
+
+    # Generate AI analysis (synchronous for now – could be Celery task)
+    generate_session_analysis(session_id, db)
+    db.refresh(session)
+
+    return session
+
+
+@router.get("/{session_id}/analysis", response_model=SessionAnalysisResponse)
+async def get_session_analysis(
+    session_id: int,
+    db: Session = Depends(get_db)
+):
+    """Retrieve the AI-generated analysis for a session."""
+    analysis = (
+        db.query(TherapySessionAnalysis)
+        .filter(TherapySessionAnalysis.session_id == session_id)
+        .first()
+    )
+    if not analysis:
+        raise HTTPException(status_code=404, detail="Analysis not found for this session")
+    return analysis
+
+
+@router.post("/{session_id}/analysis/generate", response_model=SessionAnalysisResponse)
+async def trigger_session_analysis(
+    session_id: int,
+    db: Session = Depends(get_db)
+):
+    """Manually trigger AI analysis for a session (re-generates if exists)."""
+    session = db.query(TherapySession).filter(TherapySession.id == session_id).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    # Delete existing analysis if any
+    existing = (
+        db.query(TherapySessionAnalysis)
+        .filter(TherapySessionAnalysis.session_id == session_id)
+        .first()
+    )
+    if existing:
+        db.delete(existing)
+        db.commit()
+
+    analysis = generate_session_analysis(session_id, db)
+    if not analysis:
+        raise HTTPException(status_code=500, detail="Failed to generate analysis")
+    return analysis
