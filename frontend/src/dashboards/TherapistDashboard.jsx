@@ -8,6 +8,7 @@ import AddEmergencyPersonnel from '../components/AddEmergencyPersonnel';
 import ResourceManager from '../components/ResourceManager';
 import RAGChat from '../components/RAGChat';
 import PatientHistory from '../components/PatientHistory';
+import ActiveSessions from '../components/ActiveSessions';
 import './TherapistDashboard.css';
 
 const TherapistDashboard = () => {
@@ -141,11 +142,11 @@ const TherapistDashboard = () => {
             >
               Chat
             </button>
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'sessions' ? 'active' : ''}`}
               onClick={() => setActiveSection('sessions')}
             >
-              Sessions
+              Active Sessions
             </button>
           </nav>
           <button onClick={handleLogout} className="logout-btn">Logout</button>
@@ -303,8 +304,8 @@ const TherapistDashboard = () => {
         )}
 
         {activeSection === 'sessions' && (
-          <div className="section-content-blank">
-            {/* Sessions section - to be implemented */}
+          <div className="section-content">
+            <ActiveSessions />
           </div>
         )}
       </main>

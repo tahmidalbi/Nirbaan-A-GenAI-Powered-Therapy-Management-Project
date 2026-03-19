@@ -36,8 +36,49 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["Streaming Transcription"])
 
-# How many seconds of audio we accumulate before triggering a transcription
-CHUNK_WINDOW_SECONDS = 3
+# Common Whisper hallucinations to filter out
+HALLUCINATION_PATTERNS = [
+    "thanks for watching",
+    "thank you for watching",
+    "subscribe",
+    "like and subscribe",
+    "see you next time",
+    "bye bye",
+    "goodbye",
+    "thank you",
+    "you",
+    "...",
+    "silence",
+    "music",
+    "[music]",
+    "(music)",
+    "[applause]",
+    "(applause)",
+]
+
+
+def is_hallucination(text: str) -> bool:
+    """Check if transcribed text is likely a Whisper hallucination."""
+    if not text:
+        return True
+
+    cleaned = text.lower().strip()
+
+    # Too short (likely noise)
+    if len(cleaned) < 3:
+        return True
+
+    # Check against known hallucination patterns
+    for pattern in HALLUCINATION_PATTERNS:
+        if cleaned == pattern or cleaned.startswith(pattern):
+            return True
+
+    # Repetitive text (e.g., "the the the the")
+    words = cleaned.split()
+    if len(words) >= 3 and len(set(words)) == 1:
+        return True
+
+    return False
 
 
 async def _transcribe_and_save(
@@ -75,6 +116,11 @@ async def _transcribe_and_save(
         return None
 
     text = result["text"].strip()
+
+    # Filter out hallucinations
+    if is_hallucination(text):
+        logger.info(f"[Transcription] Filtered hallucination: {text}")
+        return None
 
     # Persist to DB
     db = SessionLocal()
@@ -125,39 +171,21 @@ async def ws_transcription(websocket: WebSocket, session_id: int):
     await websocket.accept()
     logger.info(f"[Transcription WS] {user_type}#{user_id} connected to session {session_id}")
 
-    buffer = bytearray()
-    running = True
-
-    async def flush_buffer():
-        """Transcribe whatever has accumulated in *buffer*, send result."""
-        nonlocal buffer
-        if not buffer:
-            return
-        chunk = bytes(buffer)
-        buffer = bytearray()
-
-        payload = await _transcribe_and_save(chunk, session_id, user_type, language)
-        if payload and websocket.client_state == WebSocketState.CONNECTED:
-            await websocket.send_json(payload)
-
-    # Timer task: flush buffer every CHUNK_WINDOW_SECONDS
-    async def timer_loop():
-        nonlocal running
-        while running:
-            await asyncio.sleep(CHUNK_WINDOW_SECONDS)
-            if running:
-                try:
-                    await flush_buffer()
-                except Exception as e:
-                    logger.warning(f"[Transcription WS] flush error: {e}")
-
-    timer_task = asyncio.create_task(timer_loop())
-
     try:
         while True:
             msg = await websocket.receive()
+
+            # Handle binary audio data (complete WebM blobs from frontend)
             if "bytes" in msg and msg["bytes"]:
-                buffer.extend(msg["bytes"])
+                audio_bytes = msg["bytes"]
+                logger.info(f"[Transcription WS] Received audio chunk: {len(audio_bytes)} bytes")
+
+                # Process audio in background to not block receiving
+                payload = await _transcribe_and_save(audio_bytes, session_id, user_type, language)
+                if payload and websocket.client_state == WebSocketState.CONNECTED:
+                    await websocket.send_json(payload)
+
+            # Handle JSON messages
             elif "text" in msg:
                 import json
                 try:
@@ -165,20 +193,14 @@ async def ws_transcription(websocket: WebSocket, session_id: int):
                 except Exception:
                     continue
                 if data.get("type") == "stop":
-                    await flush_buffer()
+                    logger.info(f"[Transcription WS] Stop signal received")
                     break
+
     except WebSocketDisconnect:
         logger.info(f"[Transcription WS] {user_type}#{user_id} disconnected")
     except Exception as e:
         logger.error(f"[Transcription WS] Error: {e}")
     finally:
-        running = False
-        timer_task.cancel()
-        # Flush remaining audio
-        try:
-            await flush_buffer()
-        except Exception:
-            pass
         if websocket.client_state == WebSocketState.CONNECTED:
             await websocket.close()
         logger.info(f"[Transcription WS] Cleaned up session {session_id} / {user_type}#{user_id}")

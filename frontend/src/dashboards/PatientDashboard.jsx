@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '../store/authStore';
+import PatientHomework from '../components/PatientHomework';
 import './PatientDashboard.css';
 
 const PatientDashboard = () => {
@@ -144,8 +145,8 @@ const PatientDashboard = () => {
         )}
 
         {activeSection === 'homework' && (
-          <div className="empty-section">
-            {/* Empty Homework section */}
+          <div className="section-content">
+            <PatientHomework />
           </div>
         )}
 

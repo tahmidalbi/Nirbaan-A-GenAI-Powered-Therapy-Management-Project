@@ -1,0 +1,387 @@
+.ph-page {
+  padding: 24px;
+  background: #f0fdf4;
+  min-height: 100%;
+}
+
+.ph-shell {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.ph-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.ph-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ph-brandDot {
+  width: 12px;
+  height: 12px;
+  background: #22c55e;
+  border-radius: 50%;
+}
+
+.ph-titleMain {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.ph-subtitleMain {
+  font-size: 14px;
+  color: #64748b;
+  margin: 4px 0 0 0;
+}
+
+.ph-refreshBtn {
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #475569;
+}
+
+.ph-refreshBtn:hover {
+  background: #f1f5f9;
+}
+
+.ph-refreshBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ph-errorBanner {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ph-errorBanner button {
+  background: none;
+  border: none;
+  color: #dc2626;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.ph-stateMain {
+  text-align: center;
+  padding: 60px 20px;
+  color: #64748b;
+}
+
+.ph-spinnerMain {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #dcfce7;
+  border-top: 3px solid #22c55e;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.ph-emptyMain {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.ph-emptyIconMain {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.ph-emptyMain h3 {
+  font-size: 18px;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+}
+
+.ph-emptyMain p {
+  color: #64748b;
+  margin: 0;
+}
+
+.ph-weeksList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ph-weekCard {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+
+.ph-weekHeader {
+  width: 100%;
+  padding: 16px 20px;
+  background: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+}
+
+.ph-weekHeader:hover {
+  background: #f8fafc;
+}
+
+.ph-weekHeader.expanded {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.ph-weekInfo h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 4px 0;
+}
+
+.ph-weekCount {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.ph-weekRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ph-progressBar {
+  width: 100px;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.ph-progressFill {
+  height: 100%;
+  background: #22c55e;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.ph-chevron {
+  font-size: 12px;
+  color: #94a3b8;
+  transition: transform 0.2s ease;
+}
+
+.ph-chevron.up {
+  transform: rotate(180deg);
+}
+
+.ph-weekContent {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ph-homeworkCard {
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.ph-homeworkCard.completed {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.ph-homeworkCard.skipped {
+  background: #fefce8;
+  border-color: #fef08a;
+}
+
+.ph-homeworkHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.ph-statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.ph-statusIcon {
+  font-size: 12px;
+}
+
+.ph-statusActive {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.ph-statusCompleted {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.ph-statusSkipped {
+  background: #fef9c3;
+  color: #ca8a04;
+}
+
+.ph-frequency {
+  font-size: 12px;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.ph-homeworkBody {
+  margin-bottom: 12px;
+}
+
+.ph-taskTitle {
+  font-size: 15px;
+  font-weight: 500;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+}
+
+.ph-taskRationale {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.ph-markCompleteBtn {
+  width: 100%;
+  padding: 10px;
+  background: #22c55e;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.ph-markCompleteBtn:hover {
+  background: #16a34a;
+}
+
+.ph-completeForm {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.ph-completeForm textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 60px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+
+.ph-completeForm textarea:focus {
+  outline: none;
+  border-color: #22c55e;
+}
+
+.ph-completeActions {
+  display: flex;
+  gap: 10px;
+}
+
+.ph-completeBtn {
+  flex: 1;
+  padding: 10px;
+  background: #22c55e;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.ph-completeBtn:hover {
+  background: #16a34a;
+}
+
+.ph-completeBtn:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.ph-cancelCompleteBtn {
+  padding: 10px 16px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #64748b;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.ph-cancelCompleteBtn:hover {
+  background: #f8fafc;
+}
+
+.ph-completedInfo {
+  font-size: 13px;
+  color: #16a34a;
+  margin-top: 8px;
+}
+
+.ph-patientNotes {
+  margin-top: 12px;
+  padding: 10px;
+  background: white;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #475569;
+}
+
+.ph-patientNotes strong {
+  color: #1e293b;
+}

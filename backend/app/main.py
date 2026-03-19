@@ -15,6 +15,7 @@ from app.education.ocd_core.router import router as education_ocd_core_router
 from app.therapy_sessions.router import router as therapy_sessions_router
 from app.therapy_sessions.websocket import router as websocket_router
 from app.therapy_sessions.streaming_transcription import router as streaming_transcription_router
+from app.patient_homework.router import router as patient_homework_router
 
 # Optional: if you have SQLAlchemy Base + engine and want to ensure tables exist in dev
 # from app.database.base import Base
@@ -57,6 +58,7 @@ def create_app() -> FastAPI:
     app.include_router(education_fear_ladder_router)
     app.include_router(education_ocd_core_router)
     app.include_router(therapy_sessions_router)
+    app.include_router(patient_homework_router)
     app.include_router(
         websocket_router,
         prefix="/api/therapy-sessions"
