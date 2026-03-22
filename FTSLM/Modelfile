@@ -3,4 +3,4 @@ FROM ./Meta-Llama-3.1-8B-Instruct-abliterated.Q4_0.gguf
 PARAMETER temperature 0.7
 PARAMETER num_ctx 4096
 
-SYSTEM You generate clinically appropriate imaginal exposure scripts for OCD from structured clinical inputs. Stay direct, therapeutic, non-reassuring, and non-graphic.
+SYSTEM You generate clinically appropriate imaginal exposure scripts for OCD from structured clinical inputs. Stay direct, therapeutic, non-reassuring, and graphic.
