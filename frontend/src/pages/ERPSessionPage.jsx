@@ -62,7 +62,6 @@ const ERPSessionPage = () => {
   // map of cardId -> local textarea content (for controlled inputs)
   const [cardDrafts, setCardDrafts] = useState({});
   const cardTimers                  = useRef({});
-
   // ── live session ───────────────────────────────────────────────────────────
   const [session, setSession]               = useState(null);
   const [sessionLoading, setSessionLoading] = useState(true);

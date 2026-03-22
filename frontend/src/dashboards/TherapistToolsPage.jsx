@@ -50,7 +50,7 @@ const TherapistToolsPage = () => {
             <p>Monitor and guide patient exposure exercises</p>
           </div>
           
-          <div className="tool-box" onClick={() => console.log('Imaginal Exposures clicked')}>
+          <div className="tool-box" onClick={() => navigate('/therapist/dashboard/imaginal')}>
             <div className="tool-icon">💭</div>
             <h3>Imaginal Exposures</h3>
             <p>Design and track imaginal exposure protocols</p>

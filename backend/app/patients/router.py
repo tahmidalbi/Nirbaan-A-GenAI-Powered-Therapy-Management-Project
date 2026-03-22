@@ -84,6 +84,16 @@ async def get_patients(
     ).all()
     return patients
 
+@router.get("/me", response_model=PatientResponse)
+async def get_current_patient_info(
+    db: Session = Depends(get_db),
+    current_patient: Patient = Depends(get_current_patient)
+):
+    """
+    Get current patient information (for authenticated patients)
+    """
+    return current_patient
+
 @router.get("/{patient_id}", response_model=PatientResponse)
 async def get_patient(
     patient_id: int,
@@ -181,13 +191,3 @@ async def login_patient(
     print(f"[LOGIN SUCCESS] Patient: {patient.name} ({patient.email})")
     
     return {"access_token": access_token, "token_type": "bearer"}
-
-@router.get("/me", response_model=PatientResponse)
-async def get_current_patient_info(
-    db: Session = Depends(get_db),
-    current_patient: Patient = Depends(get_current_patient)
-):
-    """
-    Get current patient information (for authenticated patients)
-    """
-    return current_patient

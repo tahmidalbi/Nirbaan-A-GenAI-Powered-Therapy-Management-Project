@@ -56,10 +56,10 @@ const OCDTools = () => {
             <p>Track your exposure and response prevention exercises</p>
           </div>
           
-          <div className="tool-box" onClick={() => console.log('Imaginal Exposures clicked')}>
+          <div className="tool-box" onClick={() => navigate('/patient/dashboard/imaginal-scripts')}>
             <div className="tool-icon">💭</div>
-            <h3>Imaginal Exposures</h3>
-            <p>Practice imaginal exposure exercises</p>
+            <h3>Imaginal Scripts</h3>
+            <p>Listen to and read your therapist-approved exposure scripts</p>
           </div>
           
           <div className="tool-box" onClick={() => console.log('Anti-Reassurance Chatbot clicked')}>

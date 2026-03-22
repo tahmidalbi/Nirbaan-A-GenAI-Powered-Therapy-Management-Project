@@ -343,6 +343,71 @@
   background: rgba(255,255,255,0.13);
 }
 
+/* ── AI-approved audio tapes ── */
+.session-ai-scripts-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+.session-ai-script-card {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(180,220,200,0.25);
+  border-radius: 12px;
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.session-ai-script-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.session-ai-script-tag {
+  background: rgba(100,200,160,0.2);
+  color: #9ee8cc;
+  border: 1px solid rgba(100,200,160,0.3);
+  border-radius: 99px;
+  padding: 0.1rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.session-ai-script-date {
+  margin-left: auto;
+  color: rgba(255,255,255,0.4);
+  font-size: 0.72rem;
+}
+.session-ai-script-audio {
+  width: 100%;
+  border-radius: 8px;
+  accent-color: #7ddec8;
+}
+.session-ai-script-text-toggle {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.6);
+}
+.session-ai-script-text-toggle summary {
+  cursor: pointer;
+  color: #7ddec8;
+  font-weight: 600;
+  user-select: none;
+}
+.session-ai-script-text-toggle summary:hover { color: #9ee8cc; }
+.session-ai-script-text {
+  margin-top: 0.5rem;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.8);
+  font-size: 0.82rem;
+  padding: 0.6rem 0.75rem;
+  background: rgba(0,0,0,0.2);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.07);
+}
+
 /* ─── placeholder panels ── */
 .session-placeholder {
   flex: 1;

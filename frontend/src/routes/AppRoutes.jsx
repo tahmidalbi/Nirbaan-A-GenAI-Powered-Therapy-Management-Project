@@ -34,6 +34,10 @@ import ERPAIReport from '../pages/ERPAIReport';
 import TherapistERPPatientList from '../pages/TherapistERPPatientList';
 import TherapistERPObsessionList from '../pages/TherapistERPObsessionList';
 import TherapistERPObsessionView from '../pages/TherapistERPObsessionView';
+import TherapistImaginalPatientList from '../pages/TherapistImaginalPatientList';
+import TherapistImaginalObsessionList from '../pages/TherapistImaginalObsessionList';
+import TherapistImaginalScriptPage from '../pages/TherapistImaginalScriptPage';
+import PatientImaginalScripts from '../pages/PatientImaginalScripts';
 import NirbaanAIChat from '../pages/NirbaanAIChat';
 import TherapistNirbaanAIPage from '../pages/TherapistNirbaanAIPage';
 import TherapistChatPage from '../pages/TherapistChatPage';
@@ -267,6 +271,46 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['therapist']}>
             <TherapistERPObsessionView />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist Imaginal Exposure Patient List */}
+      <Route
+        path="/therapist/dashboard/imaginal"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistImaginalPatientList />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist Imaginal Obsession List */}
+      <Route
+        path="/therapist/dashboard/imaginal/patient/:patientId"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistImaginalObsessionList />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist Imaginal Script Generator */}
+      <Route
+        path="/therapist/dashboard/imaginal/patient/:patientId/item/:itemId"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistImaginalScriptPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Patient Imaginal Scripts */}
+      <Route
+        path="/patient/dashboard/imaginal-scripts"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <PatientImaginalScripts />
           </ProtectedRoute>
         }
       />
