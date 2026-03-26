@@ -1,22 +1,26 @@
-
-from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-# Resource Schemas
+from pydantic import BaseModel, Field, ConfigDict
+
+
+# ============ RESOURCE SCHEMAS ============
+
 class ResourceInitUploadRequest(BaseModel):
     """Request to initialize upload"""
     title: str = Field(..., min_length=1, max_length=500)
     filename: str = Field(..., min_length=1, max_length=500)
     file_type: str = Field(..., pattern="^(pdf|txt)$")
     mime_type: str
-    size_bytes: int = Field(..., gt=0, le=100*1024*1024)  # Max 100MB
+    size_bytes: int = Field(..., gt=0, le=100 * 1024 * 1024)
+
 
 class ResourceInitUploadResponse(BaseModel):
     """Response with presigned upload URL"""
     resource_id: int
-    upload_url: str  # Presigned PUT URL (R2 doesn't support POST)
+    upload_url: str
     r2_key: str
+
 
 class ResourceConfirmUploadResponse(BaseModel):
     """Response after confirming upload"""
@@ -25,16 +29,18 @@ class ResourceConfirmUploadResponse(BaseModel):
     status: str
     message: str
 
+
 class ResourceStatusResponse(BaseModel):
     """Resource and job status"""
     resource_id: int
-    status: str  # initiated, uploaded, processing, ready, failed
-    progress: Optional[int] = None  # 0-100
+    status: str
+    progress: Optional[int] = None
     current_step: Optional[str] = None
     total_chunks: Optional[int] = None
     error_message: Optional[str] = None
     created_at: datetime
     updated_at: datetime
+
 
 class ResourceListItem(BaseModel):
     """Resource list item"""
@@ -46,34 +52,63 @@ class ResourceListItem(BaseModel):
     file_type: str
     size_bytes: int
     status: str
+    source_url: Optional[str] = None
     total_pages: Optional[int]
     total_chunks: Optional[int]
     created_at: datetime
     updated_at: datetime
+
+
+class PatientResourceListItem(BaseModel):
+    """Patient-facing resource list item (read-only)"""
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    title: str
+    original_filename: str
+    file_type: str
+    size_bytes: int
+    source_url: Optional[str] = None
+    created_at: datetime
+
+
+class PatientResourceDownloadResponse(BaseModel):
+    """Presigned download URL for a resource file"""
+    resource_id: int
+    download_url: str
+    expires_in_seconds: int = 3600
+
 
 class ResourceDeleteResponse(BaseModel):
     """Delete confirmation"""
     message: str
     resource_id: int
 
+
 class ResourceFromURLRequest(BaseModel):
     """Request to create resource from URL"""
     title: str = Field(..., min_length=1, max_length=500)
     url: str = Field(..., min_length=1, max_length=2000)
-    resource_type: str = Field(default="webpage")  # webpage, blog, article
+    resource_type: str = Field(default="webpage")
 
-# RAG Schemas
+
+# ============ RAG SCHEMAS ============
+
 class RAGSearchRequest(BaseModel):
     """Search query"""
     query: str = Field(..., min_length=3, max_length=1000)
     top_k: int = Field(default=6, ge=1, le=20)
+    resource_id: Optional[int] = None
+
 
 class ChunkResult(BaseModel):
     """Retrieved chunk"""
     chunk_text: str
     resource_title: str
     resource_id: int
-    similarity_score: float
+    similarity_score: float = 0.0
+    metadata: Optional[Dict[str, Any]] = None
+
 
 class RAGSearchResponse(BaseModel):
     """Search results"""
@@ -81,16 +116,20 @@ class RAGSearchResponse(BaseModel):
     chunks: List[ChunkResult]
     total_results: int
 
+
 class RAGAnswerRequest(BaseModel):
     """Answer generation request"""
     query: str = Field(..., min_length=3, max_length=1000)
     top_k: int = Field(default=6, ge=1, le=20)
+    resource_id: Optional[int] = None
+
 
 class SourceReference(BaseModel):
     """Citation source"""
     resource_title: str
     resource_id: int
     chunk_text: str
+
 
 class RAGAnswerResponse(BaseModel):
     """Generated answer with sources"""

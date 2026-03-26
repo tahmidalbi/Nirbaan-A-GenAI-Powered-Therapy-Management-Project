@@ -46,7 +46,7 @@ def generate_ocd_core_education_task(
         db.commit()
 
         # Build and run the LangGraph pipeline
-        graph = build_graph(SessionLocal)
+        graph = build_graph()
         final_state = graph.invoke({
             "therapist_id": therapist_id,
             "topic": topic,

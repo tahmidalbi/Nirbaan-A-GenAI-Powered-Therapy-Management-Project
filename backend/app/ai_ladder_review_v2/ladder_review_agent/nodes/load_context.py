@@ -86,21 +86,23 @@ def load_context_node(
 
     state.intake_text = _intake_to_text(intake)
 
-    # Load recent self monitoring entries
-    # We’ll fetch days first, then entries via relationship to keep it simple.
-    cutoff = datetime.utcnow() - timedelta(days=days_back)
+    # Load recent self monitoring entries.
+    # Filter by entry.date (ISO string on SelfMonitoringEntry), NOT by
+    # SelfMonitoringDay.created_at — that's when the day row was made by the therapist,
+    # not when the patient actually logged entries.
+    cutoff_date_str = (datetime.utcnow() - timedelta(days=days_back)).strftime("%Y-%m-%d")
 
     days = db.execute(
         select(SelfMonitoringDay)
         .where(SelfMonitoringDay.patient_id == review.patient_id)
-        .where(SelfMonitoringDay.created_at >= cutoff)
         .options(selectinload(SelfMonitoringDay.entries))
-        .order_by(SelfMonitoringDay.created_at.asc())
     ).scalars().all()
 
     logs_raw: List[Dict[str, Any]] = []
     for d in days:
         for e in (d.entries or []):
+            if (e.date or "") < cutoff_date_str:
+                continue
             logs_raw.append(
                 {
                     "day_id": d.id,

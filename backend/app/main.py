@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from app.auth.router import router as auth_router
 from app.patients.router import router as patients_router
@@ -16,6 +17,14 @@ from app.therapy_sessions.router import router as therapy_sessions_router
 from app.therapy_sessions.websocket import router as websocket_router
 from app.therapy_sessions.streaming_transcription import router as streaming_transcription_router
 from app.patient_homework.router import router as patient_homework_router
+from app.erp.router import router as erp_router
+from app.progress.router import router as progress_router
+from app.NirbaanAIPatient.router import router as nirbaan_ai_patient_router
+from app.NirbaanAITherapist.router import router as nirbaan_ai_therapist_router
+from app.chat.router import router as chat_router
+from app.chat.ep_router import ep_router
+from app.chat.ep_group_router import ep_group_router
+from app.chat.ep_patient_router import ep_patient_router
 
 # Optional: if you have SQLAlchemy Base + engine and want to ensure tables exist in dev
 # from app.database.base import Base
@@ -67,6 +76,14 @@ def create_app() -> FastAPI:
         streaming_transcription_router,
         prefix="/api/therapy-sessions"
     )
+    app.include_router(erp_router)
+    app.include_router(progress_router)
+    app.include_router(nirbaan_ai_patient_router)
+    app.include_router(nirbaan_ai_therapist_router)
+    app.include_router(chat_router)
+    app.include_router(ep_router)
+    app.include_router(ep_group_router)
+    app.include_router(ep_patient_router)
 
     @app.get("/", tags=["health"])
     def health_check():
@@ -75,6 +92,58 @@ def create_app() -> FastAPI:
             "message": "Nirbaan Therapy Management API with RAG + Intake AI Summary",
             "version": "0.1.0",
         }
+
+    @app.get("/health/celery", tags=["health"])
+    def celery_health():
+        """
+        Checks:
+        1. Are any Celery workers alive? (ping)
+        2. Are the critical ERP tasks registered on those workers?
+        """
+        from app.core.celery_app import celery_app as _celery
+
+        REQUIRED_TASKS = [
+            "app.erp.ERPCoach.tasks.erp_checkins.dispatch_due_checkins",
+            "app.erp.ERPCoach.tasks.erp_checkins.run_checkin",
+            "app.erp.ERPCoach.tasks.erp_reports.run_end_session_report",
+        ]
+
+        # --- ping workers (2 s timeout) ---
+        ping_result = _celery.control.ping(timeout=2) or []
+        workers_alive = [list(w.keys())[0] for w in ping_result if w]
+
+        if not workers_alive:
+            return JSONResponse(
+                status_code=503,
+                content={
+                    "celery": "offline",
+                    "workers": [],
+                    "tasks_registered": False,
+                    "detail": "No Celery workers responded to ping. Is the worker running?",
+                },
+            )
+
+        # --- inspect registered tasks ---
+        inspector = _celery.control.inspect(workers_alive, timeout=2)
+        registered_map = inspector.registered() or {}
+
+        all_registered: set[str] = set()
+        for task_list in registered_map.values():
+            all_registered.update(task_list or [])
+
+        missing = [t for t in REQUIRED_TASKS if t not in all_registered]
+        tasks_ok = len(missing) == 0
+
+        return JSONResponse(
+            status_code=200 if tasks_ok else 206,
+            content={
+                "celery": "ok" if tasks_ok else "degraded",
+                "workers": workers_alive,
+                "tasks_registered": tasks_ok,
+                "missing_tasks": missing,
+                "all_erp_tasks": [t for t in sorted(all_registered) if "erp" in t.lower()],
+            },
+        )
 
     # Optional startup hook (useful if you want to auto-create tables in dev)
     # @app.on_event("startup")

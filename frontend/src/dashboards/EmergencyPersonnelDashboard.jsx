@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import './PatientDashboard.css'; // Reuse patient dashboard styles
+import './PatientDashboard.css';
 
 const EmergencyPersonnelDashboard = () => {
   const navigate = useNavigate();
@@ -20,19 +20,25 @@ const EmergencyPersonnelDashboard = () => {
         <div className="art-deco-lines"></div>
       </div>
 
-      {/* Header with logout */}
+      {/* Header with nav */}
       <header className="dashboard-header">
         <div className="header-content">
           <div className="logo">
             <span className="logo-text">Nirbaan</span>
           </div>
-          <button className="logout-btn" onClick={handleLogout}>
-            Logout
-          </button>
+          <nav className="dashboard-nav">
+            <button
+              className="nav-btn"
+              onClick={() => navigate('/emergency/chat')}
+            >
+              Chat
+            </button>
+          </nav>
+          <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
       </header>
 
-      {/* Main content - blank */}
+      {/* Main content */}
       <div className="dashboard-content">
         <div className="welcome-section">
           <h1>Welcome, {user?.name || 'Emergency Personnel'}</h1>

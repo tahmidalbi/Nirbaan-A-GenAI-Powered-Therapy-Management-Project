@@ -1,9 +1,7 @@
 # app/education/ocd_core/graph.py
 from __future__ import annotations
-from typing import Callable
 
 from langgraph.graph import StateGraph, END
-from sqlalchemy.orm import Session
 
 from app.education.ocd_core.state import OCDEducationState
 from app.education.ocd_core.kb import retrieve_kb, kb_context
@@ -14,18 +12,14 @@ from app.education.ocd_core.prompts import KB_JUDGE_SYSTEM, EDU_SYSTEM
 from app.education.ocd_core.config import USE_WEB_FALLBACK
 
 
-def build_graph(db_factory: Callable[[], Session]):
+def build_graph():
     llm = get_llm()
 
     # --------- Nodes ---------
 
     def kb_retrieve_node(state: OCDEducationState) -> OCDEducationState:
-        db = db_factory()
-        try:
-            chunks = retrieve_kb(db, state["therapist_id"], state["topic"])
-            return {**state, "kb_chunks": chunks}
-        finally:
-            db.close()
+        chunks = retrieve_kb(state["therapist_id"], state["topic"])
+        return {**state, "kb_chunks": chunks}
 
     def kb_judge_node(state: OCDEducationState) -> OCDEducationState:
         ctx = kb_context(state.get("kb_chunks", []))

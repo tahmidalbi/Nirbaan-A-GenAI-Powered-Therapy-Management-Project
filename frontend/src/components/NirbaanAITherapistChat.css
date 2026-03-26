@@ -1,0 +1,748 @@
+/* ══════════════════════════════════════════════════════════════════
+   NirbaanAI Therapist Chat — CSS
+   Mirrors the patient NirbaanAIChat dark-green aesthetic while
+   adding therapist-specific elements: patient picker, clarification
+   card, thread patient labels.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Root layout ─────────────────────────────────────────────────── */
+.nait-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 70% 55% at 80% 10%, rgba(52, 168, 83, 0.16) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 10% 90%, rgba(27, 94, 32, 0.3) 0%, transparent 65%),
+    linear-gradient(160deg, #0b2e18 0%, #0f3d22 35%, #133a25 65%, #0d2b1a 100%);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  position: relative;
+}
+
+/* Subtle dot-grid texture */
+.nait-root::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* ── Header ──────────────────────────────────────────────────────── */
+.nait-header {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  height: 58px;
+  background: rgba(7, 26, 12, 0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(52, 168, 83, 0.2);
+  flex-shrink: 0;
+  gap: 1rem;
+}
+
+.nait-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.nait-logo-mark {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, #2e7d32, #43a047);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #e8f5e9;
+  flex-shrink: 0;
+}
+
+.nait-header-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+}
+
+.nait-logo-text {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #e8f5e9;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.nait-logo-badge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(52, 168, 83, 0.25);
+  border: 1px solid rgba(52, 168, 83, 0.45);
+  color: #81c784;
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+}
+
+.nait-header-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.nait-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.nait-icon-btn {
+  width: 32px;
+  height: 32px;
+  background: rgba(52, 168, 83, 0.1);
+  border: 1px solid rgba(52, 168, 83, 0.25);
+  color: #a5d6a7;
+  border-radius: 7px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  transition: background 0.18s, color 0.18s;
+}
+.nait-icon-btn:hover {
+  background: rgba(52, 168, 83, 0.22);
+  color: #e8f5e9;
+}
+
+.nait-back-btn {
+  border-color: rgba(255, 100, 100, 0.3);
+  color: rgba(255, 180, 180, 0.8);
+}
+.nait-back-btn:hover {
+  background: rgba(200, 50, 50, 0.18);
+  border-color: rgba(255, 100, 100, 0.5);
+  color: #ffcdd2;
+}
+
+/* ── Patient chip (active patient in header) ─────────────────────── */
+.nait-patient-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(52, 168, 83, 0.14);
+  border: 1px solid rgba(52, 168, 83, 0.35);
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem 0.3rem 0.4rem;
+  cursor: pointer;
+  color: #c8e6c9;
+  transition: background 0.18s;
+}
+.nait-patient-chip:hover { background: rgba(52, 168, 83, 0.24); }
+
+.nait-patient-chip-avatar {
+  width: 24px;
+  height: 24px;
+  background: #2e7d32;
+  color: #e8f5e9;
+  border-radius: 50%;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.nait-patient-chip-name { font-size: 0.85rem; font-weight: 500; }
+.nait-patient-chip-arrow { font-size: 0.7rem; opacity: 0.6; }
+
+.nait-select-patient-btn {
+  background: rgba(52, 168, 83, 0.14);
+  border: 1px dashed rgba(52, 168, 83, 0.4);
+  color: #81c784;
+  border-radius: 999px;
+  padding: 0.35rem 1.2rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+}
+.nait-select-patient-btn:hover {
+  background: rgba(52, 168, 83, 0.24);
+  color: #c8e6c9;
+}
+
+/* ── Patient picker dropdown ─────────────────────────────────────── */
+.nait-patient-picker-dropdown {
+  position: absolute;
+  top: 58px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(420px, 92vw);
+  z-index: 60;
+  background: rgba(10, 32, 16, 0.98);
+  border: 1px solid rgba(52, 168, 83, 0.3);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.55);
+  animation: dropIn 0.2s ease both;
+}
+@keyframes dropIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.nait-patient-picker { padding: 1rem; }
+.nait-patient-picker-header { margin-bottom: 0.75rem; }
+.nait-patient-picker-title {
+  display: block;
+  color: #e8f5e9;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+.nait-patient-picker-hint {
+  font-size: 0.75rem;
+  color: rgba(200, 230, 201, 0.5);
+  margin: 0;
+}
+
+.nait-patient-search {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(52, 168, 83, 0.2);
+  border-radius: 7px;
+  padding: 0.45rem 0.75rem;
+  color: #e8f5e9;
+  font-size: 0.85rem;
+  outline: none;
+  margin-bottom: 0.6rem;
+  transition: border-color 0.18s;
+}
+.nait-patient-search:focus { border-color: rgba(52, 168, 83, 0.5); }
+.nait-patient-search::placeholder { color: rgba(200, 230, 201, 0.3); }
+
+.nait-patient-loading {
+  color: rgba(200, 230, 201, 0.5);
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 0.5rem 0;
+  margin: 0;
+}
+
+.nait-patient-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 240px;
+  overflow-y: auto;
+}
+.nait-patient-list::-webkit-scrollbar { width: 4px; }
+.nait-patient-list::-webkit-scrollbar-thumb { background: rgba(52,168,83,0.25); border-radius: 10px; }
+
+.nait-patient-empty {
+  color: rgba(200,230,201,0.4);
+  font-size: 0.82rem;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.nait-patient-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.nait-patient-item:hover { background: rgba(52,168,83,0.1); }
+.nait-patient-item.selected { background: rgba(52,168,83,0.2); }
+
+.nait-patient-avatar {
+  width: 30px;
+  height: 30px;
+  background: rgba(46,125,50,0.5);
+  border: 1px solid rgba(52,168,83,0.3);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #c8e6c9;
+  flex-shrink: 0;
+}
+.nait-patient-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+.nait-patient-name { color: #e8f5e9; font-size: 0.88rem; font-weight: 500; }
+.nait-patient-cond {
+  color: rgba(200,230,201,0.5);
+  font-size: 0.72rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nait-patient-check { color: #66bb6a; font-size: 0.9rem; flex-shrink: 0; }
+
+/* ── Sidebar ─────────────────────────────────────────────────────── */
+.nait-sidebar {
+  position: absolute;
+  top: 58px;
+  right: -310px;
+  bottom: 0;
+  width: 290px;
+  background: rgba(8, 25, 12, 0.97);
+  backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(52, 168, 83, 0.18);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.28s ease;
+}
+.nait-sidebar.open { right: 0; }
+
+.nait-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.15rem;
+  color: #81c784;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(52,168,83,0.14);
+}
+
+.nait-new-btn {
+  background: rgba(52, 168, 83, 0.18);
+  border: 1px solid rgba(52, 168, 83, 0.35);
+  color: #a5d6a7;
+  padding: 0.28rem 0.7rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 600;
+  transition: background 0.18s;
+}
+.nait-new-btn:hover { background: rgba(52,168,83,0.3); color: #e8f5e9; }
+
+.nait-sidebar-patient-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.15rem;
+  color: rgba(200,230,201,0.6);
+  font-size: 0.75rem;
+  font-style: italic;
+  border-bottom: 1px solid rgba(52,168,83,0.08);
+}
+.nait-sidebar-patient-dot {
+  width: 6px;
+  height: 6px;
+  background: #66bb6a;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.nait-thread-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem 0.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+.nait-thread-list::-webkit-scrollbar { width: 3px; }
+.nait-thread-list::-webkit-scrollbar-thumb { background: rgba(52,168,83,0.2); border-radius: 10px; }
+
+.nait-thread-empty {
+  color: rgba(255,255,255,0.28);
+  font-size: 0.8rem;
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.nait-thread-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 7px;
+  cursor: pointer;
+  color: #c8e6c9;
+  font-size: 0.84rem;
+  margin-bottom: 0.15rem;
+  transition: background 0.15s;
+}
+.nait-thread-item:hover { background: rgba(52,168,83,0.1); }
+.nait-thread-item.active { background: rgba(52,168,83,0.22); color: #e8f5e9; }
+.nait-thread-icon { font-size: 0.85rem; opacity: 0.55; flex-shrink: 0; margin-top: 1px; }
+
+.nait-thread-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.nait-thread-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nait-thread-patient {
+  font-size: 0.7rem;
+  color: rgba(200,230,201,0.45);
+  margin-top: 1px;
+}
+
+/* ── Overlay ─────────────────────────────────────────────────────── */
+.nait-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 45;
+}
+
+/* ── Main chat area ──────────────────────────────────────────────── */
+.nait-main {
+  position: relative;
+  z-index: 5;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0 1.25rem 1.25rem;
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.nait-chat-window {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem 0 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  scroll-behavior: smooth;
+}
+.nait-chat-window::-webkit-scrollbar { width: 4px; }
+.nait-chat-window::-webkit-scrollbar-track { background: transparent; }
+.nait-chat-window::-webkit-scrollbar-thumb { background: rgba(52,168,83,0.22); border-radius: 10px; }
+
+/* ── Welcome ─────────────────────────────────────────────────────── */
+.nait-welcome {
+  margin: auto;
+  text-align: center;
+  color: #c8e6c9;
+  animation: fadeUp 0.5s ease both;
+  max-width: 480px;
+  padding: 2rem 1rem;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.nait-welcome-icon { font-size: 3rem; margin-bottom: 1rem; display: block; opacity: 0.8; }
+.nait-welcome h2 {
+  font-size: 1.45rem;
+  font-weight: 700;
+  margin: 0 0 0.65rem;
+  color: #e8f5e9;
+  letter-spacing: 0.02em;
+}
+.nait-welcome p {
+  font-size: 0.9rem;
+  color: rgba(200, 230, 201, 0.6);
+  line-height: 1.7;
+  margin: 0 0 1.2rem;
+}
+.nait-welcome strong { color: #a5d6a7; }
+.nait-welcome-cta {
+  background: rgba(52, 168, 83, 0.22);
+  border: 1px solid rgba(52, 168, 83, 0.45);
+  color: #a5d6a7;
+  padding: 0.55rem 1.4rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: background 0.18s, color 0.18s;
+}
+.nait-welcome-cta:hover { background: rgba(52,168,83,0.35); color: #e8f5e9; }
+
+/* ── Bubble rows ─────────────────────────────────────────────────── */
+.nait-bubble-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.65rem;
+  animation: fadeUp 0.22s ease both;
+}
+.nait-bubble-row.user { flex-direction: row-reverse; }
+
+/* Clarification row: start-aligned (not end-aligned) */
+.nait-clarification-row { align-items: flex-start; }
+
+.nait-avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  background: rgba(52, 168, 83, 0.12);
+  border: 1px solid rgba(52, 168, 83, 0.22);
+  color: #81c784;
+  font-weight: 700;
+}
+.nait-avatar.user-avatar {
+  font-size: 0.62rem;
+  color: #c8e6c9;
+  background: rgba(27, 94, 32, 0.4);
+  border-color: rgba(52, 168, 83, 0.28);
+}
+
+.nait-bubble {
+  max-width: 72%;
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  position: relative;
+  line-height: 1.65;
+  word-break: break-word;
+}
+.nait-bubble.assistant {
+  background: rgba(15, 45, 22, 0.85);
+  border: 1px solid rgba(52, 168, 83, 0.2);
+  color: #dcedc8;
+  border-bottom-left-radius: 3px;
+  backdrop-filter: blur(6px);
+}
+.nait-bubble.user {
+  background: rgba(30, 80, 40, 0.9);
+  border: 1px solid rgba(52, 168, 83, 0.35);
+  color: #e8f5e9;
+  border-bottom-right-radius: 3px;
+  backdrop-filter: blur(6px);
+}
+.nait-bubble p { margin: 0 0 0.2rem; font-size: 0.91rem; white-space: pre-wrap; }
+.nait-ts { font-size: 0.64rem; opacity: 0.5; display: block; text-align: right; margin-top: 0.3rem; color: inherit; }
+
+/* Typing dots */
+.nait-typing {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.85rem 1rem;
+  min-width: 56px;
+}
+.nait-typing span {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #81c784;
+  display: inline-block;
+  animation: bounce 1.2s ease-in-out infinite;
+}
+.nait-typing span:nth-child(2) { animation-delay: 0.2s; }
+.nait-typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0.55); opacity: 0.5; }
+  40%           { transform: scale(1);    opacity: 1; }
+}
+
+/* ── Clarification inline card ───────────────────────────────────── */
+.nait-clarification-card {
+  flex: 1;
+  max-width: 72%;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(99, 179, 108, 0.5);
+  border-left: 3px solid #43a047;
+  border-radius: 12px;
+  border-bottom-left-radius: 3px;
+  padding: 0.9rem 1.1rem 1rem;
+  backdrop-filter: blur(8px);
+  animation: fadeUp 0.25s ease both;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+
+.nait-clarification-header {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.55rem;
+}
+.nait-clarification-icon { font-size: 0.9rem; }
+.nait-clarification-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2e7d32;
+}
+
+.nait-clarification-question {
+  font-size: 0.92rem;
+  color: #1a3320;
+  margin: 0 0 0.85rem;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.nait-clarification-form { display: flex; flex-direction: column; gap: 0.6rem; }
+
+.nait-clarification-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #f9fdf9;
+  border: 1px solid rgba(46, 125, 50, 0.35);
+  border-radius: 8px;
+  padding: 0.55rem 0.8rem;
+  color: #1a3320;
+  font-size: 0.88rem;
+  font-family: inherit;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.18s;
+  line-height: 1.5;
+}
+.nait-clarification-input:focus { border-color: #43a047; }
+.nait-clarification-input::placeholder { color: rgba(30, 60, 30, 0.35); }
+.nait-clarification-input:disabled { opacity: 0.5; }
+
+.nait-clarification-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.nait-clarification-cancel {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(200,230,201,0.55);
+  padding: 0.38rem 0.85rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: border-color 0.18s, color 0.18s;
+}
+.nait-clarification-cancel:hover:not(:disabled) {
+  border-color: rgba(255,255,255,0.3);
+  color: rgba(200,230,201,0.85);
+}
+.nait-clarification-cancel:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.nait-clarification-submit {
+  background: #2e7d32;
+  border: 1px solid rgba(52,168,83,0.5);
+  color: #e8f5e9;
+  padding: 0.38rem 1.05rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: background 0.18s;
+}
+.nait-clarification-submit:hover:not(:disabled) { background: #388e3c; }
+.nait-clarification-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.nait-btn-spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(232,245,233,0.3);
+  border-top-color: #e8f5e9;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Input bar ───────────────────────────────────────────────────── */
+.nait-input-bar {
+  margin-top: 0.75rem;
+}
+
+.nait-input-blocked-hint {
+  text-align: center;
+  font-size: 0.74rem;
+  color: rgba(200,230,201,0.4);
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.02em;
+}
+
+.nait-input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.6rem;
+  background: rgba(10, 32, 16, 0.85);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(52, 168, 83, 0.22);
+  border-radius: 10px;
+  padding: 0.55rem 0.6rem 0.55rem 1rem;
+  transition: border-color 0.2s;
+}
+.nait-input-row:focus-within { border-color: rgba(52,168,83,0.5); }
+
+.nait-input-bar--disabled .nait-input-row {
+  border-color: rgba(52,168,83,0.1);
+  opacity: 0.7;
+}
+
+.nait-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #e8f5e9;
+  font-size: 0.91rem;
+  resize: none;
+  line-height: 1.5;
+  font-family: inherit;
+  max-height: 130px;
+  overflow-y: auto;
+}
+.nait-input::placeholder { color: rgba(200,230,201,0.32); }
+
+.nait-send-btn {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 8px;
+  background: #2e7d32;
+  border: 1px solid rgba(52,168,83,0.4);
+  color: #e8f5e9;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.18s;
+}
+.nait-send-btn:hover:not(:disabled) { background: #388e3c; }
+.nait-send-btn:disabled { opacity: 0.32; cursor: not-allowed; }
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+@media (max-width: 620px) {
+  .nait-bubble { max-width: 87%; }
+  .nait-clarification-card { max-width: 87%; }
+  .nait-logo-text { font-size: 0.9rem; }
+  .nait-header { padding: 0 0.85rem; }
+  .nait-logo-badge { display: none; }
+}
