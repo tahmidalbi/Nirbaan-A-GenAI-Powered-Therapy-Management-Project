@@ -195,43 +195,43 @@ const TherapistDashboard = () => {
         <div className="header-content">
           <h1 className="logo">Nirbaan</h1>
           <nav className="nav-menu">
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'patients' ? 'active' : ''}`}
               onClick={() => setActiveSection('patients')}
             >
               Patients
             </button>
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'emergency' ? 'active' : ''}`}
               onClick={() => setActiveSection('emergency')}
             >
               Emergency Personnel
             </button>
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'community' ? 'active' : ''}`}
               onClick={() => setActiveSection('community')}
             >
               Community
             </button>
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'resources' ? 'active' : ''}`}
               onClick={() => setActiveSection('resources')}
             >
               Resources
             </button>
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'tools' ? 'active' : ''}`}
               onClick={() => navigate('/therapist/dashboard/tools')}
             >
               Tools
             </button>
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'history' ? 'active' : ''}`}
               onClick={() => setActiveSection('history')}
             >
               History
             </button>
-            <button 
+            <button
               className="nav-btn"
               onClick={() => navigate('/therapist/nirbaanai')}
             >
@@ -293,8 +293,8 @@ const TherapistDashboard = () => {
             ) : (
               <div className="patients-grid">
                 {patients.map((patient) => (
-                  <div 
-                    key={patient.id} 
+                  <div
+                    key={patient.id}
                     className="patient-card"
                   >
                     <div className="patient-avatar">
@@ -310,14 +310,14 @@ const TherapistDashboard = () => {
                         Added {new Date(patient.created_at).toLocaleDateString()}
                       </span>
                       <div className="patient-actions">
-                        <button 
+                        <button
                           className="view-patient-btn"
                           onClick={() => handlePatientClick(patient.id)}
                           title="View Patient"
                         >
                           👤 View
                         </button>
-                        <button 
+                        <button
                           className="start-call-btn"
                           onClick={() => handleStartCall(patient.id)}
                           title="Start Video Call"
@@ -355,8 +355,8 @@ const TherapistDashboard = () => {
             ) : (
               <div className="patients-grid">
                 {emergencyPersonnel.map((personnel) => (
-                  <div 
-                    key={personnel.id} 
+                  <div
+                    key={personnel.id}
                     className="patient-card"
                     onClick={() => handleEmergencyPersonnelClick(personnel.id)}
                   >
@@ -397,8 +397,6 @@ const TherapistDashboard = () => {
             <PatientHistory />
           </div>
         )}
-
-
 
         {activeSection === 'sessions' && (
           <div className="section-content">

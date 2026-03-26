@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -26,9 +28,39 @@ from app.chat.ep_router import ep_router
 from app.chat.ep_group_router import ep_group_router
 from app.chat.ep_patient_router import ep_patient_router
 
+# Imaginal Script Generator
+from app.ERPScriptGenerator.graph import compile_graph
+from app.ERPScriptGenerator.router import router as imaginal_generator_router
+
 # Optional: if you have SQLAlchemy Base + engine and want to ensure tables exist in dev
 # from app.database.base import Base
 # from app.database.session import engine
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    App startup/shutdown lifecycle.
+
+    We compile the LangGraph imaginal generator once at startup and keep the
+    PostgresSaver context open for the whole app lifetime.
+    """
+    graph = None
+    checkpointer_cm = None
+
+    try:
+        graph, checkpointer_cm = compile_graph()
+        app.state.imaginal_graph = graph
+        app.state.imaginal_checkpointer_cm = checkpointer_cm
+        print("✅ Imaginal Script Generator graph initialized.")
+        yield
+    finally:
+        try:
+            if checkpointer_cm is not None:
+                checkpointer_cm.__exit__(None, None, None)
+                print("🛑 Imaginal Script Generator checkpointer closed.")
+        except Exception as e:
+            print(f"⚠️ Error while closing imaginal graph checkpointer: {e}")
 
 
 def create_app() -> FastAPI:
@@ -36,6 +68,7 @@ def create_app() -> FastAPI:
         title="Nirbaan - Therapy Management Backend",
         version="0.1.0",
         description="Multi-tenant therapy management platform with JWT authentication and RAG",
+        lifespan=lifespan,
     )
 
     app.add_middleware(
@@ -85,12 +118,16 @@ def create_app() -> FastAPI:
     app.include_router(ep_group_router)
     app.include_router(ep_patient_router)
 
+    # Imaginal Script Generator router
+    app.include_router(imaginal_generator_router)
+
     @app.get("/", tags=["health"])
     def health_check():
         return {
             "status": "Backend running",
             "message": "Nirbaan Therapy Management API with RAG + Intake AI Summary",
             "version": "0.1.0",
+            "imaginal_generator_graph": hasattr(app.state, "imaginal_graph"),
         }
 
     @app.get("/health/celery", tags=["health"])
@@ -144,6 +181,17 @@ def create_app() -> FastAPI:
                 "all_erp_tasks": [t for t in sorted(all_registered) if "erp" in t.lower()],
             },
         )
+
+    @app.get("/health/imaginal-generator", tags=["health"])
+    def imaginal_generator_health():
+        graph_ready = hasattr(app.state, "imaginal_graph")
+        checkpointer_ready = hasattr(app.state, "imaginal_checkpointer_cm")
+
+        return {
+            "imaginal_generator": "ok" if graph_ready and checkpointer_ready else "not_ready",
+            "graph_ready": graph_ready,
+            "checkpointer_ready": checkpointer_ready,
+        }
 
     # Optional startup hook (useful if you want to auto-create tables in dev)
     # @app.on_event("startup")

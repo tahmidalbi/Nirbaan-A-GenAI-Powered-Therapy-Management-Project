@@ -106,7 +106,7 @@ const PatientDashboard = () => {
         <div className="header-content">
           <h1 className="logo">Nirbaan</h1>
           <nav className="nav-menu">
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'sessions' ? 'active' : ''}`}
               onClick={() => setActiveSection('sessions')}
             >
@@ -118,31 +118,31 @@ const PatientDashboard = () => {
             >
               Progress
             </button>
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'homework' ? 'active' : ''}`}
               onClick={() => setActiveSection('homework')}
             >
               Homework
             </button>
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'resources' ? 'active' : ''}`}
               onClick={() => setActiveSection('resources')}
             >
               Resources
             </button>
-            <button 
+            <button
               className="nav-btn"
               onClick={handleOCDToolsClick}
             >
               Tools
             </button>
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'mindfulness' ? 'active' : ''}`}
               onClick={() => setActiveSection('mindfulness')}
             >
               Mindfulness
             </button>
-            <button 
+            <button
               className="nav-btn"
               onClick={() => navigate('/patient/chat')}
             >
