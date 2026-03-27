@@ -12,6 +12,7 @@ from app.patients.models import Patient
 from app.emergency_personnel.models import EmergencyPersonnel
 from app.resources.models import Resource, ResourceChunk, IngestionJob
 from app.intakes.models import PatientIntake
+from app.therapy_sessions.models import TherapySession, TherapyTranscript, TherapySessionAnalysis
 
 def create_all_tables():
     """Create all database tables"""
