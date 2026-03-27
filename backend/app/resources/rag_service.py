@@ -178,4 +178,4 @@ class RAGService:
             }
 
 
-rag_service = RAGService()
+# rag_service = RAGService()

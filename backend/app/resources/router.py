@@ -27,7 +27,7 @@ from app.resources.schemas import (
     PatientResourceDownloadResponse,
 )
 from app.resources.r2_storage import r2_storage
-from app.resources.rag_service import rag_service
+# from app.resources.rag_service import rag_service  # Disabled: pgvector extension not installed
 from app.resources.tasks import ingest_resource_task
 from app.resources.url_processor import url_processor
 from app.auth.utils import get_current_patient
@@ -241,15 +241,15 @@ def delete_resource(
     except Exception as e:
         print(f"R2 deletion warning: {e}")
 
-    # Delete from vector store
-    try:
-        rag_service.delete_resource_chunks(
-            therapist_id=current_therapist.id,
-            resource_id=resource.id,
-            total_chunks=resource.total_chunks or 0,
-        )
-    except Exception as e:
-        print(f"Vector store deletion warning: {e}")
+    # Delete from vector store (disabled: pgvector extension not installed)
+    # try:
+    #     rag_service.delete_resource_chunks(
+    #         therapist_id=current_therapist.id,
+    #         resource_id=resource.id,
+    #         total_chunks=resource.total_chunks or 0,
+    #     )
+    # except Exception as e:
+    #     print(f"Vector store deletion warning: {e}")
 
     # Delete DB rows
     db.delete(resource)
@@ -343,64 +343,65 @@ def create_resource_from_url(
         )
 
 
-# ============ RAG ENDPOINTS ============
+# ============ RAG ENDPOINTS (DISABLED - pgvector not installed) ============
+#
+# @router.post("/rag/search", response_model=RAGSearchResponse)
+# def search_knowledge_base(
+#     request: RAGSearchRequest,
+#     current_therapist: Therapist = Depends(get_current_therapist),
+# ):
+#     """
+#     Search knowledge base using LangChain retriever + MMR
+#     """
+#     chunks = rag_service.retrieve_chunks(
+#         therapist_id=current_therapist.id,
+#         query=request.query,
+#         top_k=request.top_k,
+#         resource_id=request.resource_id,
+#     )
+#
+#     return RAGSearchResponse(
+#         query=request.query,
+#         chunks=[ChunkResult(**chunk) for chunk in chunks],
+#         total_results=len(chunks),
+#     )
+#
+#
+# @router.post("/rag/answer", response_model=RAGAnswerResponse)
+# def generate_answer(
+#     request: RAGAnswerRequest,
+#     current_therapist: Therapist = Depends(get_current_therapist),
+# ):
+#     """
+#     Generate RAG answer with citations
+#     """
+#     try:
+#         chunks = rag_service.retrieve_chunks(
+#             therapist_id=current_therapist.id,
+#             query=request.query,
+#             top_k=request.top_k,
+#             resource_id=request.resource_id,
+#         )
+#
+#         result = rag_service.generate_answer(
+#             query=request.query,
+#             chunks=chunks,
+#         )
+#
+#         return RAGAnswerResponse(
+#             query=request.query,
+#             answer=result["answer"],
+#             sources=[SourceReference(**src) for src in result["sources"]],
+#             chunks_used=result["chunks_used"],
+#         )
+#     except Exception as e:
+#         import traceback
+#         traceback.print_exc()
+#         raise HTTPException(
+#             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#             detail=f"RAG error: {str(e)}",
+#         )
 
-@router.post("/rag/search", response_model=RAGSearchResponse)
-def search_knowledge_base(
-    request: RAGSearchRequest,
-    current_therapist: Therapist = Depends(get_current_therapist),
-):
-    """
-    Search knowledge base using LangChain retriever + MMR
-    """
-    chunks = rag_service.retrieve_chunks(
-        therapist_id=current_therapist.id,
-        query=request.query,
-        top_k=request.top_k,
-        resource_id=request.resource_id,
-    )
-
-    return RAGSearchResponse(
-        query=request.query,
-        chunks=[ChunkResult(**chunk) for chunk in chunks],
-        total_results=len(chunks),
-    )
-
-
-@router.post("/rag/answer", response_model=RAGAnswerResponse)
-def generate_answer(
-    request: RAGAnswerRequest,
-    current_therapist: Therapist = Depends(get_current_therapist),
-):
-    """
-    Generate RAG answer with citations
-    """
-    try:
-        chunks = rag_service.retrieve_chunks(
-            therapist_id=current_therapist.id,
-            query=request.query,
-            top_k=request.top_k,
-            resource_id=request.resource_id,
-        )
-
-        result = rag_service.generate_answer(
-            query=request.query,
-            chunks=chunks,
-        )
-
-        return RAGAnswerResponse(
-            query=request.query,
-            answer=result["answer"],
-            sources=[SourceReference(**src) for src in result["sources"]],
-            chunks_used=result["chunks_used"],
-        )
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"RAG error: {str(e)}",
-        )
 
 
 # ============ PATIENT-FACING ENDPOINTS ============
