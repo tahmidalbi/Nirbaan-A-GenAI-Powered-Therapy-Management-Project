@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { transcribeAudio } from '../api/therapy-session.api';
+import { endLiveSession } from '../api/sessions.api';
 import './VideoCall.css';
 
 const VideoCall = ({ 
@@ -551,8 +552,11 @@ const VideoCall = ({
     }
   };
 
-  const endCall = () => {
+  const endCall = async () => {
     sendMessage({ type: 'end_call' });
+    if (sessionId) {
+      try { await endLiveSession(sessionId); } catch (_) { /* already ended or error — continue cleanup */ }
+    }
     cleanupMedia();
     setCallState('idle');
     onCallEnd();
