@@ -5,7 +5,7 @@ After a session ends, call `generate_session_analysis(session_id)` to:
   1. Retrieve the full transcript from the DB
   2. Send it to GPT with a structured prompt
   3. Parse the response into summary / topics / interventions
-  4. Save a TherapySessionAnalysis row
+  4. Save a LiveSessionAnalysis row
 """
 
 import json
@@ -16,10 +16,10 @@ from typing import Optional
 from openai import OpenAI
 from sqlalchemy.orm import Session
 
-from app.therapy_sessions.models import (
-    TherapySession,
-    TherapyTranscript,
-    TherapySessionAnalysis,
+from app.live_sessions.models import (
+    LiveSession,
+    LiveSessionTranscript,
+    LiveSessionAnalysis,
 )
 
 logger = logging.getLogger(__name__)
@@ -55,7 +55,7 @@ Rules:
 """
 
 
-def _build_transcript_text(transcripts: list[TherapyTranscript]) -> str:
+def _build_transcript_text(transcripts: list[LiveSessionTranscript]) -> str:
     lines = []
     for t in sorted(transcripts, key=lambda x: x.timestamp):
         ts = t.timestamp.strftime("%H:%M:%S")
@@ -63,25 +63,25 @@ def _build_transcript_text(transcripts: list[TherapyTranscript]) -> str:
     return "\n".join(lines)
 
 
-def generate_session_analysis(session_id: int, db: Session) -> Optional[TherapySessionAnalysis]:
+def generate_session_analysis(session_id: int, db: Session) -> Optional[LiveSessionAnalysis]:
     """
     Generate AI analysis for a completed therapy session.
-    Returns the saved TherapySessionAnalysis object, or None on failure.
+    Returns the saved LiveSessionAnalysis object, or None on failure.
     """
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         logger.warning("OPENAI_API_KEY not configured – skipping analysis")
         return None
 
-    session = db.query(TherapySession).filter(TherapySession.id == session_id).first()
+    session = db.query(LiveSession).filter(LiveSession.id == session_id).first()
     if not session:
         logger.error(f"Session {session_id} not found")
         return None
 
     transcripts = (
-        db.query(TherapyTranscript)
-        .filter(TherapyTranscript.session_id == session_id)
-        .order_by(TherapyTranscript.timestamp)
+        db.query(LiveSessionTranscript)
+        .filter(LiveSessionTranscript.session_id == session_id)
+        .order_by(LiveSessionTranscript.timestamp)
         .all()
     )
     if not transcripts:
@@ -107,7 +107,7 @@ def generate_session_analysis(session_id: int, db: Session) -> Optional[TherapyS
         raw = response.choices[0].message.content
         data = json.loads(raw)
 
-        analysis = TherapySessionAnalysis(
+        analysis = LiveSessionAnalysis(
             session_id=session_id,
             summary=data.get("summary", ""),
             detected_topics=data.get("detected_topics", []),

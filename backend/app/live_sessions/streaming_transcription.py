@@ -29,8 +29,8 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect, WebSocketExceptio
 from starlette.websockets import WebSocketState
 
 from app.database.session import SessionLocal
-from app.therapy_sessions.models import TherapySession, TherapyTranscript
-from app.therapy_sessions.transcription_service import transcription_service
+from app.live_sessions.models import LiveSession, LiveSessionTranscript
+from app.live_sessions.transcription_service import transcription_service
 
 logger = logging.getLogger(__name__)
 
@@ -125,7 +125,7 @@ async def _transcribe_and_save(
     # Persist to DB
     db = SessionLocal()
     try:
-        entry = TherapyTranscript(
+        entry = LiveSessionTranscript(
             session_id=session_id,
             speaker=speaker,
             text=text,
@@ -162,7 +162,7 @@ async def ws_transcription(websocket: WebSocket, session_id: int):
 
     # Validate session exists
     db = SessionLocal()
-    session = db.query(TherapySession).filter(TherapySession.id == session_id).first()
+    session = db.query(LiveSession).filter(LiveSession.id == session_id).first()
     db.close()
     if not session:
         await websocket.close(code=1008, reason="Session not found")

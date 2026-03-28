@@ -18,7 +18,7 @@ class PatientHomework(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     patient_id: Mapped[int] = mapped_column(Integer, ForeignKey("patients.id"), nullable=False, index=True)
-    session_id: Mapped[int] = mapped_column(Integer, ForeignKey("therapy_sessions.id"), nullable=False, index=True)
+    session_id: Mapped[int] = mapped_column(Integer, ForeignKey("live_sessions.id"), nullable=False, index=True)
 
     # Homework content (from AI analysis)
     task: Mapped[str] = mapped_column(Text, nullable=False)
@@ -44,5 +44,5 @@ class PatientHomework(Base):
 
     # Relationships
     patient = relationship("Patient", backref="homeworks")
-    session = relationship("TherapySession", backref="approved_homeworks")
+    session = relationship("LiveSession", backref="approved_homeworks")
     approver = relationship("Therapist", foreign_keys=[approved_by])

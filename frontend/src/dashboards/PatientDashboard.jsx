@@ -80,11 +80,11 @@ const PatientDashboard = () => {
         <div className="header-content">
           <h1 className="logo">Nirbaan</h1>
           <nav className="nav-menu">
-            <button 
-              className={`nav-btn ${activeSection === 'sessions' ? 'active' : ''}`}
-              onClick={() => setActiveSection('sessions')}
+            <button
+              className={`nav-btn ${activeSection === 'live_sessions' ? 'active' : ''}`}
+              onClick={() => setActiveSection('live_sessions')}
             >
-              Sessions
+              Live Sessions
             </button>
             <button 
               className={`nav-btn ${activeSection === 'progress' ? 'active' : ''}`}
@@ -162,7 +162,7 @@ const PatientDashboard = () => {
           </div>
         )}
 
-        {activeSection === 'sessions' && (
+        {activeSection === 'live_sessions' && (
           <div className="empty-section">
             {/* Empty Sessions section */}
           </div>

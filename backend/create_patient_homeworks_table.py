@@ -35,7 +35,7 @@ with engine.connect() as conn:
             CREATE TABLE patient_homeworks (
                 id SERIAL PRIMARY KEY,
                 patient_id INTEGER NOT NULL REFERENCES patients(id),
-                session_id INTEGER NOT NULL REFERENCES therapy_sessions(id),
+                session_id INTEGER NOT NULL REFERENCES live_sessions(id),
                 task TEXT NOT NULL,
                 rationale TEXT NOT NULL,
                 frequency VARCHAR(100) NOT NULL,

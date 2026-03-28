@@ -12,11 +12,11 @@ from app.schemas.therapy_session import (
     TranscriptResponse,
     SessionAnalysisResponse
 )
-from app.therapy_sessions.models import TherapySession, TherapyTranscript, TherapySessionAnalysis
+from app.live_sessions.models import LiveSession, LiveSessionTranscript, LiveSessionAnalysis
 from app.therapists.models import Therapist
 from app.patients.models import Patient
-from app.therapy_sessions.transcription_service import transcription_service
-from app.therapy_sessions.analysis_service import generate_session_analysis
+from app.live_sessions.transcription_service import transcription_service
+from app.live_sessions.analysis_service import generate_session_analysis
 
 router = APIRouter(prefix="/sessions", tags=["Therapy Sessions"])
 
@@ -55,7 +55,7 @@ async def start_session(
         )
     
     # Create new session
-    new_session = TherapySession(
+    new_session = LiveSession(
         therapist_id=session_data.therapist_id,
         patient_id=session_data.patient_id
     )
@@ -79,7 +79,7 @@ async def append_transcript(
     text content, and automatic timestamp.
     """
     # Verify session exists
-    session = db.query(TherapySession).filter(TherapySession.id == session_id).first()
+    session = db.query(LiveSession).filter(LiveSession.id == session_id).first()
     if not session:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -94,7 +94,7 @@ async def append_transcript(
         )
     
     # Create new transcript entry
-    new_transcript = TherapyTranscript(
+    new_transcript = LiveSessionTranscript(
         session_id=session_id,
         speaker=transcript_data.speaker,
         text=transcript_data.text
@@ -118,7 +118,7 @@ async def get_session(
     ordered by timestamp.
     """
     # Query session with transcripts
-    session = db.query(TherapySession).filter(TherapySession.id == session_id).first()
+    session = db.query(LiveSession).filter(LiveSession.id == session_id).first()
     
     if not session:
         raise HTTPException(
@@ -136,7 +136,7 @@ async def get_transcripts(
     """
     Get all transcript entries for a session, ordered by timestamp.
     """
-    session = db.query(TherapySession).filter(TherapySession.id == session_id).first()
+    session = db.query(LiveSession).filter(LiveSession.id == session_id).first()
     if not session:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Session {session_id} not found")
@@ -200,7 +200,7 @@ async def transcribe_audio(
         transcript_entry = None
         if session_id and speaker and transcribed_text:
             # Verify session exists
-            session = db.query(TherapySession).filter(TherapySession.id == session_id).first()
+            session = db.query(LiveSession).filter(LiveSession.id == session_id).first()
             if session:
                 # Validate speaker
                 if speaker not in ["therapist", "patient"]:
@@ -210,7 +210,7 @@ async def transcribe_audio(
                     )
                 
                 # Save transcript
-                transcript_entry = TherapyTranscript(
+                transcript_entry = LiveSessionTranscript(
                     session_id=session_id,
                     speaker=speaker,
                     text=transcribed_text
@@ -243,7 +243,7 @@ async def end_session(
     End a therapy session.
     Sets ended_at timestamp and triggers AI analysis in the background.
     """
-    session = db.query(TherapySession).filter(TherapySession.id == session_id).first()
+    session = db.query(LiveSession).filter(LiveSession.id == session_id).first()
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
     if session.ended_at:
@@ -267,8 +267,8 @@ async def get_session_analysis(
 ):
     """Retrieve the AI-generated analysis for a session."""
     analysis = (
-        db.query(TherapySessionAnalysis)
-        .filter(TherapySessionAnalysis.session_id == session_id)
+        db.query(LiveSessionAnalysis)
+        .filter(LiveSessionAnalysis.session_id == session_id)
         .first()
     )
     if not analysis:
@@ -282,14 +282,14 @@ async def trigger_session_analysis(
     db: Session = Depends(get_db)
 ):
     """Manually trigger AI analysis for a session (re-generates if exists)."""
-    session = db.query(TherapySession).filter(TherapySession.id == session_id).first()
+    session = db.query(LiveSession).filter(LiveSession.id == session_id).first()
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
 
     # Delete existing analysis if any
     existing = (
-        db.query(TherapySessionAnalysis)
-        .filter(TherapySessionAnalysis.session_id == session_id)
+        db.query(LiveSessionAnalysis)
+        .filter(LiveSessionAnalysis.session_id == session_id)
         .first()
     )
     if existing:

@@ -15,7 +15,7 @@ from app.patient_homework.schemas import (
     MarkCompleteRequest,
     TranscriptItemResponse,
 )
-from app.therapy_sessions.models import TherapySession, TherapySessionAnalysis
+from app.live_sessions.models import LiveSession, LiveSessionAnalysis
 from app.patients.models import Patient
 from app.therapists.models import Therapist
 from app.auth.utils import get_current_therapist, get_current_patient
@@ -35,13 +35,13 @@ async def get_active_sessions_with_homeworks(
     """
     # Query sessions that belong to therapist's patients and have ended
     sessions = (
-        db.query(TherapySession)
-        .join(Patient, TherapySession.patient_id == Patient.id)
+        db.query(LiveSession)
+        .join(Patient, LiveSession.patient_id == Patient.id)
         .filter(
             Patient.therapist_id == current_therapist.id,
-            TherapySession.ended_at.isnot(None)
+            LiveSession.ended_at.isnot(None)
         )
-        .order_by(TherapySession.ended_at.desc())
+        .order_by(LiveSession.ended_at.desc())
         .all()
     )
 
@@ -112,10 +112,10 @@ async def update_session_homeworks(
     """
     # Verify session belongs to therapist's patient
     session = (
-        db.query(TherapySession)
-        .join(Patient, TherapySession.patient_id == Patient.id)
+        db.query(LiveSession)
+        .join(Patient, LiveSession.patient_id == Patient.id)
         .filter(
-            TherapySession.id == session_id,
+            LiveSession.id == session_id,
             Patient.therapist_id == current_therapist.id
         )
         .first()
@@ -146,10 +146,10 @@ async def approve_session_homeworks(
     """
     # Verify session belongs to therapist's patient
     session = (
-        db.query(TherapySession)
-        .join(Patient, TherapySession.patient_id == Patient.id)
+        db.query(LiveSession)
+        .join(Patient, LiveSession.patient_id == Patient.id)
         .filter(
-            TherapySession.id == session_id,
+            LiveSession.id == session_id,
             Patient.therapist_id == current_therapist.id
         )
         .first()
@@ -160,9 +160,9 @@ async def approve_session_homeworks(
 
     # Calculate week number based on patient's first session
     first_session = (
-        db.query(TherapySession)
-        .filter(TherapySession.patient_id == session.patient_id)
-        .order_by(TherapySession.started_at)
+        db.query(LiveSession)
+        .filter(LiveSession.patient_id == session.patient_id)
+        .order_by(LiveSession.started_at)
         .first()
     )
 

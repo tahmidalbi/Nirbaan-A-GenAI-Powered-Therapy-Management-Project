@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 import logging
 
 from app.database.deps import get_db
-from app.therapy_sessions.call_manager import call_manager, session_signaling_manager
+from app.live_sessions.call_manager import call_manager, session_signaling_manager
 from app.therapists.models import Therapist
 from app.patients.models import Patient
 

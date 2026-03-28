@@ -143,10 +143,10 @@ const TherapistDashboard = () => {
               Chat
             </button>
             <button
-              className={`nav-btn ${activeSection === 'sessions' ? 'active' : ''}`}
-              onClick={() => setActiveSection('sessions')}
+              className={`nav-btn ${activeSection === 'session_reviews' ? 'active' : ''}`}
+              onClick={() => setActiveSection('session_reviews')}
             >
-              Active Sessions
+              Session Reviews
             </button>
           </nav>
           <button onClick={handleLogout} className="logout-btn">Logout</button>
@@ -303,7 +303,7 @@ const TherapistDashboard = () => {
           </div>
         )}
 
-        {activeSection === 'sessions' && (
+        {activeSection === 'session_reviews' && (
           <div className="section-content">
             <ActiveSessions />
           </div>

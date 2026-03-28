@@ -105,7 +105,7 @@ const ActiveSessions = () => {
           <div className="as-brand">
             <div className="as-brandDot" />
             <div>
-              <h1 className="as-title">Active Sessions</h1>
+              <h1 className="as-title">Session Reviews</h1>
               <p className="as-subtitle">Review AI-generated homeworks and approve for patients</p>
             </div>
           </div>
