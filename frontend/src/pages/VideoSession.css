@@ -7,6 +7,53 @@
   flex-direction: column;
 }
 
+/* ── Call status banner ─────────────────────────────────── */
+.vs-call-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.vs-call-banner__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.vs-call-banner--ringing  { background: #1e3a5f; color: #7dd3fc; }
+.vs-call-banner--ringing .vs-call-banner__dot { background: #38bdf8; animation: dot-pulse 1.2s ease-in-out infinite; }
+.vs-call-banner--accepted { background: #14532d; color: #86efac; }
+.vs-call-banner--accepted .vs-call-banner__dot { background: #4ade80; }
+.vs-call-banner--rejected { background: #450a0a; color: #fca5a5; }
+.vs-call-banner--rejected .vs-call-banner__dot { background: #f87171; }
+.vs-call-banner--offline  { background: #1c1917; color: #d6d3d1; }
+.vs-call-banner--offline  .vs-call-banner__dot { background: #78716c; }
+.vs-call-banner--error    { background: #2d1b0e; color: #fdba74; }
+.vs-call-banner--error    .vs-call-banner__dot { background: #fb923c; }
+
+@keyframes dot-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.75); }
+}
+
+.vs-call-banner__retry {
+  margin-left: auto;
+  background: rgba(255,255,255,0.15);
+  color: inherit;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  padding: 4px 14px;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.vs-call-banner__retry:hover { background: rgba(255,255,255,0.25); }
+
 .video-session-header {
   background: rgba(255, 255, 255, 0.95);
   padding: 1.5rem;
