@@ -31,21 +31,28 @@ const PatientHistory = () => {
 
     const status = selectedIntake.ai_summary_status;
     if (status === 'pending' || status === 'running') {
+      // Start polling every 3 seconds
       const interval = setInterval(async () => {
         try {
           const intake = await getPatientIntake(selectedPatient.id);
           setSelectedIntake(intake);
+
+          // Stop polling if status is done or failed
           if (intake.ai_summary_status === 'done' || intake.ai_summary_status === 'failed') {
             clearInterval(interval);
             setPollInterval(null);
           }
         } catch (err) {
+          // If error fetching, keep trying
           console.error('Error polling intake:', err);
         }
       }, 3000);
 
       setPollInterval(interval);
-      return () => { clearInterval(interval); };
+
+      return () => {
+        clearInterval(interval);
+      };
     } else {
       if (pollInterval) {
         clearInterval(pollInterval);

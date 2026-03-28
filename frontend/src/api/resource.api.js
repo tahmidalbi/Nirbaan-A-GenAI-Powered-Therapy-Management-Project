@@ -3,7 +3,7 @@ import axiosInstance from './axios';
 /**
  * CRITICAL: 2-step upload flow for direct-to-R2 uploads
  * Step 1: init-upload → get presigned PUT URL
- * Step 2: PUT directly to R2 with file (R2 doesn't support POST!)  
+ * Step 2: PUT directly to R2 with file (R2 doesn't support POST!)
  * Step 3: confirm-upload → trigger processing
  */
 

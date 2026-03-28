@@ -29,40 +29,46 @@ const PatientLogin = () => {
 
     try {
       console.log('[LOGIN] Starting patient login for:', formData.email);
-      
+
       // Login and get token
       const loginResponse = await loginPatient(formData);
       console.log('[LOGIN] Login response:', loginResponse);
-      
-      // Store token and initial data
+
+      // Decode JWT payload to get id immediately (no extra request needed)
+      const jwtPayload = JSON.parse(atob(loginResponse.access_token.split('.')[1]));
+      console.log('[LOGIN] JWT payload:', jwtPayload);
+
+      // Store token and data parsed from JWT
       console.log('[LOGIN] Storing auth data with token...');
-      login({ 
+      login({
         email: formData.email,
-        role: 'patient' 
+        id: jwtPayload.id,
+        role: 'patient'
       }, loginResponse.access_token);
-      
+
       console.log('[LOGIN] Auth stored, checking localStorage...');
       const stored = localStorage.getItem('auth-storage');
       console.log('[LOGIN] Stored auth-storage:', stored);
-      
-      // Now get patient details with the stored token
+
+      // Fetch full patient details in background (non-blocking)
       try {
         console.log('[LOGIN] Fetching patient details...');
         const patientData = await getCurrentPatient();
         console.log('[LOGIN] Patient data received:', patientData);
-        
+
         // Update with full data (keep the same token)
-        login({ 
+        login({
           ...patientData,
-          role: 'patient' 
+          role: 'patient'
         }, loginResponse.access_token);
         console.log('[LOGIN] Updated auth with full patient data');
       } catch (err) {
         console.error('[LOGIN] Failed to fetch patient data:', err);
         console.error('[LOGIN] Error details:', err.response || err);
+        // id is already set from JWT so this is non-fatal
         // Continue to dashboard even if fetching details fails
       }
-      
+
       // Redirect to patient dashboard
       console.log('[LOGIN] Redirecting to patient dashboard...');
       navigate('/patient/dashboard');

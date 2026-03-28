@@ -6,6 +6,7 @@ from app.resources.rag_service import rag_service
 from app.education.fear_ladder.state import KBChunk
 from app.education.fear_ladder.config import KB_TOP_K
 
+
 def retrieve_kb(therapist_id: int, query: str) -> List[KBChunk]:
     return rag_service.retrieve_chunks(
         therapist_id=therapist_id,

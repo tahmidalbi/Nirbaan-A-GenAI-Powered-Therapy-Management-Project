@@ -15,6 +15,14 @@ from app.self_monitoring.router import router as self_monitoring_router
 from app.fear_ladder.router import router as fear_ladder_router
 from app.education.fear_ladder.router import router as education_fear_ladder_router
 from app.education.ocd_core.router import router as education_ocd_core_router
+
+# sysproj: live video sessions + patient homework
+from app.live_sessions.router import router as live_sessions_router
+from app.live_sessions.websocket import router as websocket_router
+from app.live_sessions.streaming_transcription import router as streaming_transcription_router
+from app.patient_homework.router import router as patient_homework_router
+
+# Nirbaan: ERP, AI, therapy session transcripts, chat
 from app.erp.router import router as erp_router
 from app.progress.router import router as progress_router
 from app.NirbaanAIPatient.router import router as nirbaan_ai_patient_router
@@ -49,15 +57,15 @@ async def lifespan(app: FastAPI):
         graph, checkpointer_cm = compile_graph()
         app.state.imaginal_graph = graph
         app.state.imaginal_checkpointer_cm = checkpointer_cm
-        print("✅ Imaginal Script Generator graph initialized.")
+        print("Imaginal Script Generator graph initialized.")
         yield
     finally:
         try:
             if checkpointer_cm is not None:
                 checkpointer_cm.__exit__(None, None, None)
-                print("🛑 Imaginal Script Generator checkpointer closed.")
+                print("Imaginal Script Generator checkpointer closed.")
         except Exception as e:
-            print(f"⚠️ Error while closing imaginal graph checkpointer: {e}")
+            print(f"Error while closing imaginal graph checkpointer: {e}")
 
 
 def create_app() -> FastAPI:
@@ -86,7 +94,7 @@ def create_app() -> FastAPI:
         expose_headers=["*"],
     )
 
-    # Routers
+    # Shared routers (both branches)
     app.include_router(auth_router)
     app.include_router(patients_router)
     app.include_router(emergency_personnel_router)
@@ -96,6 +104,14 @@ def create_app() -> FastAPI:
     app.include_router(fear_ladder_router)
     app.include_router(education_fear_ladder_router)
     app.include_router(education_ocd_core_router)
+
+    # sysproj routers: live video sessions + homework
+    app.include_router(live_sessions_router)
+    app.include_router(patient_homework_router)
+    app.include_router(websocket_router, prefix="/api/therapy-sessions")
+    app.include_router(streaming_transcription_router, prefix="/api/therapy-sessions")
+
+    # Nirbaan routers: ERP, AI, therapy records, chat
     app.include_router(erp_router)
     app.include_router(progress_router)
     app.include_router(nirbaan_ai_patient_router)

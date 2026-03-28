@@ -6,8 +6,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.database.deps import get_db
-from app.auth.utils import get_current_therapist
+from app.auth.utils import get_current_therapist, get_current_patient
 from app.therapists.models import Therapist
+from app.patients.models import Patient
 from app.resources.models import Resource, IngestionJob
 from app.resources.schemas import (
     ResourceInitUploadRequest,
@@ -30,8 +31,6 @@ from app.resources.r2_storage import r2_storage
 from app.resources.rag_service import rag_service
 from app.resources.tasks import ingest_resource_task
 from app.resources.url_processor import url_processor
-from app.auth.utils import get_current_patient
-from app.patients.models import Patient
 
 router = APIRouter(prefix="/resources", tags=["resources"])
 

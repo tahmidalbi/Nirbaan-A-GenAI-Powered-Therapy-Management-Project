@@ -17,4 +17,4 @@ from app.therapy_sessions.models import TherapySession  # noqa: F401
 
 if __name__ == "__main__":
     Base.metadata.create_all(bind=engine, tables=[TherapySession.__table__])
-    print("✅ therapy_sessions table created successfully.")
+    print("[ok] therapy_sessions table created successfully.")

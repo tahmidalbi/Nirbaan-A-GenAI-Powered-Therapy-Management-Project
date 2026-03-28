@@ -23,7 +23,7 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  background-image: 
+  background-image:
     repeating-linear-gradient(
       0deg,
       transparent,
@@ -53,10 +53,10 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, 
-    transparent 0%, 
-    rgba(255, 255, 255, 0.1) 20%, 
-    rgba(255, 255, 255, 0.1) 80%, 
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(255, 255, 255, 0.1) 80%,
     transparent 100%
   );
 }
@@ -333,7 +333,7 @@
   border: 1px solid rgba(107, 155, 141, 0.2);
   border-radius: 0;
   padding: 2.5rem;
-  box-shadow: 
+  box-shadow:
     0 10px 40px rgba(0, 0, 0, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
@@ -461,7 +461,7 @@
 
 .patient-card:hover {
   transform: translateY(-4px);
-  box-shadow: 
+  box-shadow:
     0 8px 25px rgba(107, 155, 141, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
   border-color: #6B9B8D;
@@ -512,12 +512,67 @@
   margin-top: auto;
   padding-top: 1rem;
   border-top: 1px solid rgba(107, 155, 141, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .patient-date {
   font-size: 0.8rem;
   color: #7A8E88;
   font-style: italic;
+}
+
+.start-call-btn {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #6B9B8D 0%, #5A8A7C 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(107, 155, 141, 0.3);
+}
+
+.view-patient-btn {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #8D9B6B 0%, #7C8A5A 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(141, 155, 107, 0.3);
+}
+
+.view-patient-btn:hover {
+  background: linear-gradient(135deg, #7C8A5A 0%, #8D9B6B 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(141, 155, 107, 0.4);
+}
+
+.view-patient-btn:active {
+  transform: translateY(0);
+}
+
+.patient-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.start-call-btn:hover {
+  background: linear-gradient(135deg, #5A8A7C 0%, #6B9B8D 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(107, 155, 141, 0.4);
+}
+
+.start-call-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(107, 155, 141, 0.3);
 }
 
 /* Responsive design */

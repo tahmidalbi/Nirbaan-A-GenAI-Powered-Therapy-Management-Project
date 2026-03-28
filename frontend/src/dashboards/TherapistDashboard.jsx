@@ -11,7 +11,9 @@ import {
 import AddPatient from'../components/AddPatient';
 import AddEmergencyPersonnel from '../components/AddEmergencyPersonnel';
 import ResourceManager from '../components/ResourceManager';
+import RAGChat from '../components/RAGChat';
 import PatientHistory from '../components/PatientHistory';
+import ActiveSessions from '../components/ActiveSessions';
 import './TherapistDashboard.css';
 
 const TherapistDashboard = () => {
@@ -24,11 +26,11 @@ const TherapistDashboard = () => {
   const [error, setError] = useState('');
   const [activeSection, setActiveSection] = useState(null);
 
-  // Sessions section state
+  // Sessions section state (therapy transcripts)
   const [sessionsPatients, setSessionsPatients] = useState([]);
   const [sessionsLoading, setSessionsLoading] = useState(false);
   const [sessionsError, setSessionsError] = useState('');
-  const [selectedSessionPatient, setSelectedSessionPatient] = useState(null); // patient object
+  const [selectedSessionPatient, setSelectedSessionPatient] = useState(null);
   const [patientSessions, setPatientSessions] = useState([]);
   const [patientSessionsLoading, setPatientSessionsLoading] = useState(false);
   const [expandedSession, setExpandedSession] = useState(null);
@@ -86,7 +88,7 @@ const TherapistDashboard = () => {
     setEmergencyPersonnel([...emergencyPersonnel, newPersonnel]);
   };
 
-  // Sessions helpers
+  // Sessions helpers (therapy transcripts)
   const fetchSessionsPatients = async () => {
     setSessionsLoading(true);
     setSessionsError('');
@@ -176,6 +178,10 @@ const TherapistDashboard = () => {
     navigate(`/therapist/emergency-personnel/${personnelId}`);
   };
 
+  const handleStartCall = (patientId) => {
+    navigate(`/video-session/therapist/${user.id}/${patientId}`);
+  };
+
   return (
     <div className="therapist-dashboard-container">
       {/* Vintage background similar to landing page */}
@@ -190,59 +196,65 @@ const TherapistDashboard = () => {
         <div className="header-content">
           <h1 className="logo">Nirbaan</h1>
           <nav className="nav-menu">
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'patients' ? 'active' : ''}`}
               onClick={() => setActiveSection('patients')}
             >
               Patients
             </button>
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'emergency' ? 'active' : ''}`}
               onClick={() => setActiveSection('emergency')}
             >
               Emergency Personnel
             </button>
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'community' ? 'active' : ''}`}
               onClick={() => setActiveSection('community')}
             >
               Community
             </button>
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'resources' ? 'active' : ''}`}
               onClick={() => setActiveSection('resources')}
             >
               Resources
             </button>
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'tools' ? 'active' : ''}`}
               onClick={() => navigate('/therapist/dashboard/tools')}
             >
               Tools
             </button>
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'history' ? 'active' : ''}`}
               onClick={() => setActiveSection('history')}
             >
               History
             </button>
-            <button 
+            <button
               className="nav-btn"
               onClick={() => navigate('/therapist/nirbaanai')}
             >
               Nirbaan AI
             </button>
-            <button 
+            <button
               className="nav-btn"
               onClick={() => navigate('/therapist/chat')}
             >
               Chat
             </button>
-            <button 
+            <button
+              className={`nav-btn ${activeSection === 'live_sessions' ? 'active' : ''}`}
+              onClick={() => setActiveSection('live_sessions')}
+            >
+              Live Sessions
+            </button>
+            <button
               className={`nav-btn ${activeSection === 'sessions' ? 'active' : ''}`}
               onClick={() => setActiveSection('sessions')}
             >
-              Sessions
+              Active Sessions
             </button>
           </nav>
           <button onClick={handleLogout} className="logout-btn">Logout</button>
@@ -282,10 +294,9 @@ const TherapistDashboard = () => {
             ) : (
               <div className="patients-grid">
                 {patients.map((patient) => (
-                  <div 
-                    key={patient.id} 
+                  <div
+                    key={patient.id}
                     className="patient-card"
-                    onClick={() => handlePatientClick(patient.id)}
                   >
                     <div className="patient-avatar">
                       {patient.name.charAt(0).toUpperCase()}
@@ -299,6 +310,22 @@ const TherapistDashboard = () => {
                       <span className="patient-date">
                         Added {new Date(patient.created_at).toLocaleDateString()}
                       </span>
+                      <div className="patient-actions">
+                        <button
+                          className="view-patient-btn"
+                          onClick={() => handlePatientClick(patient.id)}
+                          title="View Patient"
+                        >
+                          👤 View
+                        </button>
+                        <button
+                          className="start-call-btn"
+                          onClick={() => handleStartCall(patient.id)}
+                          title="Start Video Call"
+                        >
+                          📹 Start Call
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -329,8 +356,8 @@ const TherapistDashboard = () => {
             ) : (
               <div className="patients-grid">
                 {emergencyPersonnel.map((personnel) => (
-                  <div 
-                    key={personnel.id} 
+                  <div
+                    key={personnel.id}
                     className="patient-card"
                     onClick={() => handleEmergencyPersonnelClick(personnel.id)}
                   >
@@ -372,16 +399,26 @@ const TherapistDashboard = () => {
           </div>
         )}
 
+        {activeSection === 'ai' && (
+          <div className="section-content">
+            <RAGChat />
+          </div>
+        )}
 
+        {activeSection === 'live_sessions' && (
+          <div className="section-content">
+            <ActiveSessions />
+          </div>
+        )}
 
         {activeSection === 'sessions' && (
           <div className="sessions-section">
 
-            {/* ── Step 1: patient picker ── */}
+            {/* Step 1: patient picker */}
             {!selectedSessionPatient && (
               <>
                 <div className="sessions-section-header">
-                  <h2 className="sessions-section-title">Sessions — Select a Patient</h2>
+                  <h2 className="sessions-section-title">Active Sessions — Select a Patient</h2>
                 </div>
 
                 {sessionsLoading && (
@@ -426,7 +463,7 @@ const TherapistDashboard = () => {
               </>
             )}
 
-            {/* ── Step 2: sessions list for selected patient ── */}
+            {/* Step 2: sessions list for selected patient */}
             {selectedSessionPatient && (
               <>
                 <div className="sessions-section-header">

@@ -10,7 +10,7 @@ from app.users.models import User
 from app.therapists.models import Therapist
 from app.patients.models import Patient
 from app.emergency_personnel.models import EmergencyPersonnel
-from app.resources.models import Resource, ResourceChunk, IngestionJob
+from app.resources.models import Resource, IngestionJob
 from app.intakes.models import PatientIntake
 from app.erp.models import (                     # noqa: F401
     ERPItem,
@@ -30,20 +30,18 @@ def create_all_tables():
     print("  3. patients")
     print("  4. emergency_personnel")
     print("  5. resources")
-    print("  6. resource_chunks")
-    print("  7. ingestion_jobs")
-    print("  8. patient_intakes")
-    print("  9. erp_items")
-    print("  10. erp_imaginal_cards")
-    print("  11. erp_live_sessions")
-    print("  12. erp_suds_readings")
-    print("  13. erp_exercise_notes")
-    print("  14. erp_chat_messages")
-    
+    print("  6. ingestion_jobs")
+    print("  7. patient_intakes")
+    print("  8. erp_items")
+    print("  9. erp_imaginal_cards")
+    print("  10. erp_live_sessions")
+    print("  11. erp_suds_readings")
+    print("  12. erp_exercise_notes")
+    print("  13. erp_chat_messages")
+
     Base.metadata.create_all(bind=engine)
-    
-    print("\n✅ All tables created successfully!")
-    print("\nYour database is now up to date with 14 tables.")
+
+    print("\nAll tables created successfully!")
 
 if __name__ == "__main__":
     create_all_tables()

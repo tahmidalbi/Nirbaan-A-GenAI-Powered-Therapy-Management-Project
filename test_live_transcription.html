@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Live Transcription Test</title>
+  <style>
+    body { font-family: Arial; padding: 20px; max-width: 800px; margin: auto; }
+    button { padding: 10px 20px; margin: 5px; font-size: 16px; cursor: pointer; border-radius: 5px; }
+    #start { background: #4CAF50; color: white; border: none; }
+    #stop { background: #f44336; color: white; border: none; }
+    #transcripts { border: 1px solid #ccc; padding: 15px; margin-top: 20px; min-height: 200px; max-height: 400px; overflow-y: auto; }
+    .therapist { color: blue; margin: 10px 0; padding: 8px; background: #e3f2fd; border-radius: 5px; }
+    .patient { color: green; margin: 10px 0; padding: 8px; background: #e8f5e9; border-radius: 5px; }
+    #status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+    .connected { background: #e8f5e9; }
+    .disconnected { background: #ffebee; }
+    .recording { background: #fff3e0; }
+    input, select { padding: 8px; margin: 5px; }
+    .config { background: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 15px; }
+    small { color: #888; }
+  </style>
+</head>
+<body>
+  <h2>Live Transcription Test</h2>
+
+  <div class="config">
+    <label>Session ID: <input type="number" id="sessionId" value="1"></label>
+    <label>User ID: <input type="number" id="userId" value="1"></label>
+    <label>User Type:
+      <select id="userType">
+        <option value="therapist">Therapist</option>
+        <option value="patient">Patient</option>
+      </select>
+    </label>
+    <label>Chunk Duration (sec): <input type="number" id="chunkDuration" value="4" min="2" max="10"></label>
+  </div>
+
+  <div>
+    <button id="start">Start Recording</button>
+    <button id="stop" disabled>Stop Recording</button>
+  </div>
+
+  <div id="status" class="disconnected">Disconnected</div>
+  <h3>Transcripts:</h3>
+  <div id="transcripts"></div>
+
+  <script>
+    let ws, stream, isRecording = false;
+    let audioContext, analyser, dataArray;
+
+    // Setup audio analysis for silence detection
+    function setupAudioAnalysis() {
+      audioContext = new AudioContext();
+      analyser = audioContext.createAnalyser();
+      const source = audioContext.createMediaStreamSource(stream);
+      source.connect(analyser);
+      analyser.fftSize = 256;
+      dataArray = new Uint8Array(analyser.frequencyBinCount);
+    }
+
+    // Check if audio has speech (not silence)
+    function hasSpeech() {
+      if (!analyser) return true;
+      analyser.getByteFrequencyData(dataArray);
+      const average = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
+      return average > 10; // Threshold - adjust if needed
+    }
+
+    // Record a single chunk and check for silence
+    function recordChunk(durationMs) {
+      return new Promise((resolve, reject) => {
+        const mediaRecorder = new MediaRecorder(stream, {
+          mimeType: 'audio/webm;codecs=opus'
+        });
+
+        const chunks = [];
+        let hadSpeech = false;
+
+        // Check for speech during recording
+        const speechCheckInterval = setInterval(() => {
+          if (hasSpeech()) {
+            hadSpeech = true;
+          }
+        }, 100);
+
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) {
+            chunks.push(e.data);
+          }
+        };
+
+        mediaRecorder.onstop = () => {
+          clearInterval(speechCheckInterval);
+          const blob = new Blob(chunks, { type: 'audio/webm' });
+          resolve({ blob, hadSpeech });
+        };
+
+        mediaRecorder.onerror = (e) => {
+          clearInterval(speechCheckInterval);
+          reject(e);
+        };
+
+        mediaRecorder.start();
+
+        setTimeout(() => {
+          if (mediaRecorder.state === 'recording') {
+            mediaRecorder.stop();
+          }
+        }, durationMs);
+      });
+    }
+
+    // Main recording loop - creates new recordings for each chunk
+    async function recordingLoop() {
+      const durationMs = parseInt(document.getElementById('chunkDuration').value) * 1000;
+
+      while (isRecording && ws && ws.readyState === WebSocket.OPEN) {
+        try {
+          document.getElementById('status').textContent = 'Listening...';
+          document.getElementById('status').className = 'recording';
+
+          const { blob: audioBlob, hadSpeech } = await recordChunk(durationMs);
+
+          if (isRecording && ws && ws.readyState === WebSocket.OPEN && audioBlob.size > 1000) {
+            if (hadSpeech) {
+              console.log('Speech detected, sending audio chunk:', audioBlob.size, 'bytes');
+              document.getElementById('status').textContent = 'Processing speech...';
+              ws.send(audioBlob);
+            } else {
+              console.log('Silence detected, skipping chunk');
+              document.getElementById('status').textContent = 'Listening... (silence)';
+            }
+          }
+        } catch (err) {
+          console.error('Recording error:', err);
+        }
+      }
+    }
+
+    document.getElementById('start').onclick = async () => {
+      const sessionId = document.getElementById('sessionId').value;
+      const userId = document.getElementById('userId').value;
+      const userType = document.getElementById('userType').value;
+
+      // Get microphone access
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        setupAudioAnalysis();
+      } catch (err) {
+        alert('Microphone access denied: ' + err.message);
+        return;
+      }
+
+      // Connect WebSocket
+      const wsUrl = `ws://localhost:8000/api/therapy-sessions/ws/transcription/${sessionId}?userId=${userId}&userType=${userType}`;
+      console.log('Connecting to:', wsUrl);
+      ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        console.log('WebSocket connected');
+        document.getElementById('status').textContent = 'Connected - Starting...';
+        document.getElementById('status').className = 'connected';
+        document.getElementById('start').disabled = true;
+        document.getElementById('stop').disabled = false;
+
+        isRecording = true;
+        recordingLoop();
+      };
+
+      ws.onmessage = (e) => {
+        console.log('Received:', e.data);
+        const data = JSON.parse(e.data);
+        if (data.type === 'transcript') {
+          const div = document.createElement('div');
+          div.className = data.speaker;
+          const time = new Date(data.timestamp).toLocaleTimeString();
+          div.innerHTML = `<b>${data.speaker}:</b> ${data.text} <small>(${time})</small>`;
+          document.getElementById('transcripts').appendChild(div);
+          document.getElementById('transcripts').scrollTop = document.getElementById('transcripts').scrollHeight;
+          document.getElementById('status').textContent = 'Connected - Recording...';
+          document.getElementById('status').className = 'connected';
+        } else if (data.type === 'error') {
+          console.error('Server error:', data.message);
+          const div = document.createElement('div');
+          div.style.color = 'red';
+          div.textContent = 'Error: ' + data.message;
+          document.getElementById('transcripts').appendChild(div);
+        }
+      };
+
+      ws.onerror = (e) => {
+        console.error('WebSocket error:', e);
+        document.getElementById('status').textContent = 'Error - Check console';
+        document.getElementById('status').className = 'disconnected';
+      };
+
+      ws.onclose = () => {
+        console.log('WebSocket closed');
+        isRecording = false;
+        document.getElementById('status').textContent = 'Disconnected';
+        document.getElementById('status').className = 'disconnected';
+        document.getElementById('start').disabled = false;
+        document.getElementById('stop').disabled = true;
+      };
+    };
+
+    document.getElementById('stop').onclick = () => {
+      isRecording = false;
+
+      if (stream) {
+        stream.getTracks().forEach(t => t.stop());
+      }
+      if (audioContext) {
+        audioContext.close();
+        audioContext = null;
+        analyser = null;
+      }
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: 'stop' }));
+        ws.close();
+      }
+      document.getElementById('start').disabled = false;
+      document.getElementById('stop').disabled = true;
+      document.getElementById('status').textContent = 'Stopped';
+      document.getElementById('status').className = 'disconnected';
+    };
+  </script>
+</body>
+</html>

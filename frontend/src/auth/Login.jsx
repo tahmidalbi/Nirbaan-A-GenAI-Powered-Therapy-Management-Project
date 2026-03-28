@@ -29,40 +29,46 @@ const Login = () => {
 
     try {
       console.log('[LOGIN] Starting therapist login for:', formData.email);
-      
+
       // Login and get token
       const loginResponse = await loginTherapist(formData);
       console.log('[LOGIN] Login response:', loginResponse);
-      
-      // Store token and initial data
+
+      // Decode JWT payload to get id immediately (no extra request needed)
+      const jwtPayload = JSON.parse(atob(loginResponse.access_token.split('.')[1]));
+      console.log('[LOGIN] JWT payload:', jwtPayload);
+
+      // Store token and data parsed from JWT
       console.log('[LOGIN] Storing auth data with token...');
-      login({ 
+      login({
         email: formData.email,
-        role: 'therapist' 
+        id: jwtPayload.id,
+        role: 'therapist'
       }, loginResponse.access_token);
-      
+
       console.log('[LOGIN] Auth stored, checking localStorage...');
       const stored = localStorage.getItem('auth-storage');
       console.log('[LOGIN] Stored auth-storage:', stored);
-      
-      // Now get therapist details with the stored token
+
+      // Fetch full therapist details in background (non-blocking)
       try {
         console.log('[LOGIN] Fetching therapist details...');
         const therapistData = await getCurrentTherapist();
         console.log('[LOGIN] Therapist data received:', therapistData);
-        
+
         // Update with full data (keep the same token)
-        login({ 
+        login({
           ...therapistData,
-          role: 'therapist' 
+          role: 'therapist'
         }, loginResponse.access_token);
         console.log('[LOGIN] Updated auth with full therapist data');
       } catch (err) {
         console.error('[LOGIN] Failed to fetch therapist data:', err);
         console.error('[LOGIN] Error details:', err.response || err);
+        // id is already set from JWT so this is non-fatal
         // Continue to dashboard even if fetching details fails
       }
-      
+
       // Redirect to therapist dashboard
       console.log('[LOGIN] Redirecting to therapist dashboard...');
       navigate('/therapist/dashboard');

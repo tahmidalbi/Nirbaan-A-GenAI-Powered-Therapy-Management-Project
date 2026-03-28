@@ -1,19 +1,68 @@
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { getMyTherapySessions } from '../api/sessions.api';
+import PatientHomework from '../components/PatientHomework';
 import PatientResourceLibrary from '../components/PatientResourceLibrary';
 import './PatientDashboard.css';
 
 const PatientDashboard = () => {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
+  const user = useAuthStore((state) => state.user);
   const [activeSection, setActiveSection] = useState(null);
+  const wsRef = useRef(null);
+
+  // Therapy sessions state (session transcripts from therapist)
   const [sessions, setSessions] = useState([]);
   const [sessionsLoading, setSessionsLoading] = useState(false);
   const [sessionsError, setSessionsError] = useState('');
   const [expandedSession, setExpandedSession] = useState(null);
 
+  // WebSocket connection for incoming live video calls
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const connectWebSocket = () => {
+      const wsUrl = `ws://127.0.0.1:8000/ws/call/${user.id}?user_type=patient`;
+      const ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        console.log('Patient WebSocket connected for incoming calls');
+      };
+
+      ws.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        console.log('Received WebSocket message:', message);
+
+        if (message.type === 'incoming_call') {
+          const sessionId = message.session_id || message.caller_id;
+          navigate(`/video-call/${sessionId}`);
+        }
+      };
+
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+      };
+
+      ws.onclose = () => {
+        console.log('Patient WebSocket disconnected');
+      };
+
+      wsRef.current = ws;
+    };
+
+    connectWebSocket();
+
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+        wsRef.current = null;
+      }
+    };
+  }, [user?.id, navigate]);
+
+  // Fetch therapy session transcripts when section is opened
   useEffect(() => {
     if (activeSection === 'sessions' && sessions.length === 0) {
       setSessionsLoading(true);
@@ -56,7 +105,13 @@ const PatientDashboard = () => {
         <div className="header-content">
           <h1 className="logo">Nirbaan</h1>
           <nav className="nav-menu">
-            <button 
+            <button
+              className={`nav-btn ${activeSection === 'live_sessions' ? 'active' : ''}`}
+              onClick={() => setActiveSection('live_sessions')}
+            >
+              Live Sessions
+            </button>
+            <button
               className={`nav-btn ${activeSection === 'sessions' ? 'active' : ''}`}
               onClick={() => setActiveSection('sessions')}
             >
@@ -68,31 +123,31 @@ const PatientDashboard = () => {
             >
               Progress
             </button>
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'homework' ? 'active' : ''}`}
               onClick={() => setActiveSection('homework')}
             >
               Homework
             </button>
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'resources' ? 'active' : ''}`}
               onClick={() => setActiveSection('resources')}
             >
               Resources
             </button>
-            <button 
+            <button
               className="nav-btn"
               onClick={handleOCDToolsClick}
             >
               Tools
             </button>
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'mindfulness' ? 'active' : ''}`}
               onClick={() => setActiveSection('mindfulness')}
             >
               Mindfulness
             </button>
-            <button 
+            <button
               className="nav-btn"
               onClick={() => navigate('/patient/chat')}
             >
@@ -118,23 +173,11 @@ const PatientDashboard = () => {
         </button>
       )}
 
-      {/* Main Content - Empty sections */}
+      {/* Main Content */}
       <main className="dashboard-main">
-        {activeSection === 'homework' && (
+        {activeSection === 'live_sessions' && (
           <div className="empty-section">
-            {/* Empty Homework section */}
-          </div>
-        )}
-
-        {activeSection === 'resources' && (
-          <div className="pd-resources-panel">
-            <PatientResourceLibrary />
-          </div>
-        )}
-
-        {activeSection === 'mindfulness' && (
-          <div className="empty-section">
-            {/* Empty Mindfulness section */}
+            {/* Live Sessions section - video call sessions */}
           </div>
         )}
 
@@ -188,6 +231,23 @@ const PatientDashboard = () => {
           </div>
         )}
 
+        {activeSection === 'homework' && (
+          <div className="section-content">
+            <PatientHomework />
+          </div>
+        )}
+
+        {activeSection === 'resources' && (
+          <div className="pd-resources-panel">
+            <PatientResourceLibrary />
+          </div>
+        )}
+
+        {activeSection === 'mindfulness' && (
+          <div className="empty-section">
+            {/* Empty Mindfulness section */}
+          </div>
+        )}
       </main>
     </div>
   );

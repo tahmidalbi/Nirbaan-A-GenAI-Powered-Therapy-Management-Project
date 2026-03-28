@@ -24,16 +24,27 @@ class RAGService:
     """RAG service using LangChain PGVector + retriever."""
 
     def __init__(self) -> None:
-        if not PGVECTOR_CONNECTION:
-            raise ValueError("PGVECTOR_CONNECTION (or DATABASE_URL) is not configured")
+        self._vector_store: PGVector | None = None
+        self._embeddings: OpenAIEmbeddings | None = None
 
-        self.embeddings = OpenAIEmbeddings(model=EMBEDDING_MODEL)
-        self.vector_store = PGVector(
-            embeddings=self.embeddings,
-            collection_name=PGVECTOR_COLLECTION_NAME,
-            connection=PGVECTOR_CONNECTION,
-            use_jsonb=True,
-        )
+    @property
+    def embeddings(self) -> OpenAIEmbeddings:
+        if self._embeddings is None:
+            self._embeddings = OpenAIEmbeddings(model=EMBEDDING_MODEL)
+        return self._embeddings
+
+    @property
+    def vector_store(self) -> PGVector:
+        if self._vector_store is None:
+            if not PGVECTOR_CONNECTION:
+                raise ValueError("PGVECTOR_CONNECTION (or DATABASE_URL) is not configured")
+            self._vector_store = PGVector(
+                embeddings=self.embeddings,
+                collection_name=PGVECTOR_COLLECTION_NAME,
+                connection=PGVECTOR_CONNECTION,
+                use_jsonb=True,
+            )
+        return self._vector_store
 
     def _build_filter(
         self,
@@ -93,6 +104,17 @@ class RAGService:
             )
 
         return chunks
+
+    def delete_resource_chunks(
+        self,
+        therapist_id: int,
+        resource_id: int,
+        total_chunks: int,
+    ) -> None:
+        """Delete all vector store documents for a given resource."""
+        ids = [f"resource-{resource_id}-chunk-{idx}" for idx in range(total_chunks)]
+        if ids:
+            self.vector_store.delete(ids=ids)
 
     def generate_answer(
         self,

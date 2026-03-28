@@ -52,7 +52,7 @@ const PatientDetail = () => {
   const handleSave = async () => {
     setSaving(true);
     setError('');
-    
+
     try {
       const updated = await updatePatient(patientId, formData);
       setPatient(updated);

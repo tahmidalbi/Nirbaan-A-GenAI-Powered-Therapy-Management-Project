@@ -11,6 +11,7 @@ from app.education.fear_ladder.schemas import KBJudge, FearLadderEducation
 from app.education.fear_ladder.prompts import KB_JUDGE_SYSTEM, EDU_SYSTEM
 from app.education.fear_ladder.config import USE_WEB_FALLBACK
 
+
 def build_graph():
     llm = get_llm()
 
@@ -22,7 +23,7 @@ def build_graph():
 
     def kb_judge_node(state: EducationState) -> EducationState:
         # This judge is THE key to your requirement:
-        # We decide “KB is enough?” BEFORE any web search.
+        # We decide "KB is enough?" BEFORE any web search.
         ctx = kb_context(state.get("kb_chunks", []))
         judge_llm = llm.with_structured_output(KBJudge, method="json_schema")
 

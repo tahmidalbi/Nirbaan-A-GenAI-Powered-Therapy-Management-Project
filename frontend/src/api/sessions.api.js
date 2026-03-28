@@ -37,6 +37,30 @@ export const deleteTherapySession = async (sessionId) => {
   }
 };
 
+// ── Live Sessions (video calls) ─────────────────────────────────────────────
+
+export const startLiveSession = async (data) => {
+  try {
+    const response = await axiosInstance.post('/sessions/start', data);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to start live session';
+  }
+};
+
+export const endLiveSession = async (sessionId) => {
+  try {
+    const response = await axiosInstance.post(`/sessions/${sessionId}/end`);
+    return response.data;
+  } catch (error) {
+    // "already ended" is not a real error — ignore it silently
+    const detail = error.response?.data?.detail || '';
+    if (!detail.toLowerCase().includes('already ended')) {
+      throw detail || 'Failed to end live session';
+    }
+  }
+};
+
 // ── Patient ────────────────────────────────────────────────────────────────
 
 export const getMyTherapySessions = async () => {

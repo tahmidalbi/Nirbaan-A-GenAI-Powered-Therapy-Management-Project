@@ -20,8 +20,7 @@ celery_app = Celery(
         "app.ai_ladder_review.tasks",
         "app.ai_ladder_review_v2.tasks",
         "app.education.ocd_core.tasks",
-
-        # ✅ NEW: ERP tasks
+        # ERP tasks
         "app.erp.ERPCoach.tasks.erp_checkins",
         "app.erp.ERPCoach.tasks.erp_reports",
     ],
@@ -44,8 +43,7 @@ celery_app.conf.update(
 # Task result expires after 24 hours
 celery_app.conf.result_expires = 86400
 
-# ── Beat schedule ────────────────────────────────────────────────────────────
-# Defined here (not in the task file) so beat always picks it up reliably.
+# Beat schedule
 celery_app.conf.beat_schedule = {
     "erp-checkin-dispatch-every-minute": {
         "task": "app.erp.ERPCoach.tasks.erp_checkins.dispatch_due_checkins",
@@ -63,7 +61,7 @@ def _register_tasks():
         import app.ai_ladder_review_v2.tasks  # noqa: F401
         import app.education.ocd_core.tasks  # noqa: F401
 
-        # ✅ NEW: ERP tasks
+        # ERP tasks
         import app.erp.ERPCoach.tasks.erp_checkins  # noqa: F401
         import app.erp.ERPCoach.tasks.erp_reports  # noqa: F401
 

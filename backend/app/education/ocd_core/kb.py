@@ -20,7 +20,7 @@ def kb_context(chunks: List[KBChunk], max_chars: int = 7000) -> str:
     total = 0
     for i, c in enumerate(chunks, 1):
         block = (
-            f"[KB {i}: {c['resource_title']} | sim={c['similarity_score']:.3f} | resource_id={c['resource_id']}]\n"
+            f"[KB {i}: {c['resource_title']} | resource_id={c['resource_id']}]\n"
             f"{c['chunk_text']}\n"
         )
         total += len(block)
