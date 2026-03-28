@@ -23,7 +23,7 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  background-image: 
+  background-image:
     repeating-linear-gradient(
       0deg,
       transparent,
@@ -53,10 +53,10 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, 
-    transparent 0%, 
-    rgba(255, 255, 255, 0.1) 20%, 
-    rgba(255, 255, 255, 0.1) 80%, 
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(255, 255, 255, 0.1) 80%,
     transparent 100%
   );
 }
@@ -131,7 +131,7 @@
 .save-btn {
   background: linear-gradient(135deg, #6B9B8D 0%, #5A8A7D 100%);
   color: white;
-  box-shadow: 
+  box-shadow:
     0 4px 12px rgba(107, 155, 141, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
@@ -139,7 +139,7 @@
 .edit-btn:hover,
 .save-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 
+  box-shadow:
     0 6px 20px rgba(107, 155, 141, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
@@ -183,7 +183,7 @@
   border: 2px solid rgba(120, 160, 148, 0.2);
   border-radius: 0;
   padding: 3rem;
-  box-shadow: 
+  box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.12),
     0 2px 8px rgba(107, 155, 141, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
@@ -310,7 +310,7 @@
   outline: none;
   border-color: #6B9B8D;
   background: rgba(255, 255, 255, 0.95);
-  box-shadow: 
+  box-shadow:
     0 0 0 3px rgba(107, 155, 141, 0.08),
     inset 0 1px 2px rgba(107, 155, 141, 0.05);
 }
@@ -415,4 +415,444 @@
   .save-btn {
     flex: 1;
   }
+}
+
+/* ── Tab bar ── */
+.detail-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.detail-tab-btn {
+  padding: 10px 24px;
+  border: 2px solid rgba(255,255,255,0.5);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  font-family: 'Georgia', serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.detail-tab-btn:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+.detail-tab-btn.active {
+  background: rgba(255,255,255,0.9);
+  border-color: transparent;
+  color: #2c5f54;
+  font-weight: bold;
+}
+
+/* ── Progress history section (therapist view) ── */
+.progress-history-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.progress-history-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  font-size: 0.95rem;
+  padding: 24px 0;
+}
+
+.progress-history-empty {
+  background: rgba(255,255,255,0.85);
+  border-radius: 12px;
+  padding: 28px;
+  text-align: center;
+  color: #4a7a72;
+  font-size: 0.95rem;
+}
+
+.progress-history-card {
+  background: rgba(255,255,255,0.92);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+}
+
+.progress-history-card-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.progress-history-card-header:hover { background: rgba(0,0,0,0.04); }
+
+.progress-history-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ph-week-badge {
+  background: #3d7a6a;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+}
+
+.ph-week-date {
+  font-size: 0.9rem;
+  color: #4a7a72;
+}
+
+.ph-chevron {
+  font-size: 0.8rem;
+  color: #7a9b96;
+}
+
+.progress-history-card-body {
+  padding: 0 20px 20px;
+  border-top: 1px solid #e0eeeb;
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ph-section h4 {
+  margin: 0 0 6px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #2c5f54;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ph-text {
+  margin: 0;
+  font-size: 0.92rem;
+  color: #2c4a45;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.ph-suds-table {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #c8ddd9;
+}
+
+.ph-suds-header {
+  display: grid;
+  grid-template-columns: 1fr 70px;
+  gap: 12px;
+  padding: 8px 12px;
+  background: #e8f5f2;
+  font-size: 0.78rem;
+  font-weight: bold;
+  color: #4a7a72;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ph-suds-row {
+  display: grid;
+  grid-template-columns: 1fr 70px;
+  gap: 12px;
+  align-items: center;
+  padding: 9px 12px;
+  background: #f8fdfb;
+  border-top: 1px solid #e0eeeb;
+  font-size: 0.88rem;
+  color: #2c4a45;
+}
+
+.ph-suds-value {
+  font-weight: bold;
+  color: #3d7a6a;
+  text-align: center;
+}
+
+.ph-submitted-at {
+  font-size: 0.78rem;
+  color: #8aada8;
+  margin: 0;
+  text-align: right;
+}
+
+/* ── Sessions section ─────────────────────────────────────────────────────── */
+
+.sessions-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sessions-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.sessions-section-title {
+  color: #fff;
+  font-size: 1.4rem;
+  font-family: 'Garamond', serif;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+
+.add-session-btn {
+  background: linear-gradient(135deg, #3d7a6a 0%, #4e8f7d 100%);
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.4rem;
+  font-size: 0.9rem;
+  font-family: 'Georgia', serif;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  border-radius: 0;
+  transition: all 0.25s ease;
+  box-shadow: 0 3px 10px rgba(61, 122, 106, 0.3);
+}
+
+.add-session-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(61, 122, 106, 0.4);
+}
+
+.session-card {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
+}
+
+.session-card-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.session-card-header:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.session-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.session-badge {
+  background: #3d7a6a;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.session-title-text {
+  font-size: 0.95rem;
+  color: #1e3e38;
+  font-weight: 500;
+}
+
+.session-date-text {
+  font-size: 0.88rem;
+  color: #5a8a82;
+  font-style: italic;
+}
+
+.session-card-body {
+  padding: 0 20px 20px;
+  border-top: 1px solid #e0eeeb;
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.session-transcript {
+  white-space: pre-wrap;
+  font-family: 'Georgia', serif;
+  font-size: 0.9rem;
+  color: #2c4a45;
+  line-height: 1.75;
+  margin: 0;
+  background: rgba(232, 245, 242, 0.4);
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #d4e8e3;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.notes-private-badge {
+  background: #a07a3a;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: bold;
+  padding: 2px 7px;
+  border-radius: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.session-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+  border-top: 1px solid #e8f5f2;
+}
+
+.session-delete-btn {
+  background: transparent;
+  color: #b03030;
+  border: 1px solid #b03030;
+  padding: 0.4rem 1rem;
+  font-size: 0.83rem;
+  font-family: 'Georgia', serif;
+  cursor: pointer;
+  border-radius: 0;
+  transition: all 0.2s ease;
+  letter-spacing: 0.04em;
+}
+
+.session-delete-btn:hover {
+  background: #b03030;
+  color: #fff;
+}
+
+/* ── Modal ────────────────────────────────────────────────────────────────── */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-family: 'Garamond', serif;
+  font-size: 1.5rem;
+  color: #1e3e38;
+  font-weight: 400;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.3rem;
+  color: #7a9b96;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.modal-close-btn:hover {
+  color: #1e3e38;
+}
+
+.modal-error {
+  color: #b03030;
+  background: rgba(176, 48, 48, 0.07);
+  border-left: 3px solid #b03030;
+  padding: 0.6rem 1rem;
+  font-size: 0.88rem;
+  margin: 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.modal-field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2c5f54;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-family: 'Georgia', serif;
+}
+
+.field-hint {
+  font-size: 0.75rem;
+  color: #7a9b96;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  margin-left: 4px;
+}
+
+.session-transcript-input {
+  font-family: 'Georgia', serif;
+  font-size: 0.9rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e0eeeb;
 }

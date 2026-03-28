@@ -26,7 +26,7 @@ async def register_patient(
 ):
     """
     Register a new patient (therapist only)
-    
+
     Required fields:
     - name: Patient's full name
     - email: Valid email address (must be unique)
@@ -44,10 +44,10 @@ async def register_patient(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Email already registered"
         )
-    
+
     # Hash the password
     hashed_password = get_password_hash(patient_data.password)
-    
+
     # Create new patient
     new_patient = Patient(
         name=patient_data.name,
@@ -58,7 +58,7 @@ async def register_patient(
         address=patient_data.address,
         therapist_id=current_therapist.id
     )
-    
+
     try:
         db.add(new_patient)
         db.commit()
@@ -84,6 +84,16 @@ async def get_patients(
     ).all()
     return patients
 
+@router.get("/me", response_model=PatientResponse)
+async def get_current_patient_info(
+    db: Session = Depends(get_db),
+    current_patient: Patient = Depends(get_current_patient)
+):
+    """
+    Get current patient information (for authenticated patients)
+    """
+    return current_patient
+
 @router.get("/{patient_id}", response_model=PatientResponse)
 async def get_patient(
     patient_id: int,
@@ -97,13 +107,13 @@ async def get_patient(
         Patient.id == patient_id,
         Patient.therapist_id == current_therapist.id
     ).first()
-    
+
     if not patient:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Patient not found"
         )
-    
+
     return patient
 
 @router.put("/{patient_id}", response_model=PatientResponse)
@@ -120,18 +130,18 @@ async def update_patient(
         Patient.id == patient_id,
         Patient.therapist_id == current_therapist.id
     ).first()
-    
+
     if not patient:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Patient not found"
         )
-    
+
     # Update only provided fields
     update_data = patient_data.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(patient, field, value)
-    
+
     try:
         db.commit()
         db.refresh(patient)
@@ -155,7 +165,7 @@ async def login_patient(
     patient = db.query(Patient).filter(
         Patient.email == login_data.email
     ).first()
-    
+
     if not patient:
         print(f"[LOGIN FAILED] Patient not found with email: {login_data.email}")
         raise HTTPException(
@@ -163,11 +173,11 @@ async def login_patient(
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     # Now verify password
     password_valid = verify_password(login_data.password, patient.hashed_password)
     print(f"[LOGIN ATTEMPT] Email: {login_data.email}, Patient: {patient.name}, Password Valid: {password_valid}")
-    
+
     if not password_valid:
         print(f"[LOGIN FAILED] Invalid password for patient: {patient.name} ({patient.email})")
         raise HTTPException(
@@ -175,19 +185,9 @@ async def login_patient(
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     # Create access token
     access_token = create_access_token(data={"sub": patient.email, "id": patient.id, "role": "patient"})
     print(f"[LOGIN SUCCESS] Patient: {patient.name} ({patient.email})")
-    
-    return {"access_token": access_token, "token_type": "bearer"}
 
-@router.get("/me", response_model=PatientResponse)
-async def get_current_patient_info(
-    db: Session = Depends(get_db),
-    current_patient: Patient = Depends(get_current_patient)
-):
-    """
-    Get current patient information (for authenticated patients)
-    """
-    return current_patient
+    return {"access_token": access_token, "token_type": "bearer"}

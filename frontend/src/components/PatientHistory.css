@@ -751,3 +751,107 @@
     align-items: stretch;
   }
 }
+
+/* ── Tab bar extras ── */
+.ph-tabsLoading,
+.ph-tabsEmpty {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  font-family: Georgia, serif;
+  font-size: 13px;
+  font-style: italic;
+  color: rgba(16, 49, 38, 0.55);
+}
+
+/* ── Weekly progress content ── */
+.ph-weekHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.ph-weekBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #1f6b55, #7fb89a);
+  color: #fff;
+  font-family: Georgia, serif;
+  font-weight: 900;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.ph-weekDate {
+  font-family: Georgia, serif;
+  font-size: 14px;
+  color: rgba(16, 49, 38, 0.70);
+  font-style: italic;
+}
+
+/* ── SUDS snapshot list ── */
+.ph-sudsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.ph-sudsRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 10px 12px;
+  background: rgba(168, 213, 186, 0.12);
+  border: 1px solid rgba(18, 63, 49, 0.08);
+  border-radius: 12px;
+}
+
+.ph-sudsLabel {
+  font-family: Georgia, serif;
+  font-size: 14px;
+  color: #103126;
+  line-height: 1.4;
+}
+
+.ph-sudsRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 130px;
+}
+
+.ph-sudsBar {
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(18, 63, 49, 0.10);
+  overflow: hidden;
+}
+
+.ph-sudsBarFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #a8d5ba, #1f6b55);
+  transition: width 0.4s ease;
+}
+
+.ph-sudsPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.80);
+  border: 1px solid rgba(18, 63, 49, 0.14);
+  font-family: Georgia, serif;
+  font-weight: 900;
+  font-size: 14px;
+  color: #1f6b55;
+}

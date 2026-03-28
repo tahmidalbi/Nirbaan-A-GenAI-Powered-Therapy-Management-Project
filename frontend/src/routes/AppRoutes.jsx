@@ -11,6 +11,7 @@ import OCDTools from '../dashboards/OCDPatientDashboard';
 import PatientAssessmentPage from '../pages/PatientAssessmentPage';
 import PatientOCDEducation from '../pages/PatientOCDEducation';
 import PatientDetail from '../pages/PatientDetail';
+import PatientWeeklyProgress from '../pages/PatientWeeklyProgress';
 import TherapistDashboard from '../dashboards/TherapistDashboard';
 import TherapistToolsPage from '../dashboards/TherapistToolsPage';
 import PatientSelfMonitoring from '../components/PatientSelfMonitoring';
@@ -26,6 +27,23 @@ import TherapistFearLadderMonitoring from '../pages/TherapistFearLadderMonitorin
 import EmergencyPersonnelDashboard from '../dashboards/EmergencyPersonnelDashboard';
 import EmergencyPersonnelDetail from '../pages/EmergencyPersonnelDetail';
 import VideoSession from '../pages/VideoSession';
+import ERPWorkspace from '../pages/ERPWorkspace';
+import ERPPlanRecovery from '../pages/ERPPlanRecovery';
+import ERPDiveIn from '../pages/ERPDiveIn';
+import ERPSessionPage from '../pages/ERPSessionPage';
+import ERPAIReport from '../pages/ERPAIReport';
+import TherapistERPPatientList from '../pages/TherapistERPPatientList';
+import TherapistERPObsessionList from '../pages/TherapistERPObsessionList';
+import TherapistERPObsessionView from '../pages/TherapistERPObsessionView';
+import TherapistImaginalPatientList from '../pages/TherapistImaginalPatientList';
+import TherapistImaginalObsessionList from '../pages/TherapistImaginalObsessionList';
+import TherapistImaginalScriptPage from '../pages/TherapistImaginalScriptPage';
+import PatientImaginalScripts from '../pages/PatientImaginalScripts';
+import NirbaanAIChat from '../pages/NirbaanAIChat';
+import TherapistNirbaanAIPage from '../pages/TherapistNirbaanAIPage';
+import TherapistChatPage from '../pages/TherapistChatPage';
+import PatientChatPage from '../pages/PatientChatPage';
+import EPChatPage from '../pages/EPChatPage';
 
 const AppRoutes = () => {
   return (
@@ -37,7 +55,7 @@ const AppRoutes = () => {
       <Route path="/signup" element={<Signup />} />
       <Route path="/patient/login" element={<PatientLogin />} />
       <Route path="/emergency-personnel/login" element={<EmergencyPersonnelLogin />} />
-      
+
       {/* Protected Routes - Patient */}
       <Route
         path="/patient/dashboard"
@@ -88,6 +106,16 @@ const AppRoutes = () => {
         }
       />
 
+      {/* Protected Routes - Patient Weekly Progress */}
+      <Route
+        path="/patient/dashboard/progress"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <PatientWeeklyProgress />
+          </ProtectedRoute>
+        }
+      />
+
       {/* Protected Routes - Patient Fear Ladder Hub */}
       <Route
         path="/patient/dashboard/fear-ladder"
@@ -128,6 +156,86 @@ const AppRoutes = () => {
         }
       />
 
+      {/* Protected Routes - ERP Workspace */}
+      <Route
+        path="/patient/dashboard/erp"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <ERPWorkspace />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - ERP Plan Recovery */}
+      <Route
+        path="/patient/dashboard/erp/plan"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <ERPPlanRecovery />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - ERP Dive In */}
+      <Route
+        path="/patient/dashboard/erp/dive-in"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <ERPDiveIn />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - ERP Session */}
+      <Route
+        path="/patient/dashboard/erp/session/:itemId"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <ERPSessionPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - ERP AI Report */}
+      <Route
+        path="/patient/dashboard/erp/item/:itemId/ai-report"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <ERPAIReport />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Patient Imaginal Scripts */}
+      <Route
+        path="/patient/dashboard/imaginal-scripts"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <PatientImaginalScripts />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - NirbaanAI Chat */}
+      <Route
+        path="/patient/nirbaanai"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <NirbaanAIChat />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist NirbaanAI */}
+      <Route
+        path="/therapist/nirbaanai"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistNirbaanAIPage />
+          </ProtectedRoute>
+        }
+      />
+
       {/* Protected Routes - Therapist */}
       <Route
         path="/therapist/dashboard"
@@ -144,6 +252,66 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['therapist']}>
             <TherapistToolsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist ERP Patient List */}
+      <Route
+        path="/therapist/dashboard/erp"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistERPPatientList />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist ERP Obsession List (one patient) */}
+      <Route
+        path="/therapist/dashboard/erp/patient/:patientId"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistERPObsessionList />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist ERP Obsession Detail (split panel) */}
+      <Route
+        path="/therapist/dashboard/erp/patient/:patientId/item/:itemId"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistERPObsessionView />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist Imaginal Exposure Patient List */}
+      <Route
+        path="/therapist/dashboard/imaginal"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistImaginalPatientList />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist Imaginal Obsession List */}
+      <Route
+        path="/therapist/dashboard/imaginal/patient/:patientId"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistImaginalObsessionList />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist Imaginal Script Generator */}
+      <Route
+        path="/therapist/dashboard/imaginal/patient/:patientId/item/:itemId"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistImaginalScriptPage />
           </ProtectedRoute>
         }
       />
@@ -228,7 +396,7 @@ const AppRoutes = () => {
         }
       />
 
-      {/* Protected Routes - Video Call/Session */}
+      {/* Protected Routes - Video Call/Session (live video) */}
       <Route
         path="/video-session/:userType/:userId/:patientId"
         element={
@@ -243,6 +411,32 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['therapist', 'patient']}>
             <VideoSession />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Chat Pages */}
+      <Route
+        path="/therapist/chat"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistChatPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/patient/chat"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <PatientChatPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/emergency/chat"
+        element={
+          <ProtectedRoute allowedRoles={['emergency_personnel']}>
+            <EPChatPage />
           </ProtectedRoute>
         }
       />

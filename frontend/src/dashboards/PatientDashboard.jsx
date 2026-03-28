@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '../store/authStore';
+import { getMyTherapySessions } from '../api/sessions.api';
 import PatientHomework from '../components/PatientHomework';
+import PatientResourceLibrary from '../components/PatientResourceLibrary';
 import './PatientDashboard.css';
 
 const PatientDashboard = () => {
@@ -11,7 +13,13 @@ const PatientDashboard = () => {
   const [activeSection, setActiveSection] = useState(null);
   const wsRef = useRef(null);
 
-  // WebSocket connection for incoming calls
+  // Therapy sessions state (session transcripts from therapist)
+  const [sessions, setSessions] = useState([]);
+  const [sessionsLoading, setSessionsLoading] = useState(false);
+  const [sessionsError, setSessionsError] = useState('');
+  const [expandedSession, setExpandedSession] = useState(null);
+
+  // WebSocket connection for incoming live video calls
   useEffect(() => {
     if (!user?.id) return;
 
@@ -28,9 +36,6 @@ const PatientDashboard = () => {
         console.log('Received WebSocket message:', message);
 
         if (message.type === 'incoming_call') {
-          // Navigate to video call page when receiving incoming call
-          // Note: Backend should include sessionId in the incoming_call message
-          // For now, using caller_id as placeholder
           const sessionId = message.session_id || message.caller_id;
           navigate(`/video-call/${sessionId}`);
         }
@@ -57,6 +62,18 @@ const PatientDashboard = () => {
     };
   }, [user?.id, navigate]);
 
+  // Fetch therapy session transcripts when section is opened
+  useEffect(() => {
+    if (activeSection === 'sessions' && sessions.length === 0) {
+      setSessionsLoading(true);
+      setSessionsError('');
+      getMyTherapySessions()
+        .then((data) => setSessions(data))
+        .catch((err) => setSessionsError(typeof err === 'string' ? err : 'Failed to load sessions'))
+        .finally(() => setSessionsLoading(false));
+    }
+  }, [activeSection]);
+
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -64,6 +81,14 @@ const PatientDashboard = () => {
 
   const handleOCDToolsClick = () => {
     navigate('/patient/dashboard/tools/ocd');
+  };
+
+  const handleProgressClick = () => {
+    navigate('/patient/dashboard/progress');
+  };
+
+  const handleNirbaanAIClick = () => {
+    navigate('/patient/nirbaanai');
   };
 
   return (
@@ -86,41 +111,53 @@ const PatientDashboard = () => {
             >
               Live Sessions
             </button>
-            <button 
-              className={`nav-btn ${activeSection === 'progress' ? 'active' : ''}`}
-              onClick={() => setActiveSection('progress')}
+            <button
+              className={`nav-btn ${activeSection === 'sessions' ? 'active' : ''}`}
+              onClick={() => setActiveSection('sessions')}
+            >
+              Sessions
+            </button>
+            <button
+              className="nav-btn"
+              onClick={handleProgressClick}
             >
               Progress
             </button>
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'homework' ? 'active' : ''}`}
               onClick={() => setActiveSection('homework')}
             >
               Homework
             </button>
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'resources' ? 'active' : ''}`}
               onClick={() => setActiveSection('resources')}
             >
               Resources
             </button>
-            <button 
+            <button
               className="nav-btn"
               onClick={handleOCDToolsClick}
             >
               Tools
             </button>
-            <button 
+            <button
               className={`nav-btn ${activeSection === 'mindfulness' ? 'active' : ''}`}
               onClick={() => setActiveSection('mindfulness')}
             >
               Mindfulness
             </button>
-            <button 
-              className={`nav-btn ${activeSection === 'chat' ? 'active' : ''}`}
-              onClick={() => setActiveSection('chat')}
+            <button
+              className="nav-btn"
+              onClick={() => navigate('/patient/chat')}
             >
               Chat
+            </button>
+            <button
+              className="nav-btn nav-btn-ai"
+              onClick={handleNirbaanAIClick}
+            >
+              NirbaanAI
             </button>
           </nav>
           <button onClick={handleLogout} className="logout-btn">Logout</button>
@@ -136,11 +173,61 @@ const PatientDashboard = () => {
         </button>
       )}
 
-      {/* Main Content - Empty sections */}
+      {/* Main Content */}
       <main className="dashboard-main">
-        {activeSection === 'progress' && (
+        {activeSection === 'live_sessions' && (
           <div className="empty-section">
-            {/* Empty Progress section */}
+            {/* Live Sessions section - video call sessions */}
+          </div>
+        )}
+
+        {activeSection === 'sessions' && (
+          <div className="pd-sessions-panel">
+            <h2 className="pd-sessions-title">My Therapy Sessions</h2>
+
+            {sessionsLoading && (
+              <div className="pd-sessions-loading">
+                <div className="spinner"></div>
+                <p>Loading sessions...</p>
+              </div>
+            )}
+
+            {sessionsError && (
+              <div className="pd-sessions-error">{sessionsError}</div>
+            )}
+
+            {!sessionsLoading && !sessionsError && sessions.length === 0 && (
+              <div className="pd-sessions-empty">
+                <p>No sessions have been added yet. Your therapist will log sessions here after each appointment.</p>
+              </div>
+            )}
+
+            {!sessionsLoading && sessions.map((s) => (
+              <div key={s.id} className="pd-session-card">
+                <button
+                  className="pd-session-header"
+                  onClick={() => setExpandedSession(expandedSession === s.id ? null : s.id)}
+                >
+                  <div className="pd-session-meta">
+                    <span className="pd-session-badge">Session {s.session_number}</span>
+                    <span className="pd-session-title-text">{s.title}</span>
+                    <span className="pd-session-date">
+                      {new Date(s.session_date).toLocaleDateString('en-US', {
+                        year: 'numeric', month: 'long', day: 'numeric',
+                      })}
+                    </span>
+                  </div>
+                  <span className="pd-session-chevron">{expandedSession === s.id ? '▲' : '▼'}</span>
+                </button>
+
+                {expandedSession === s.id && (
+                  <div className="pd-session-body">
+                    <h4 className="pd-section-label">Session Transcript</h4>
+                    <pre className="pd-session-transcript">{s.transcript}</pre>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         )}
 
@@ -151,26 +238,14 @@ const PatientDashboard = () => {
         )}
 
         {activeSection === 'resources' && (
-          <div className="empty-section">
-            {/* Empty Resources section */}
+          <div className="pd-resources-panel">
+            <PatientResourceLibrary />
           </div>
         )}
 
         {activeSection === 'mindfulness' && (
           <div className="empty-section">
             {/* Empty Mindfulness section */}
-          </div>
-        )}
-
-        {activeSection === 'live_sessions' && (
-          <div className="empty-section">
-            {/* Empty Sessions section */}
-          </div>
-        )}
-
-        {activeSection === 'chat' && (
-          <div className="empty-section">
-            {/* Empty Chat section */}
           </div>
         )}
       </main>

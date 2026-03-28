@@ -1,10 +1,8 @@
 # app/education/fear_ladder/service.py
 from __future__ import annotations
-from sqlalchemy.orm import Session
 from app.education.fear_ladder.graph import build_graph
-from app.database.session import SessionLocal
 
-_graph = build_graph(SessionLocal)
+_graph = build_graph()
 
 def generate_education(therapist_id: int, topic: str = "Fear ladder (exposure hierarchy) in ERP for OCD") -> dict:
     final_state = _graph.invoke({

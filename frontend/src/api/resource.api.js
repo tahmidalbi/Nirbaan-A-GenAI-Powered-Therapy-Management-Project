@@ -3,7 +3,7 @@ import axiosInstance from './axios';
 /**
  * CRITICAL: 2-step upload flow for direct-to-R2 uploads
  * Step 1: init-upload → get presigned PUT URL
- * Step 2: PUT directly to R2 with file (R2 doesn't support POST!)  
+ * Step 2: PUT directly to R2 with file (R2 doesn't support POST!)
  * Step 3: confirm-upload → trigger processing
  */
 
@@ -108,5 +108,25 @@ export const uploadFromUrl = async (url, title, resourceType = 'webpage') => {
     return response.data;
   } catch (error) {
     throw error.response?.data?.detail || 'Failed to add URL resource';
+  }
+};
+
+// ============ PATIENT ENDPOINTS ============
+
+export const listPatientResources = async () => {
+  try {
+    const response = await axiosInstance.get('/resources/patient');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to fetch resources';
+  }
+};
+
+export const getPatientResourceDownloadUrl = async (resourceId) => {
+  try {
+    const response = await axiosInstance.get(`/resources/patient/${resourceId}/download-url`);
+    return response.data; // { resource_id, download_url, expires_in_seconds }
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to get download URL';
   }
 };

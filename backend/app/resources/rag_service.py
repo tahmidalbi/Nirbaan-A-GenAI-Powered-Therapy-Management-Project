@@ -1,160 +1,203 @@
-import json
 import os
-from typing import List, Dict, Any
-from sqlalchemy.orm import Session
-from sqlalchemy import text
+from typing import Any, Dict, List
+
+from langchain_openai import OpenAIEmbeddings
+from langchain_postgres import PGVector
 from openai import OpenAI
 
-# Initialize OpenAI client (OpenAI 2.x)
+
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# CONFIGURATION
-# GPT-5.2 standard embedding model
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-large")
-# GPT-5.2 is the correct model ID for the 2026 release
 LLM_MODEL = os.getenv("LLM_MODEL", "gpt-5.2")
 
+PGVECTOR_CONNECTION = os.getenv("PGVECTOR_CONNECTION", os.getenv("DATABASE_URL", ""))
+PGVECTOR_COLLECTION_NAME = os.getenv("PGVECTOR_COLLECTION_NAME", "therapist_kb")
+
+# MMR tuning
+RAG_TOP_K_DEFAULT = int(os.getenv("RAG_TOP_K_DEFAULT", "6"))
+RAG_MMR_FETCH_K = int(os.getenv("RAG_MMR_FETCH_K", "20"))
+RAG_MMR_LAMBDA = float(os.getenv("RAG_MMR_LAMBDA", "0.5"))
+
+
 class RAGService:
-    """Retrieval-Augmented Generation service"""
-    
-    def _generate_query_embedding(self, query: str) -> List[float]:
-        """Generate embedding for search query"""
-        try:
-            response = client.embeddings.create(
-                input=[query],
-                model=EMBEDDING_MODEL
+    """RAG service using LangChain PGVector + retriever."""
+
+    def __init__(self) -> None:
+        self._vector_store: PGVector | None = None
+        self._embeddings: OpenAIEmbeddings | None = None
+
+    @property
+    def embeddings(self) -> OpenAIEmbeddings:
+        if self._embeddings is None:
+            self._embeddings = OpenAIEmbeddings(model=EMBEDDING_MODEL)
+        return self._embeddings
+
+    @property
+    def vector_store(self) -> PGVector:
+        if self._vector_store is None:
+            if not PGVECTOR_CONNECTION:
+                raise ValueError("PGVECTOR_CONNECTION (or DATABASE_URL) is not configured")
+            self._vector_store = PGVector(
+                embeddings=self.embeddings,
+                collection_name=PGVECTOR_COLLECTION_NAME,
+                connection=PGVECTOR_CONNECTION,
+                use_jsonb=True,
             )
-            return response.data[0].embedding
-        except Exception as e:
-            print(f"Embedding error: {e}")
-            return []
-    
+        return self._vector_store
+
+    def _build_filter(
+        self,
+        therapist_id: int,
+        resource_id: int | None = None,
+    ) -> Dict[str, Any]:
+        filters: List[Dict[str, Any]] = [
+            {"therapist_id": {"$eq": therapist_id}},
+        ]
+
+        if resource_id is not None:
+            filters.append({"resource_id": {"$eq": resource_id}})
+
+        if len(filters) == 1:
+            return filters[0]
+
+        return {"$and": filters}
+
     def retrieve_chunks(
         self,
-        db: Session,
         therapist_id: int,
         query: str,
-        top_k: int = 6
+        top_k: int = RAG_TOP_K_DEFAULT,
+        resource_id: int | None = None,
     ) -> List[Dict[str, Any]]:
         """
-        Retrieve most relevant chunks using vector similarity
+        Retrieve relevant chunks via LangChain retriever using MMR.
         """
-        query_embedding = self._generate_query_embedding(query)
-        
-        if not query_embedding:
-            return []
-        
-        # Format for pgvector: plain string representation of the list "[0.1, 0.2, ...]"
-        embedding_str = f"[{','.join(f'{x:.8f}' for x in query_embedding)}]"
-        
-        # SQL Query
-        # NOTE: used CAST(:query_embedding AS vector) to ensure type safety with binding
-        sql = text("""
-            SELECT 
-                rc.chunk_text,
-                r.title as resource_title,
-                r.id as resource_id,
-                1 - (rc.embedding <=> CAST(:query_embedding AS vector)) as similarity
-            FROM resource_chunks rc
-            JOIN resources r ON rc.resource_id = r.id
-            WHERE rc.therapist_id = :therapist_id
-                AND r.status = 'ready'
-            ORDER BY rc.embedding <=> CAST(:query_embedding AS vector)
-            LIMIT :top_k
-        """)
-        
-        result = db.execute(
-            sql,
-            {
-                "query_embedding": embedding_str,
-                "therapist_id": therapist_id,
-                "top_k": top_k
-            }
+        metadata_filter = self._build_filter(
+            therapist_id=therapist_id,
+            resource_id=resource_id,
         )
-        
-        chunks = []
-        # FIX: Use .mappings() to safely access columns by name in SQLAlchemy 2.0+
-        for row in result.mappings():
-            chunks.append({
-                "chunk_text": row['chunk_text'],
-                "resource_title": row['resource_title'],
-                "resource_id": row['resource_id'],
-                "similarity_score": float(row['similarity'])
-            })
-        
+
+        retriever = self.vector_store.as_retriever(
+            search_type="mmr",
+            search_kwargs={
+                "k": top_k,
+                "fetch_k": max(top_k, RAG_MMR_FETCH_K),
+                "lambda_mult": RAG_MMR_LAMBDA,
+                "filter": metadata_filter,
+            },
+        )
+
+        docs = retriever.invoke(query)
+
+        chunks: List[Dict[str, Any]] = []
+        for doc in docs:
+            metadata = dict(doc.metadata or {})
+            chunks.append(
+                {
+                    "chunk_text": doc.page_content,
+                    "resource_title": metadata.get("resource_title", "Untitled"),
+                    "resource_id": metadata.get("resource_id"),
+                    "similarity_score": 0.0,  # MMR retriever doesn't return score here
+                    "metadata": metadata,
+                }
+            )
+
         return chunks
-    
+
+    def delete_resource_chunks(
+        self,
+        therapist_id: int,
+        resource_id: int,
+        total_chunks: int,
+    ) -> None:
+        """Delete all vector store documents for a given resource."""
+        ids = [f"resource-{resource_id}-chunk-{idx}" for idx in range(total_chunks)]
+        if ids:
+            self.vector_store.delete(ids=ids)
+
     def generate_answer(
         self,
         query: str,
-        chunks: List[Dict[str, Any]]
+        chunks: List[Dict[str, Any]],
     ) -> Dict[str, Any]:
-        """
-        Generate answer using retrieved chunks
-        """
         if not chunks:
             return {
-                "answer": "I don't have enough information to answer this question.",
+                "answer": "I don't have enough information from the knowledge base to answer that.",
                 "sources": [],
-                "chunks_used": 0
+                "chunks_used": 0,
             }
-        
-        # Build context safely
-        context_parts = []
+
+        context_parts: List[str] = []
         for idx, chunk in enumerate(chunks, 1):
+            title = chunk["resource_title"]
+            metadata = chunk.get("metadata") or {}
+
+            location_bits: List[str] = []
+            if metadata.get("source_type"):
+                location_bits.append(str(metadata["source_type"]))
+            if metadata.get("page_start") and metadata.get("page_end"):
+                if metadata["page_start"] == metadata["page_end"]:
+                    location_bits.append(f"page {metadata['page_start']}")
+                else:
+                    location_bits.append(f"pages {metadata['page_start']}-{metadata['page_end']}")
+            elif metadata.get("page_start"):
+                location_bits.append(f"page {metadata['page_start']}")
+
+            location_suffix = f" ({', '.join(location_bits)})" if location_bits else ""
+
             context_parts.append(
-                f"[Source {idx}: {chunk['resource_title']}]\n{chunk['chunk_text']}"
+                f"[Source {idx}: {title}{location_suffix}]\n{chunk['chunk_text']}"
             )
-        
+
         context_str = "\n\n---\n\n".join(context_parts)
-        
-        # FIX: Do NOT use .format() on the system prompt if context contains curly braces.
-        # Instead, inject the context via a formatted string literal or a separate message.
+
         system_instruction = (
             "You are a knowledgeable therapy assistant helping therapists find information from their knowledge base.\n"
             "CRITICAL RULES:\n"
-            "1. Answer ONLY using information from the provided sources\n"
-            "2. If sources don't contain the answer, say 'I don't have enough information'\n"
-            "3. Cite sources by title\n"
+            "1. Answer ONLY using the provided sources.\n"
+            "2. If the sources do not contain enough information, say exactly: "
+            "'I don't have enough information from the knowledge base to answer that.'\n"
+            "3. Do not invent facts.\n"
+            "4. Cite source titles naturally in the answer when relevant.\n\n"
             "SOURCES:\n"
-            f"{context_str}" 
+            f"{context_str}"
         )
-        
+
         try:
             response = client.chat.completions.create(
                 model=LLM_MODEL,
                 messages=[
                     {"role": "system", "content": system_instruction},
-                    {"role": "user", "content": query}
+                    {"role": "user", "content": query},
                 ],
                 temperature=0,
-                # NOTE: GPT-5.2 supports 'max_completion_tokens' but 'max_tokens' still works for backward comp.
-                max_completion_tokens=800
+                max_completion_tokens=800,
             )
-            
-            answer = response.choices[0].message.content
-            
+
+            answer = response.choices[0].message.content or ""
+
             sources = [
                 {
-                    "resource_title": chunk['resource_title'],
-                    "resource_id": chunk['resource_id'],
-                    "chunk_text": chunk['chunk_text'][:500]
+                    "resource_title": chunk["resource_title"],
+                    "resource_id": chunk["resource_id"],
+                    "chunk_text": chunk["chunk_text"][:500],
                 }
                 for chunk in chunks
             ]
-            
+
             return {
                 "answer": answer,
                 "sources": sources,
-                "chunks_used": len(chunks)
+                "chunks_used": len(chunks),
             }
-            
+
         except Exception as e:
             return {
                 "answer": f"Error generating answer: {str(e)}",
                 "sources": [],
-                "chunks_used": 0
+                "chunks_used": 0,
             }
 
-# Singleton instance
+
 rag_service = RAGService()
