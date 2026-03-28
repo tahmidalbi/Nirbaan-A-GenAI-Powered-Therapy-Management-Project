@@ -1,9 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { getMyTherapySessions } from '../api/sessions.api';
 import PatientHomework from '../components/PatientHomework';
 import PatientResourceLibrary from '../components/PatientResourceLibrary';
+import IncomingCallModal from '../components/IncomingCallModal';
 import './PatientDashboard.css';
 
 const PatientDashboard = () => {
@@ -12,6 +13,7 @@ const PatientDashboard = () => {
   const user = useAuthStore((state) => state.user);
   const [activeSection, setActiveSection] = useState(null);
   const wsRef = useRef(null);
+  const reconnectRef = useRef(null);
 
   // Therapy sessions state (session transcripts from therapist)
   const [sessions, setSessions] = useState([]);
@@ -19,48 +21,62 @@ const PatientDashboard = () => {
   const [sessionsError, setSessionsError] = useState('');
   const [expandedSession, setExpandedSession] = useState(null);
 
-  // WebSocket connection for incoming live video calls
+  // Incoming call state
+  const [incomingCall, setIncomingCall] = useState(null); // { callerId, callerName, sessionId }
+
+  const handleAcceptCall = useCallback(() => {
+    if (!incomingCall) return;
+    setIncomingCall(null);
+    navigate(`/video-call/${incomingCall.sessionId}`);
+  }, [incomingCall, navigate]);
+
+  const handleDeclineCall = useCallback(() => {
+    setIncomingCall(null);
+  }, []);
+
+  // Persistent WebSocket for incoming call notifications — auto-reconnects
   useEffect(() => {
     if (!user?.id) return;
 
-    const connectWebSocket = () => {
-      const wsUrl = `ws://127.0.0.1:8000/ws/call/${user.id}?user_type=patient`;
-      const ws = new WebSocket(wsUrl);
+    const connect = () => {
+      const ws = new WebSocket(
+        `ws://127.0.0.1:8000/api/therapy-sessions/ws/call/${user.id}?user_type=patient`
+      );
 
       ws.onopen = () => {
-        console.log('Patient WebSocket connected for incoming calls');
+        console.log('[CallNotify] Connected');
+        clearTimeout(reconnectRef.current);
       };
 
       ws.onmessage = (event) => {
-        const message = JSON.parse(event.data);
-        console.log('Received WebSocket message:', message);
-
-        if (message.type === 'incoming_call') {
-          const sessionId = message.session_id || message.caller_id;
-          navigate(`/video-call/${sessionId}`);
+        const msg = JSON.parse(event.data);
+        if (msg.type === 'incoming_call') {
+          setIncomingCall({
+            callerId: msg.caller_id,
+            callerName: msg.caller_name || 'Your Therapist',
+            sessionId: msg.session_id,
+          });
         }
       };
 
-      ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
+      ws.onclose = () => {
+        console.log('[CallNotify] Disconnected — reconnecting in 5s');
+        reconnectRef.current = setTimeout(connect, 5000);
       };
 
-      ws.onclose = () => {
-        console.log('Patient WebSocket disconnected');
-      };
+      ws.onerror = () => ws.close();
 
       wsRef.current = ws;
     };
 
-    connectWebSocket();
+    connect();
 
     return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
-        wsRef.current = null;
-      }
+      clearTimeout(reconnectRef.current);
+      wsRef.current?.close();
+      wsRef.current = null;
     };
-  }, [user?.id, navigate]);
+  }, [user?.id]);
 
   // Fetch therapy session transcripts when section is opened
   useEffect(() => {
@@ -93,6 +109,13 @@ const PatientDashboard = () => {
 
   return (
     <div className="patient-dashboard-container">
+      {incomingCall && (
+        <IncomingCallModal
+          callerName={incomingCall.callerName}
+          onAccept={handleAcceptCall}
+          onDecline={handleDeclineCall}
+        />
+      )}
       {/* Vintage background */}
       <div className="dashboard-background">
         <div className="geometric-pattern"></div>

@@ -1,0 +1,115 @@
+.icm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: icm-fade-in 0.2s ease;
+}
+
+@keyframes icm-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.icm-modal {
+  position: relative;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 24px;
+  padding: 48px 56px 40px;
+  text-align: center;
+  min-width: 320px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+  animation: icm-slide-up 0.25s ease;
+}
+
+@keyframes icm-slide-up {
+  from { transform: translateY(24px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* pulsing ring around avatar */
+.icm-pulse-ring {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 88px;
+  height: 88px;
+  border: 3px solid #22c55e;
+  border-radius: 50%;
+  animation: icm-pulse 1.6s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes icm-pulse {
+  0%   { transform: translateX(-50%) scale(1);   opacity: 0.8; }
+  100% { transform: translateX(-50%) scale(1.55); opacity: 0;   }
+}
+
+.icm-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+}
+
+.icm-caller-name {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 4px;
+}
+
+.icm-subtitle {
+  font-size: 0.88rem;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+
+.icm-timeout {
+  font-size: 0.75rem;
+  color: #475569;
+  margin-bottom: 32px;
+}
+
+.icm-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.icm-decline,
+.icm-accept {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 13px 30px;
+  border-radius: 50px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.12s, opacity 0.12s;
+}
+
+.icm-decline:hover,
+.icm-accept:hover  { opacity: 0.88; }
+.icm-decline:active,
+.icm-accept:active { transform: scale(0.95); }
+
+.icm-decline { background: #ef4444; color: #fff; }
+.icm-accept  { background: #22c55e; color: #fff; }
+
+.icm-icon { font-style: normal; }

@@ -17,6 +17,7 @@ from app.therapists.models import Therapist
 from app.patients.models import Patient
 from app.live_sessions.transcription_service import transcription_service
 from app.live_sessions.analysis_service import generate_session_analysis
+from app.live_sessions.call_manager import call_manager
 
 router = APIRouter(prefix="/sessions", tags=["Therapy Sessions"])
 
@@ -63,7 +64,19 @@ async def start_session(
     db.add(new_session)
     db.commit()
     db.refresh(new_session)
-    
+
+    # Push incoming call notification to patient (if they are connected to the notification WS)
+    await call_manager.send_message(
+        session_data.patient_id,
+        {
+            "type": "incoming_call",
+            "caller_id": session_data.therapist_id,
+            "caller_name": therapist.name,
+            "caller_type": "therapist",
+            "session_id": new_session.id,
+        }
+    )
+
     return new_session
 
 @router.post("/{session_id}/append-transcript", response_model=TranscriptResponse, status_code=status.HTTP_201_CREATED)
