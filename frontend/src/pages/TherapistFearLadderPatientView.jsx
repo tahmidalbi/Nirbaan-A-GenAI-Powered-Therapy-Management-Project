@@ -102,7 +102,9 @@ const TherapistFearLadderPatientView = () => {
   };
 
   const handleBack = () => {
-    navigate('/therapist/dashboard/fear-ladder/patients');
+    navigate(`/therapist/dashboard/fear-ladder/patient/${patientId}`, {
+      state: { patientName: patientInfo.name, patientEmail: patientInfo.email }
+    });
   };
 
   const handleLogout = () => {

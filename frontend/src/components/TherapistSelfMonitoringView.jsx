@@ -5,6 +5,7 @@ import { useAuthStore } from '../store/authStore';
 import { getPatients } from '../api/patient.api';
 import { getPatientMonitoringDays } from '../api/self-monitoring.api';
 import './PatientSelfMonitoring.css';
+import '../dashboards/ConditionDashboard.css';
 
 const TherapistSelfMonitoringView = ({ isEmbedded = false }) => {
   const navigate = useNavigate();

@@ -53,55 +53,55 @@ const LandingPage = () => {
       icon: 'I',
       title: 'Comprehensive Practice Management',
       description: 'Manage multiple patients, create personalized treatment plans, and organize group therapy sessions. Complete control over your therapeutic practice.',
-      gradient: 'linear-gradient(135deg, #8BA89C 0%, #A0BDB1 100%)'
+      gradient: 'linear-gradient(135deg, rgba(26, 60, 52, 0.85) 0%, rgba(34, 74, 63, 0.85) 100%)'
     },
     {
       icon: 'II',
       title: 'AI-Powered Patient Support',
       description: 'Your knowledge base powers an AI assistant that helps patients with therapy homework between sessions. You define the protocols, AI executes them.',
-      gradient: 'linear-gradient(135deg, #93B0A4 0%, #A8C5B9 100%)'
+      gradient: 'linear-gradient(135deg, rgba(22, 54, 47, 0.85) 0%, rgba(30, 68, 58, 0.85) 100%)'
     },
     {
       icon: 'III',
       title: 'Integrated Knowledge Base',
       description: 'Upload your scripts, research papers, blog links, and treatment protocols. Build a comprehensive therapeutic knowledge system tailored to your practice.',
-      gradient: 'linear-gradient(135deg, #9BB8AC 0%, #B0CFC3 100%)'
+      gradient: 'linear-gradient(135deg, rgba(28, 62, 54, 0.85) 0%, rgba(36, 76, 65, 0.85) 100%)'
     },
     {
       icon: 'IV',
       title: 'Video Therapy Sessions',
       description: 'Conduct secure teletherapy sessions with automatic transcription. Track patient progress with recorded session analytics and searchable transcripts.',
-      gradient: 'linear-gradient(135deg, #8DAB9F 0%, #A2C0B4 100%)'
+      gradient: 'linear-gradient(135deg, rgba(20, 50, 44, 0.85) 0%, rgba(28, 64, 55, 0.85) 100%)'
     },
     {
       icon: 'V',
       title: 'Crisis Intervention System',
       description: 'AI detects risk indicators and automatically alerts emergency personnel. Safety protocols you configure, automated vigilance you can trust.',
-      gradient: 'linear-gradient(135deg, #95B3A7 0%, #AAC8BC 100%)'
+      gradient: 'linear-gradient(135deg, rgba(24, 56, 48, 0.85) 0%, rgba(32, 70, 60, 0.85) 100%)'
     },
     {
       icon: 'VI',
       title: 'Specialized Treatment Protocols',
       description: 'ADHD task management, OCD exposure response prevention, cognitive behavioral worksheets. Evidence-based tools for specialized care.',
-      gradient: 'linear-gradient(135deg, #8FAF9E 0%, #A4C4B3 100%)'
+      gradient: 'linear-gradient(135deg, rgba(18, 46, 40, 0.85) 0%, rgba(26, 60, 52, 0.85) 100%)'
     },
     {
       icon: 'VII',
       title: 'Intelligent Progress Analytics',
       description: 'Advanced analytics examine patient progress, session transcripts, and treatment protocols. Transform data into actionable insights for better outcomes.',
-      gradient: 'linear-gradient(135deg, #91B1A5 0%, #A6C6BA 100%)'
+      gradient: 'linear-gradient(135deg, rgba(30, 64, 56, 0.85) 0%, rgba(38, 78, 68, 0.85) 100%)'
     },
     {
       icon: 'VIII',
       title: 'Multilingual Support',
       description: 'Conduct therapy in Bangla, English, or Banglish. Cultural sensitivity meets professional care with adaptive learning technology.',
-      gradient: 'linear-gradient(135deg, #97B5A9 0%, #ACCABE 100%)'
+      gradient: 'linear-gradient(135deg, rgba(16, 42, 37, 0.85) 0%, rgba(24, 56, 48, 0.85) 100%)'
     },
     {
       icon: 'IX',
       title: 'Guided Meditation Resources',
       description: 'Provide patients with mindfulness meditation sessions in their preferred language. Enhance therapy with evidence-based relaxation techniques.',
-      gradient: 'linear-gradient(135deg, #9DB7AB 0%, #B2CCBF 100%)'
+      gradient: 'linear-gradient(135deg, rgba(26, 58, 50, 0.85) 0%, rgba(34, 72, 62, 0.85) 100%)'
     }
   ];
 

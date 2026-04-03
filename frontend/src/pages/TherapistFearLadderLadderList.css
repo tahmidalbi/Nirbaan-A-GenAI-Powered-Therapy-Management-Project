@@ -1,0 +1,197 @@
+/* TherapistFearLadderLadderList ─ intermediate "patient ladders" page */
+.fll-container {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #1a3832 0%, #22453d 45%, #1c3d35 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ── Background ── */
+.fll-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+.fll-bg-pattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(45deg, transparent 48%, rgba(44,95,77,0.03) 49%, rgba(44,95,77,0.03) 51%, transparent 52%),
+    linear-gradient(-45deg, transparent 48%, rgba(44,95,77,0.03) 49%, rgba(44,95,77,0.03) 51%, transparent 52%);
+  background-size: 40px 40px;
+}
+.fll-deco {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent 0%, rgba(44,95,77,0.25) 20%, rgba(44,95,77,0.45) 50%, rgba(44,95,77,0.25) 80%, transparent 100%);
+}
+.fll-deco-top    { top: 100px; }
+.fll-deco-bottom { bottom: 100px; }
+
+/* ── Header ── */
+.fll-header {
+  position: relative;
+  z-index: 10;
+  background: rgba(15, 32, 28, 0.92);
+  backdrop-filter: blur(30px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.fll-header-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.4rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.fll-header-left { display: flex; flex-direction: column; gap: 0.15rem; }
+.fll-logo {
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 700;
+  font-family: 'Georgia', serif;
+  margin: 0;
+}
+.fll-logo-sub {
+  color: rgba(168,220,207,0.8);
+  font-size: 0.85rem;
+  margin: 0;
+}
+.fll-header-actions { display: flex; gap: 0.75rem; }
+.fll-ghost-btn {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.35);
+  color: #fff;
+  padding: 0.45rem 1.1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  transition: background 0.2s;
+  font-family: 'Georgia', serif;
+}
+.fll-ghost-btn:hover { background: rgba(255,255,255,0.22); }
+.fll-logout-btn {
+  background: rgba(139,69,69,0.75);
+  border: 1px solid rgba(139,69,69,0.9);
+  color: #fff;
+  padding: 0.45rem 1.1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  transition: background 0.2s;
+  font-family: 'Georgia', serif;
+}
+.fll-logout-btn:hover { background: rgba(109,53,53,0.9); }
+
+/* ── Main ── */
+.fll-main {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+.fll-error {
+  color: #fca5a5;
+  background: rgba(80,20,20,0.55);
+  border: 1px solid rgba(239,83,80,0.3);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.2rem;
+  font-size: 0.9rem;
+}
+.fll-loading {
+  color: rgba(168,220,207,0.7);
+  text-align: center;
+  padding: 3rem 1rem;
+  font-size: 1rem;
+}
+.fll-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 3.5rem 1rem;
+  text-align: center;
+  color: rgba(168,220,207,0.65);
+  font-size: 0.95rem;
+}
+.fll-empty-icon { font-size: 2.8rem; }
+.fll-empty-sub  { font-size: 0.82rem; color: rgba(168,220,207,0.4); margin: 0; }
+
+.fll-section-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(125,212,188,0.6);
+  margin: 0 0 0.8rem;
+}
+
+/* ── Ladder list ── */
+.fll-ladder-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.fll-ladder-card {
+  width: 100%;
+  background: rgba(10, 24, 20, 0.55);
+  border: 1px solid rgba(125, 212, 188, 0.15);
+  border-radius: 12px;
+  padding: 1.3rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  font-family: 'Georgia', serif;
+  text-align: left;
+}
+.fll-ladder-card:hover {
+  border-color: rgba(125,212,188,0.4);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  transform: translateY(-2px);
+}
+
+.fll-card-left { display: flex; align-items: center; gap: 1rem; }
+.fll-card-icon { font-size: 1.8rem; }
+.fll-card-info { display: flex; flex-direction: column; gap: 0.25rem; }
+.fll-card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #e8f5e9;
+}
+.fll-card-meta {
+  font-size: 0.82rem;
+  color: rgba(168,220,207,0.65);
+}
+
+.fll-card-right { display: flex; align-items: center; gap: 1rem; }
+
+.fll-status-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  padding: 0.28rem 0.75rem;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+.fll-status-approved { background: rgba(74,222,128,0.12); color: #4ade80; border: 1px solid rgba(74,222,128,0.28); }
+.fll-status-pending  { background: rgba(251,191,36,0.12); color: #fde68a; border: 1px solid rgba(251,191,36,0.28); }
+.fll-status-rejected { background: rgba(239,83,80,0.1);   color: #fca5a5; border: 1px solid rgba(239,83,80,0.28); }
+
+.fll-card-arrow {
+  color: #7dd4bc;
+  font-size: 1.1rem;
+  font-weight: 700;
+  transition: transform 0.2s;
+}
+.fll-ladder-card:hover .fll-card-arrow { transform: translateX(4px); }

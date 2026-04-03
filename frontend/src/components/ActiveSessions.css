@@ -1,6 +1,6 @@
 .as-page {
   padding: 24px;
-  background: #f8fafc;
+  background: transparent;
   min-height: 100%;
 }
 
@@ -25,35 +25,37 @@
 .as-brandDot {
   width: 12px;
   height: 12px;
-  background: #3b82f6;
+  background: linear-gradient(135deg, #2d7a6a, #7dd4bc);
   border-radius: 50%;
 }
 
 .as-title {
   font-size: 24px;
   font-weight: 600;
-  color: #1e293b;
+  color: #e8f5e9;
   margin: 0;
+  font-family: 'Garamond', 'Georgia', serif;
 }
 
 .as-subtitle {
   font-size: 14px;
-  color: #64748b;
+  color: rgba(168, 220, 207, 0.75);
   margin: 4px 0 0 0;
 }
 
 .as-refreshBtn {
   padding: 8px 16px;
-  background: white;
-  border: 1px solid #e2e8f0;
+  background: rgba(125, 212, 188, 0.08);
+  border: 1px solid rgba(125, 212, 188, 0.3);
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
-  color: #475569;
+  color: #a8dccf;
+  font-family: 'Garamond', 'Georgia', serif;
 }
 
 .as-refreshBtn:hover {
-  background: #f1f5f9;
+  background: rgba(125, 212, 188, 0.15);
 }
 
 .as-refreshBtn:disabled {
@@ -62,9 +64,9 @@
 }
 
 .as-errorBanner {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #dc2626;
+  background: rgba(180, 40, 40, 0.15);
+  border: 1px solid rgba(220, 80, 80, 0.35);
+  color: #f87171;
   padding: 12px 16px;
   border-radius: 8px;
   margin-bottom: 16px;
@@ -76,7 +78,7 @@
 .as-errorBanner button {
   background: none;
   border: none;
-  color: #dc2626;
+  color: #f87171;
   cursor: pointer;
   font-weight: 500;
 }
@@ -84,14 +86,15 @@
 .as-state {
   text-align: center;
   padding: 60px 20px;
-  color: #64748b;
+  color: rgba(168, 220, 207, 0.75);
+  font-family: 'Garamond', 'Georgia', serif;
 }
 
 .as-spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid #e2e8f0;
-  border-top: 3px solid #3b82f6;
+  border: 3px solid rgba(125, 212, 188, 0.18);
+  border-top: 3px solid rgba(125, 212, 188, 0.8);
   border-radius: 50%;
   margin: 0 auto 16px;
   animation: spin 1s linear infinite;
@@ -104,9 +107,9 @@
 .as-empty {
   text-align: center;
   padding: 60px 20px;
-  background: white;
+  background: rgba(15, 32, 28, 0.65);
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(125, 212, 188, 0.15);
 }
 
 .as-emptyIcon {
@@ -116,12 +119,13 @@
 
 .as-empty h3 {
   font-size: 18px;
-  color: #1e293b;
+  color: #e8f5e9;
   margin: 0 0 8px 0;
+  font-family: 'Garamond', 'Georgia', serif;
 }
 
 .as-empty p {
-  color: #64748b;
+  color: rgba(168, 220, 207, 0.75);
   margin: 0;
 }
 
@@ -132,9 +136,9 @@
 }
 
 .as-sessionCard {
-  background: white;
+  background: rgba(15, 32, 28, 0.65);
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(125, 212, 188, 0.15);
   overflow: hidden;
 }
 
@@ -143,7 +147,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid rgba(125, 212, 188, 0.1);
 }
 
 .as-sessionInfo {
@@ -155,12 +159,12 @@
 .as-avatar {
   width: 44px;
   height: 44px;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(135deg, #1f6b55, #7dd4bc);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #e8f5e9;
   font-weight: 600;
   font-size: 18px;
 }
@@ -168,13 +172,14 @@
 .as-patientName {
   font-size: 16px;
   font-weight: 600;
-  color: #1e293b;
+  color: #e8f5e9;
   margin: 0 0 4px 0;
+  font-family: 'Garamond', 'Georgia', serif;
 }
 
 .as-sessionMeta {
   font-size: 13px;
-  color: #64748b;
+  color: #a8dccf;
 }
 
 .as-dot {
@@ -189,32 +194,37 @@
 }
 
 .as-approved {
-  background: #dcfce7;
-  color: #16a34a;
+  background: rgba(125, 212, 188, 0.12);
+  color: #7dd4bc;
+  border: 1px solid rgba(125, 212, 188, 0.3);
 }
 
 .as-pending {
-  background: #fef3c7;
-  color: #d97706;
+  background: rgba(251, 191, 36, 0.1);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
 }
 
 .as-summary {
   padding: 16px 20px;
-  background: #f8fafc;
-  border-bottom: 1px solid #f1f5f9;
+  background: rgba(10, 24, 20, 0.4);
+  border-bottom: 1px solid rgba(125, 212, 188, 0.1);
 }
 
 .as-summary strong {
   display: block;
   font-size: 13px;
-  color: #475569;
+  color: rgba(168, 220, 207, 0.85);
   margin-bottom: 8px;
+  font-family: 'Garamond', 'Georgia', serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .as-summary p {
   margin: 0;
   font-size: 14px;
-  color: #64748b;
+  color: rgba(168, 220, 207, 0.75);
   line-height: 1.6;
 }
 
@@ -225,8 +235,11 @@
 .as-homeworksTitle {
   font-size: 14px;
   font-weight: 600;
-  color: #475569;
+  color: rgba(168, 220, 207, 0.85);
   margin: 0 0 16px 0;
+  font-family: 'Garamond', 'Georgia', serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .as-homeworksList {
@@ -237,27 +250,27 @@
 
 .as-homeworkItem {
   padding: 16px;
-  background: #f8fafc;
+  background: rgba(10, 24, 20, 0.5);
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(125, 212, 188, 0.12);
 }
 
 .as-homeworkTask {
   font-weight: 500;
-  color: #1e293b;
+  color: #e8f5e9;
   margin-bottom: 8px;
 }
 
 .as-homeworkRationale {
   font-size: 14px;
-  color: #64748b;
+  color: rgba(168, 220, 207, 0.75);
   margin-bottom: 8px;
   line-height: 1.5;
 }
 
 .as-homeworkFrequency {
   font-size: 13px;
-  color: #475569;
+  color: #a8dccf;
 }
 
 .as-freqLabel {
@@ -267,8 +280,8 @@
 .as-noHomeworks {
   padding: 20px;
   text-align: center;
-  color: #64748b;
-  background: #f8fafc;
+  color: rgba(168, 220, 207, 0.75);
+  background: rgba(10, 24, 20, 0.4);
   border-radius: 8px;
 }
 
@@ -277,42 +290,48 @@
   gap: 12px;
   margin-top: 20px;
   padding-top: 16px;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid rgba(125, 212, 188, 0.1);
 }
 
 .as-editBtn {
   padding: 10px 20px;
-  background: white;
-  border: 1px solid #e2e8f0;
+  background: transparent;
+  border: 1px solid rgba(125, 212, 188, 0.3);
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  color: #475569;
+  color: #a8dccf;
+  font-family: 'Garamond', 'Georgia', serif;
+  transition: background 0.18s;
 }
 
 .as-editBtn:hover {
-  background: #f8fafc;
+  background: rgba(125, 212, 188, 0.1);
 }
 
 .as-approveBtn {
   padding: 10px 20px;
-  background: #3b82f6;
-  border: none;
+  background: rgba(125, 212, 188, 0.15);
+  border: 1px solid rgba(125, 212, 188, 0.4);
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  color: white;
+  color: #a8dccf;
   flex: 1;
+  font-family: 'Garamond', 'Georgia', serif;
+  transition: background 0.18s;
 }
 
 .as-approveBtn:hover {
-  background: #2563eb;
+  background: rgba(125, 212, 188, 0.25);
 }
 
 .as-approveBtn:disabled {
-  background: #94a3b8;
+  background: rgba(125, 212, 188, 0.05);
+  color: rgba(168, 220, 207, 0.4);
+  border-color: rgba(125, 212, 188, 0.1);
   cursor: not-allowed;
 }
 
@@ -325,9 +344,9 @@
 
 .as-homeworkEditItem {
   padding: 16px;
-  background: #f8fafc;
+  background: rgba(10, 24, 20, 0.5);
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(125, 212, 188, 0.12);
 }
 
 .as-editField {
@@ -338,19 +357,23 @@
   display: block;
   font-size: 12px;
   font-weight: 500;
-  color: #64748b;
+  color: rgba(168, 220, 207, 0.75);
   margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .as-editField textarea,
 .as-editField input {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(125, 212, 188, 0.22);
   border-radius: 6px;
   font-size: 14px;
   resize: vertical;
   box-sizing: border-box;
+  background: rgba(10, 24, 20, 0.6);
+  color: #e8f5e9;
 }
 
 .as-editField textarea {
@@ -360,36 +383,36 @@
 .as-editField textarea:focus,
 .as-editField input:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: rgba(125, 212, 188, 0.55);
 }
 
 .as-removeBtn {
   padding: 6px 12px;
-  background: #fef2f2;
-  border: none;
+  background: rgba(180, 40, 40, 0.12);
+  border: 1px solid rgba(220, 80, 80, 0.25);
   border-radius: 6px;
-  color: #dc2626;
+  color: #f87171;
   cursor: pointer;
   font-size: 13px;
 }
 
 .as-removeBtn:hover {
-  background: #fee2e2;
+  background: rgba(180, 40, 40, 0.22);
 }
 
 .as-addBtn {
   padding: 10px;
-  background: white;
-  border: 2px dashed #cbd5e1;
+  background: transparent;
+  border: 2px dashed rgba(125, 212, 188, 0.25);
   border-radius: 8px;
-  color: #64748b;
+  color: rgba(168, 220, 207, 0.65);
   cursor: pointer;
   font-size: 14px;
 }
 
 .as-addBtn:hover {
-  background: #f8fafc;
-  border-color: #94a3b8;
+  background: rgba(125, 212, 188, 0.06);
+  border-color: rgba(125, 212, 188, 0.4);
 }
 
 .as-editActions {
@@ -400,43 +423,49 @@
 
 .as-saveBtn {
   padding: 10px 20px;
-  background: #3b82f6;
-  border: none;
+  background: rgba(125, 212, 188, 0.15);
+  border: 1px solid rgba(125, 212, 188, 0.4);
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  color: white;
+  color: #a8dccf;
+  font-family: 'Garamond', 'Georgia', serif;
+  transition: background 0.18s;
 }
 
 .as-saveBtn:hover {
-  background: #2563eb;
+  background: rgba(125, 212, 188, 0.25);
 }
 
 .as-saveBtn:disabled {
-  background: #94a3b8;
+  background: rgba(125, 212, 188, 0.05);
+  color: rgba(168, 220, 207, 0.4);
+  border-color: rgba(125, 212, 188, 0.1);
   cursor: not-allowed;
 }
 
 .as-cancelBtn {
   padding: 10px 20px;
-  background: white;
-  border: 1px solid #e2e8f0;
+  background: transparent;
+  border: 1px solid rgba(125, 212, 188, 0.25);
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
-  color: #475569;
+  color: rgba(168, 220, 207, 0.65);
+  font-family: 'Garamond', 'Georgia', serif;
+  transition: background 0.18s;
 }
 
 .as-cancelBtn:hover {
-  background: #f8fafc;
+  background: rgba(125, 212, 188, 0.06);
 }
 
 /* Transcript Section */
 .as-transcriptSection {
   padding: 16px 20px;
-  background: #f8fafc;
-  border-bottom: 1px solid #f1f5f9;
+  background: rgba(10, 24, 20, 0.4);
+  border-bottom: 1px solid rgba(125, 212, 188, 0.1);
 }
 
 .as-transcriptHeader {
@@ -448,13 +477,17 @@
 
 .as-transcriptHeader strong {
   font-size: 13px;
-  color: #475569;
+  color: rgba(168, 220, 207, 0.85);
+  font-family: 'Garamond', 'Georgia', serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .as-transcriptCount {
   font-size: 12px;
-  color: #94a3b8;
-  background: #e2e8f0;
+  color: #a8dccf;
+  background: rgba(125, 212, 188, 0.1);
+  border: 1px solid rgba(125, 212, 188, 0.2);
   padding: 4px 8px;
   border-radius: 4px;
 }
@@ -469,18 +502,18 @@
 
 .as-transcriptItem {
   padding: 10px 12px;
-  background: white;
+  background: rgba(10, 24, 20, 0.55);
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(125, 212, 188, 0.12);
   line-height: 1.5;
 }
 
 .as-speaker-therapist {
-  border-left: 3px solid #3b82f6;
+  border-left: 3px solid rgba(125, 212, 188, 0.7);
 }
 
 .as-speaker-patient {
-  border-left: 3px solid #22c55e;
+  border-left: 3px solid rgba(74, 222, 128, 0.6);
 }
 
 .as-speakerLabel {
@@ -491,26 +524,26 @@
 }
 
 .as-speaker-therapist .as-speakerLabel {
-  color: #3b82f6;
+  color: #7dd4bc;
 }
 
 .as-speaker-patient .as-speakerLabel {
-  color: #22c55e;
+  color: #4ade80;
 }
 
 .as-transcriptText {
   font-size: 14px;
-  color: #475569;
+  color: rgba(168, 220, 207, 0.8);
 }
 
 .as-readMoreBtn {
   width: 100%;
   padding: 10px;
   margin-top: 12px;
-  background: white;
-  border: 1px solid #e2e8f0;
+  background: transparent;
+  border: 1px solid rgba(125, 212, 188, 0.25);
   border-radius: 8px;
-  color: #3b82f6;
+  color: #a8dccf;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -518,5 +551,5 @@
 }
 
 .as-readMoreBtn:hover {
-  background: #eff6ff;
+  background: rgba(125, 212, 188, 0.08);
 }

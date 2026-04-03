@@ -1,4 +1,11 @@
 /* ─── TherapistERPObsessionList – extra styles beyond the shared base ───── */
+.terp-ol-container {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #1a3832 0%, #22453d 45%, #1c3d35 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
 .terp-header-title {
   text-align: center;
   flex: 1;
@@ -16,20 +23,21 @@
   gap: 0.9rem;
 }
 .terp-obs-card {
-  background: #fff;
+  background: rgba(10, 24, 20, 0.55);
   border-radius: 12px;
-  border: 1px solid rgba(44,95,77,0.15);
+  border: 1px solid rgba(99, 202, 183, 0.15);
   padding: 1.1rem 1.4rem;
   display: flex;
   align-items: center;
   gap: 1.1rem;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 .terp-obs-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(44,95,77,0.15);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+  border-color: rgba(99, 202, 183, 0.4);
 }
 .terp-obs-index {
   width: 36px;
@@ -48,7 +56,7 @@
 .terp-obs-title {
   font-size: 1rem;
   font-weight: 600;
-  color: #1a3d30;
+  color: #e8f5e9;
   margin: 0 0 0.4rem;
   line-height: 1.4;
 }
@@ -58,18 +66,18 @@
   flex-wrap: wrap;
 }
 .terp-suds-badge {
-  background: #fff3cd;
-  color: #856404;
-  border: 1px solid #ffd970;
+  background: rgba(251, 191, 36, 0.15);
+  color: #fde68a;
+  border: 1px solid rgba(251, 191, 36, 0.35);
   border-radius: 20px;
   padding: 0.15rem 0.7rem;
   font-size: 0.78rem;
   font-weight: 600;
 }
 .terp-comp-badge {
-  background: #dbeafe;
-  color: #1e40af;
-  border: 1px solid #93c5fd;
+  background: rgba(99, 202, 183, 0.15);
+  color: #7dd4bc;
+  border: 1px solid rgba(99, 202, 183, 0.35);
   border-radius: 20px;
   padding: 0.15rem 0.7rem;
   font-size: 0.78rem;

@@ -1,6 +1,6 @@
 .therapist-hub-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #E8F3EE 0%, #D4E9E0 100%);
+  background: linear-gradient(160deg, #1a3832 0%, #22453d 45%, #1c3d35 100%);
   position: relative;
   overflow-x: hidden;
 }
@@ -56,9 +56,10 @@
 .dashboard-header {
   position: relative;
   z-index: 10;
-  background: linear-gradient(135deg, #2C5F4D 0%, #3d7a64 100%);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  border-bottom: 3px solid #1a3d30;
+  background: rgba(15, 32, 28, 0.92);
+  backdrop-filter: blur(30px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .header-content {
@@ -149,7 +150,7 @@
 }
 
 .hub-intro h2 {
-  color: #2C5F4D;
+  color: #ffffff;
   font-size: 2.4rem;
   font-weight: 700;
   font-family: 'Georgia', serif;
@@ -158,7 +159,7 @@
 }
 
 .hub-intro p {
-  color: #5A7A70;
+  color: rgba(255, 255, 255, 0.75);
   font-size: 1.15rem;
   font-weight: 500;
   margin: 0;
@@ -186,13 +187,13 @@
 
 /* Option Cards */
 .option-card {
-  background: #ffffff;
+  background: rgba(15, 32, 28, 0.65);
   border-radius: 12px;
   padding: 2.5rem;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border: 2px solid #e0e0e0;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  border: 1px solid rgba(125, 212, 188, 0.18);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
   position: relative;
   overflow: hidden;
 }
@@ -209,8 +210,8 @@
 
 .option-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-  border-color: #2C5F4D;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+  border-color: rgba(125, 212, 188, 0.45);
 }
 
 .option-card:hover::before {
@@ -244,7 +245,7 @@
 }
 
 .card-content h3 {
-  color: #2C5F4D;
+  color: #e8f5e9;
   font-size: 1.6rem;
   font-weight: 700;
   font-family: 'Georgia', serif;
@@ -254,11 +255,11 @@
 }
 
 .option-card:hover .card-content h3 {
-  color: #1a3d30;
+  color: #ffffff;
 }
 
 .card-content p {
-  color: #5A7A70;
+  color: #a8dccf;
   font-size: 1.05rem;
   line-height: 1.6;
   margin: 0 0 1.5rem 0;
@@ -268,11 +269,11 @@
 .card-action {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 2px solid #e9ecef;
+  border-top: 1px solid rgba(125, 212, 188, 0.15);
 }
 
 .card-action span {
-  color: #2C5F4D;
+  color: #7dd4bc;
   font-weight: 600;
   font-size: 1.05rem;
   letter-spacing: 0.3px;
@@ -281,7 +282,7 @@
 }
 
 .option-card:hover .card-action span {
-  color: #1a3d30;
+  color: #ffffff;
   transform: translateX(8px);
 }
 

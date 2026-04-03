@@ -238,7 +238,6 @@ const TherapistChat = () => {
                 className={`tc-group-item ${selectedGroup?.id === g.id ? 'active' : ''}`}
                 onClick={() => setSelectedGroup(g)}
               >
-                <span className="tc-group-icon">💬</span>
                 <div className="tc-group-info">
                   <span className="tc-group-name">{g.name}</span>
                   <span className="tc-group-meta">{g.member_count} member{g.member_count !== 1 ? 's' : ''}</span>

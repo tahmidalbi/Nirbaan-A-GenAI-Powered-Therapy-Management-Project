@@ -1,8 +1,8 @@
-/* ══════════════════════════════════════════════════════════
-   TherapistChatPage — full-screen dark-green theme
-   ══════════════════════════════════════════════════════════ */
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   TherapistChatPage â€” full-screen dark-green theme
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Root ── */
+/* â”€â”€ Root â”€â”€ */
 .tcp-root {
   position: fixed;
   inset: 0;
@@ -11,9 +11,9 @@
   overflow: hidden;
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
   background:
-    radial-gradient(ellipse 65% 50% at 85% 5%, rgba(52, 168, 83, 0.14) 0%, transparent 65%),
-    radial-gradient(ellipse 45% 40% at 8% 95%, rgba(27, 94, 32, 0.30) 0%, transparent 60%),
-    linear-gradient(155deg, #0b2e18 0%, #0f3d22 40%, #122e1c 75%, #0d2615 100%);
+    radial-gradient(ellipse 70% 55% at 80% 10%, rgba(93, 190, 165, 0.10) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 10% 90%, rgba(26, 56, 50, 0.6) 0%, transparent 65%),
+    linear-gradient(160deg, #1a3832 0%, #22453d 45%, #1c3d35 100%);
   color: #e8f5e9;
 }
 
@@ -26,7 +26,7 @@
   background-size: 28px 28px;
 }
 
-/* ── Header ── */
+/* â”€â”€ Header â”€â”€ */
 .tcp-header {
   position: relative;
   z-index: 20;
@@ -35,17 +35,17 @@
   justify-content: space-between;
   padding: 0 1.5rem;
   height: 56px;
-  background: rgba(8, 28, 14, 0.85);
+  background: rgba(15, 32, 28, 0.92);
   backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(52, 168, 83, 0.18);
+  border-bottom: 1px solid rgba(125, 212, 188, 0.15);
   flex-shrink: 0;
   gap: 1rem;
 }
 
 .tcp-back-btn {
-  background: rgba(52, 168, 83, 0.12);
-  border: 1px solid rgba(52, 168, 83, 0.28);
-  color: #a5d6a7;
+  background: rgba(125, 212, 188, 0.12);
+  border: 1px solid rgba(125, 212, 188, 0.25);
+  color: #a8dccf;
   padding: 0.38rem 1rem;
   border-radius: 6px;
   cursor: pointer;
@@ -56,7 +56,7 @@
 }
 
 .tcp-back-btn:hover {
-  background: rgba(52, 168, 83, 0.24);
+  background: rgba(125, 212, 188, 0.22);
   color: #e8f5e9;
 }
 
@@ -79,7 +79,7 @@
 }
 
 .tcp-header-group {
-  color: rgba(165, 214, 167, 0.65);
+  color: rgba(168, 220, 207, 0.65);
   font-size: 0.9rem;
   font-weight: 400;
 }
@@ -100,9 +100,9 @@
 }
 
 .tcp-manage-btn {
-  background: rgba(52, 168, 83, 0.14);
-  border: 1px solid rgba(52, 168, 83, 0.35);
-  color: #a5d6a7;
+  background: rgba(125, 212, 188, 0.12);
+  border: 1px solid rgba(125, 212, 188, 0.32);
+  color: #a8dccf;
   padding: 0.38rem 1rem;
   border-radius: 6px;
   cursor: pointer;
@@ -112,11 +112,11 @@
 }
 
 .tcp-manage-btn:hover {
-  background: rgba(52, 168, 83, 0.28);
+  background: rgba(125, 212, 188, 0.25);
   color: #e8f5e9;
 }
 
-/* ── Body (sidebar + main) ── */
+/* â”€â”€ Body (sidebar + main) â”€â”€ */
 .tcp-body {
   position: relative;
   z-index: 5;
@@ -125,29 +125,29 @@
   overflow: hidden;
 }
 
-/* ── Sidebar ── */
+/* â”€â”€ Sidebar â”€â”€ */
 .tcp-sidebar {
   width: 260px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  background: rgba(6, 20, 10, 0.70);
-  border-right: 1px solid rgba(52, 168, 83, 0.14);
+  background: rgba(0, 0, 0, 0.30);
+  border-right: 1px solid rgba(125, 212, 188, 0.12);
   backdrop-filter: blur(8px);
   overflow: hidden;
 }
 
 .tcp-sidebar-top {
   padding: 1rem;
-  border-bottom: 1px solid rgba(52, 168, 83, 0.12);
+  border-bottom: 1px solid rgba(125, 212, 188, 0.12);
   flex-shrink: 0;
 }
 
-/* ── Sidebar tab switcher ── */
+/* â”€â”€ Sidebar tab switcher â”€â”€ */
 .tcp-sidebar-tabs {
   display: flex;
   flex-shrink: 0;
-  border-bottom: 1px solid rgba(52, 168, 83, 0.14);
+  border-bottom: 1px solid rgba(125, 212, 188, 0.12);
 }
 
 .tcp-tab-btn {
@@ -155,7 +155,7 @@
   padding: 0.6rem 0;
   background: transparent;
   border: none;
-  color: rgba(165, 214, 167, 0.45);
+  color: rgba(168, 220, 207, 0.45);
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -164,12 +164,12 @@
   transition: color 0.2s, background 0.2s;
 }
 
-.tcp-tab-btn:hover { color: rgba(165, 214, 167, 0.8); }
+.tcp-tab-btn:hover { color: rgba(168, 220, 207, 0.80); }
 
 .tcp-tab-btn.active {
-  color: #4ade80;
-  background: rgba(52, 168, 83, 0.1);
-  border-bottom: 2px solid rgba(52, 168, 83, 0.7);
+  color: #7dd4bc;
+  background: rgba(125, 212, 188, 0.10);
+  border-bottom: 2px solid rgba(125, 212, 188, 0.65);
 }
 
 /* EP avatar in sidebar */
@@ -194,7 +194,7 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(165, 214, 167, 0.55);
+  color: rgba(168, 220, 207, 0.55);
 }
 
 .tcp-create-form {
@@ -206,28 +206,28 @@
   flex: 1;
   padding: 0.5rem 0.75rem;
   border-radius: 7px;
-  border: 1px solid rgba(52, 168, 83, 0.25);
-  background: rgba(52, 168, 83, 0.07);
+  border: 1px solid rgba(125, 212, 188, 0.25);
+  background: rgba(255, 255, 255, 0.07);
   color: #e8f5e9;
   font-size: 0.83rem;
   outline: none;
   transition: border-color 0.2s, background 0.2s;
 }
 
-.tcp-create-input::placeholder { color: rgba(165, 214, 167, 0.35); }
+.tcp-create-input::placeholder { color: rgba(168, 220, 207, 0.35); }
 
 .tcp-create-input:focus {
-  border-color: rgba(52, 168, 83, 0.5);
-  background: rgba(52, 168, 83, 0.12);
+  border-color: rgba(125, 212, 188, 0.50);
+  background: rgba(125, 212, 188, 0.12);
 }
 
 .tcp-create-btn {
   width: 32px;
   height: 32px;
   border-radius: 7px;
-  border: 1px solid rgba(52, 168, 83, 0.4);
-  background: rgba(52, 168, 83, 0.18);
-  color: #a5d6a7;
+  border: 1px solid rgba(125, 212, 188, 0.32);
+  background: rgba(125, 212, 188, 0.15);
+  color: #a8dccf;
   font-size: 1.1rem;
   cursor: pointer;
   display: flex;
@@ -237,11 +237,11 @@
   transition: background 0.2s;
 }
 
-.tcp-create-btn:hover { background: rgba(52, 168, 83, 0.32); color: #e8f5e9; }
+.tcp-create-btn:hover { background: rgba(125, 212, 188, 0.28); color: #e8f5e9; }
 
 .tcp-sidebar-empty {
   padding: 1.25rem;
-  color: rgba(165, 214, 167, 0.35);
+  color: rgba(168, 220, 207, 0.35);
   font-size: 0.82rem;
   text-align: center;
   line-height: 1.6;
@@ -256,7 +256,7 @@
 }
 
 .tcp-group-list::-webkit-scrollbar { width: 3px; }
-.tcp-group-list::-webkit-scrollbar-thumb { background: rgba(52, 168, 83, 0.2); border-radius: 4px; }
+.tcp-group-list::-webkit-scrollbar-thumb { background: rgba(125, 212, 188, 0.18); border-radius: 4px; }
 
 .tcp-group-item {
   display: flex;
@@ -270,22 +270,22 @@
   position: relative;
 }
 
-.tcp-group-item:hover { background: rgba(52, 168, 83, 0.1); }
+.tcp-group-item:hover { background: rgba(125, 212, 188, 0.10); }
 
 .tcp-group-item.active {
-  background: rgba(52, 168, 83, 0.2);
-  border: 1px solid rgba(52, 168, 83, 0.3);
+  background: rgba(125, 212, 188, 0.18);
+  border: 1px solid rgba(125, 212, 188, 0.28);
 }
 
 .tcp-group-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: rgba(52, 168, 83, 0.45);
+  background: rgba(125, 212, 188, 0.45);
   flex-shrink: 0;
 }
 
-.tcp-group-item.active .tcp-group-dot { background: #4ade80; }
+.tcp-group-item.active .tcp-group-dot { background: #7dd4bc; }
 
 .tcp-group-info { flex: 1; min-width: 0; }
 
@@ -301,7 +301,7 @@
 
 .tcp-group-meta {
   display: block;
-  color: rgba(165, 214, 167, 0.4);
+  color: rgba(168, 220, 207, 0.40);
   font-size: 0.72rem;
   margin-top: 1px;
 }
@@ -321,7 +321,7 @@
 .tcp-group-item:hover .tcp-group-del { opacity: 1; }
 .tcp-group-del:hover { background: rgba(255, 80, 80, 0.15); color: #fca5a5; opacity: 1; }
 
-/* ── Main ── */
+/* â”€â”€ Main â”€â”€ */
 .tcp-main {
   flex: 1;
   display: flex;
@@ -330,7 +330,7 @@
   min-width: 0;
 }
 
-/* ── Messages ── */
+/* â”€â”€ Messages â”€â”€ */
 .tcp-messages {
   flex: 1;
   overflow-y: auto;
@@ -343,13 +343,13 @@
 
 .tcp-messages::-webkit-scrollbar { width: 4px; }
 .tcp-messages::-webkit-scrollbar-track { background: transparent; }
-.tcp-messages::-webkit-scrollbar-thumb { background: rgba(52, 168, 83, 0.2); border-radius: 6px; }
+.tcp-messages::-webkit-scrollbar-thumb { background: rgba(125, 212, 188, 0.18); border-radius: 6px; }
 
 .tcp-loading-msg {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: rgba(165, 214, 167, 0.45);
+  color: rgba(168, 220, 207, 0.45);
   font-size: 0.85rem;
   padding: 0.75rem 0;
 }
@@ -358,7 +358,7 @@
 .tcp-dots { display: flex; gap: 3px; align-items: center; }
 .tcp-dots span {
   width: 5px; height: 5px; border-radius: 50%;
-  background: rgba(52, 168, 83, 0.5);
+  background: rgba(125, 212, 188, 0.50);
   animation: tcpBounce 1.2s ease-in-out infinite;
 }
 .tcp-dots span:nth-child(2) { animation-delay: 0.2s; }
@@ -371,7 +371,7 @@
 .tcp-empty-msg {
   margin: auto;
   text-align: center;
-  color: rgba(165, 214, 167, 0.4);
+  color: rgba(168, 220, 207, 0.40);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -380,7 +380,7 @@
 
 .tcp-empty-msg p { margin: 0; font-size: 0.9rem; }
 
-/* ── System messages ── */
+/* â”€â”€ System messages â”€â”€ */
 .tcp-system-msg {
   display: flex;
   align-items: center;
@@ -391,23 +391,23 @@
 .tcp-system-line {
   flex: 1;
   height: 1px;
-  background: rgba(52, 168, 83, 0.12);
+  background: rgba(125, 212, 188, 0.12);
 }
 
 .tcp-system-text {
-  color: rgba(165, 214, 167, 0.38);
+  color: rgba(168, 220, 207, 0.38);
   font-size: 0.72rem;
   white-space: nowrap;
   font-style: italic;
 }
 
-/* ── Bubble rows ── */
+/* â”€â”€ Bubble rows â”€â”€ */
 .tcp-row {
   display: flex;
   align-items: flex-end;
   gap: 0.6rem;
   max-width: 72%;
-  align-self: flex-start;   /* others → left */
+  align-self: flex-start;   /* others â†’ left */
   animation: tcpFadeIn 0.22s ease both;
 }
 
@@ -418,10 +418,10 @@
 
 .tcp-row-me {
   flex-direction: row-reverse;
-  align-self: flex-end;     /* me → right */
+  align-self: flex-end;     /* me â†’ right */
 }
 
-/* ── Avatars ── */
+/* â”€â”€ Avatars â”€â”€ */
 .tcp-avatar {
   width: 34px;
   height: 34px;
@@ -435,19 +435,19 @@
 }
 
 .tcp-avatar-me {
-  background: rgba(52, 168, 83, 0.3);
-  border: 1px solid rgba(52, 168, 83, 0.45);
-  color: #a5d6a7;
+  background: rgba(125, 212, 188, 0.28);
+  border: 1px solid rgba(125, 212, 188, 0.45);
+  color: #a8dccf;
 }
 
-/* Patient avatar — indigo palette */
+/* Patient avatar â€” indigo palette */
 .tcp-avatar-patient {
   background: rgba(99, 102, 241, 0.25);
   border: 1px solid rgba(99, 102, 241, 0.4);
   color: #a5b4fc;
 }
 
-/* ── Bubble wrappers ── */
+/* â”€â”€ Bubble wrappers â”€â”€ */
 .tcp-bubble-wrap {
   max-width: 62%;
   display: flex;
@@ -459,12 +459,12 @@
 
 .tcp-sender-name {
   font-size: 0.72rem;
-  color: rgba(165, 214, 167, 0.5);
+  color: rgba(168, 220, 207, 0.50);
   padding-left: 4px;
   font-weight: 500;
 }
 
-/* ── Bubbles ── */
+/* â”€â”€ Bubbles â”€â”€ */
 .tcp-bubble {
   padding: 0.7rem 0.95rem;
   border-radius: 14px;
@@ -482,14 +482,14 @@
   text-align: right;
 }
 
-/* ── Input bar ── */
+/* â”€â”€ Input bar â”€â”€ */
 .tcp-input-bar {
   display: flex;
   align-items: flex-end;
   gap: 0.75rem;
   padding: 0.9rem 1.25rem;
-  background: rgba(6, 20, 10, 0.6);
-  border-top: 1px solid rgba(52, 168, 83, 0.14);
+  background: rgba(15, 32, 28, 0.88);
+  border-top: 1px solid rgba(125, 212, 188, 0.12);
   backdrop-filter: blur(8px);
   flex-shrink: 0;
 }
@@ -498,8 +498,8 @@
   flex: 1;
   padding: 0.7rem 1rem;
   border-radius: 10px;
-  border: 1px solid rgba(52, 168, 83, 0.22);
-  background: rgba(52, 168, 83, 0.07);
+  border: 1px solid rgba(125, 212, 188, 0.25);
+  background: rgba(255, 255, 255, 0.07);
   color: #e8f5e9;
   font-size: 0.92rem;
   resize: none;
@@ -510,11 +510,11 @@
   transition: border-color 0.2s, background 0.2s;
 }
 
-.tcp-input::placeholder { color: rgba(165, 214, 167, 0.35); }
+.tcp-input::placeholder { color: rgba(168, 220, 207, 0.35); }
 
 .tcp-input:focus {
-  border-color: rgba(52, 168, 83, 0.45);
-  background: rgba(52, 168, 83, 0.11);
+  border-color: rgba(125, 212, 188, 0.45);
+  background: rgba(255, 255, 255, 0.11);
 }
 
 .tcp-send-btn {
@@ -522,7 +522,7 @@
   height: 42px;
   border-radius: 10px;
   border: none;
-  background: linear-gradient(135deg, #22783c, #186832);
+  background: linear-gradient(135deg, #3d7a6a 0%, #5a9689 100%);
   color: #e8f5e9;
   cursor: pointer;
   display: flex;
@@ -530,17 +530,17 @@
   justify-content: center;
   flex-shrink: 0;
   transition: background 0.2s, transform 0.1s, opacity 0.2s;
-  box-shadow: 0 2px 8px rgba(52, 168, 83, 0.25);
+  box-shadow: 0 2px 8px rgba(125, 212, 188, 0.25);
 }
 
 .tcp-send-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #2a9450, #1e8c40);
+  background: linear-gradient(135deg, #4d8a7a 0%, #6aa699 100%);
   transform: translateY(-1px);
 }
 
 .tcp-send-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
-/* ── No group placeholder ── */
+/* â”€â”€ No group placeholder â”€â”€ */
 .tcp-no-group {
   flex: 1;
   display: flex;
@@ -549,7 +549,7 @@
   justify-content: center;
   gap: 0.75rem;
   text-align: center;
-  color: rgba(165, 214, 167, 0.4);
+  color: rgba(168, 220, 207, 0.40);
 }
 
 .tcp-no-group-icon { font-size: 3.5rem; opacity: 0.35; display: block; }
@@ -568,21 +568,21 @@
   line-height: 1.6;
 }
 
-/* ══ EP Group Chat ══════════════════════════════════════════ */
+/* â•â• EP Group Chat â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .tcp-epg-header-bar {
   display: flex;
   align-items: center;
   gap: 0.6rem;
   padding: 0.75rem 1.25rem;
-  background: rgba(11, 46, 24, 0.7);
-  border-bottom: 1px solid rgba(52, 168, 83, 0.12);
+  background: rgba(15, 32, 28, 0.70);
+  border-bottom: 1px solid rgba(125, 212, 188, 0.12);
   flex-shrink: 0;
 }
 .tcp-epg-icon { font-size: 1.1rem; }
 .tcp-epg-title {
   font-size: 0.82rem;
   font-weight: 700;
-  color: rgba(165, 214, 167, 0.9);
+  color: rgba(168, 220, 207, 0.90);
   letter-spacing: 0.04em;
 }
 
@@ -599,11 +599,11 @@
 .tcp-epg-claim-badge {
   margin-top: 0.5rem;
   padding: 0.3rem 0.6rem;
-  background: rgba(52, 168, 83, 0.18);
-  border: 1px solid rgba(52, 168, 83, 0.35);
+  background: rgba(125, 212, 188, 0.15);
+  border: 1px solid rgba(125, 212, 188, 0.32);
   border-radius: 6px;
   font-size: 0.71rem;
-  color: #a5d6a7;
+  color: #a8dccf;
 }
 
 /* Therapist tag / AI tag on sender name line */
@@ -614,12 +614,12 @@
   border-radius: 4px;
   font-size: 0.66rem;
   font-weight: 700;
-  background: rgba(52, 168, 83, 0.2);
-  color: #81c784;
+  background: rgba(125, 212, 188, 0.18);
+  color: #7dd4bc;
   vertical-align: middle;
 }
 
-/* ══ Members Modal ══════════════════════════════════════════ */
+/* â•â• Members Modal â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .tcp-overlay {
   position: fixed;
   inset: 0;
@@ -632,8 +632,8 @@
 }
 
 .tcp-members-modal {
-  background: linear-gradient(155deg, #0e3520, #0b2a18);
-  border: 1px solid rgba(52, 168, 83, 0.22);
+  background: linear-gradient(160deg, #1a3832, #22453d);
+  border: 1px solid rgba(125, 212, 188, 0.25);
   border-radius: 16px;
   width: 480px;
   max-height: 78vh;
@@ -644,7 +644,7 @@
 }
 
 .tcp-members-modal::-webkit-scrollbar { width: 4px; }
-.tcp-members-modal::-webkit-scrollbar-thumb { background: rgba(52, 168, 83, 0.2); border-radius: 6px; }
+.tcp-members-modal::-webkit-scrollbar-thumb { background: rgba(125, 212, 188, 0.18); border-radius: 6px; }
 
 .tcp-modal-header {
   display: flex;
@@ -663,7 +663,7 @@
 .tcp-modal-close {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(165, 214, 167, 0.6);
+  color: rgba(168, 220, 207, 0.60);
   font-size: 0.9rem;
   padding: 4px 9px;
   border-radius: 6px;
@@ -674,7 +674,7 @@
 .tcp-modal-close:hover { background: rgba(255, 80, 80, 0.1); color: #fca5a5; }
 
 .tcp-modal-loading {
-  color: rgba(165, 214, 167, 0.4);
+  color: rgba(168, 220, 207, 0.40);
   text-align: center;
   padding: 1.5rem;
   font-size: 0.85rem;
@@ -688,15 +688,15 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(165, 214, 167, 0.5);
+  color: rgba(168, 220, 207, 0.50);
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
 .tcp-count-badge {
-  background: rgba(52, 168, 83, 0.2);
-  color: #81c784;
+  background: rgba(125, 212, 188, 0.18);
+  color: #7dd4bc;
   font-size: 0.7rem;
   padding: 1px 7px;
   border-radius: 10px;
@@ -705,7 +705,7 @@
 }
 
 .tcp-modal-empty {
-  color: rgba(165, 214, 167, 0.35);
+  color: rgba(168, 220, 207, 0.35);
   font-size: 0.84rem;
   margin: 0;
 }
@@ -724,13 +724,13 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.65rem 0.85rem;
-  background: rgba(52, 168, 83, 0.07);
-  border: 1px solid rgba(52, 168, 83, 0.12);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(125, 212, 188, 0.12);
   border-radius: 10px;
   transition: background 0.15s;
 }
 
-.tcp-modal-member:hover { background: rgba(52, 168, 83, 0.12); }
+.tcp-modal-member:hover { background: rgba(125, 212, 188, 0.12); }
 
 .tcp-modal-avatar {
   width: 32px;
@@ -748,9 +748,9 @@
 }
 
 .tcp-modal-avatar-add {
-  background: rgba(52, 168, 83, 0.14);
-  border-color: rgba(52, 168, 83, 0.28);
-  color: #81c784;
+  background: rgba(125, 212, 188, 0.12);
+  border-color: rgba(125, 212, 188, 0.25);
+  color: #7dd4bc;
 }
 
 .tcp-modal-name {
@@ -778,9 +778,10 @@
 .tcp-action-remove:hover { background: rgba(239, 68, 68, 0.22); }
 
 .tcp-action-add {
-  border: 1px solid rgba(52, 168, 83, 0.38);
-  background: rgba(52, 168, 83, 0.12);
+  border: 1px solid rgba(125, 212, 188, 0.32);
+  background: rgba(125, 212, 188, 0.12);
   color: #86efac;
 }
 
-.tcp-action-add:hover { background: rgba(52, 168, 83, 0.24); }
+.tcp-action-add:hover { background: rgba(125, 212, 188, 0.22); }
+

@@ -1,7 +1,7 @@
 .condition-dashboard-container {
   width: 100%;
   min-height: 100vh;
-  background: linear-gradient(135deg, #6B9B8D 0%, #7CAB9D 50%, #8DBCAE 100%);
+  background: linear-gradient(160deg, #1a3832 0%, #22453d 45%, #1c3d35 100%);
   font-family: 'Georgia', serif;
   position: relative;
   overflow-x: hidden;
@@ -67,12 +67,12 @@
   top: 0;
   left: 0;
   right: 0;
-  background: rgba(120, 160, 148, 0.98);
-  backdrop-filter: blur(25px);
-  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.25);
+  background: rgba(15, 32, 28, 0.92);
+  backdrop-filter: blur(30px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.35);
   z-index: 1000;
   padding: 1.2rem 0;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .header-content {
@@ -227,9 +227,9 @@
 }
 
 .tool-box {
-  background: linear-gradient(135deg, rgba(107, 155, 141, 0.15) 0%, rgba(124, 171, 157, 0.12) 100%);
+  background: rgba(255, 255, 255, 0.97);
   backdrop-filter: blur(10px);
-  border: 2px solid rgba(107, 155, 141, 0.4);
+  border: 1px solid rgba(61, 122, 106, 0.2);
   border-radius: 8px;
   padding: 2.5rem 2rem;
   text-align: center;
@@ -286,7 +286,7 @@
 
 .tool-box:hover {
   transform: translateY(-8px) scale(1.02);
-  background: linear-gradient(135deg, rgba(107, 155, 141, 0.25) 0%, rgba(124, 171, 157, 0.22) 100%);
+  background: rgba(255, 255, 255, 0.99);
   box-shadow: 
     0 12px 35px rgba(44, 95, 77, 0.25),
     0 0 0 1px rgba(107, 155, 141, 0.3),

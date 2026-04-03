@@ -5,7 +5,7 @@
 
 .terp-ov-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #E8F3EE 0%, #D4E9E0 100%);
+  background: linear-gradient(160deg, #1a3832 0%, #22453d 45%, #1c3d35 100%);
   position: relative;
   overflow-x: hidden;
 }
@@ -19,8 +19,8 @@
   padding: 2rem 1.5rem;
 }
 .terp-ov-error {
-  background: #fee2e2;
-  color: #b91c1c;
+  background: rgba(80, 20, 20, 0.6);
+  color: #fca5a5;
   padding: 0.75rem 1rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
@@ -28,7 +28,7 @@
 }
 .terp-ov-loading {
   text-align: center;
-  color: #4a7c63;
+  color: rgba(255, 255, 255, 0.75);
   padding: 4rem 1rem;
   font-size: 1.1rem;
 }
@@ -46,12 +46,12 @@
 
 /* ── Shared section style ── */
 .terp-ov-section {
-  background: #fff;
+  background: rgba(10, 24, 20, 0.55);
   border-radius: 12px;
-  border: 1px solid rgba(44,95,77,0.12);
+  border: 1px solid rgba(99, 202, 183, 0.15);
   padding: 1.4rem 1.6rem;
   margin-bottom: 1.2rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
 }
 .terp-ov-section:last-child { margin-bottom: 0; }
 
@@ -60,7 +60,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #2C5F4D;
+  color: #7dd4bc;
   margin: 0 0 0.9rem;
 }
 .terp-ov-count {
@@ -73,15 +73,15 @@
 /* Obsession */
 .terp-ov-obsession-text {
   font-size: 1.05rem;
-  color: #1a3d30;
+  color: #e8f5e9;
   line-height: 1.6;
   margin: 0 0 0.8rem;
 }
 .terp-ov-suds-pill {
   display: inline-block;
-  background: #fff3cd;
-  color: #856404;
-  border: 1px solid #ffd970;
+  background: rgba(251, 191, 36, 0.15);
+  color: #fde68a;
+  border: 1px solid rgba(251, 191, 36, 0.35);
   border-radius: 20px;
   padding: 0.25rem 0.9rem;
   font-size: 0.82rem;
@@ -108,7 +108,7 @@
   align-items: flex-start;
   gap: 0.7rem;
   font-size: 0.95rem;
-  color: #2a4a3a;
+  color: #a8dccf;
   line-height: 1.5;
 }
 .terp-ov-comp-dot {
@@ -133,14 +133,14 @@
   font-size: 0.8rem;
   font-weight: 700;
 }
-.stat-low  { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
-.stat-high { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
-.stat-last { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+.stat-low  { background: rgba(74, 222, 128, 0.12); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
+.stat-high { background: rgba(252, 165, 165, 0.12); color: #fca5a5; border: 1px solid rgba(252, 165, 165, 0.3); }
+.stat-last { background: rgba(147, 197, 253, 0.12); color: #93c5fd; border: 1px solid rgba(147, 197, 253, 0.3); }
 
 /* Session note */
 .terp-ov-note-text {
   font-size: 0.95rem;
-  color: #2a4a3a;
+  color: #a8dccf;
   line-height: 1.6;
   white-space: pre-wrap;
   margin: 0;
@@ -204,7 +204,7 @@
   display: flex;
   gap: 0;
   margin-bottom: 1.1rem;
-  border-bottom: 2px solid rgba(44,95,77,0.15);
+  border-bottom: 1px solid rgba(99, 202, 183, 0.18);
 }
 .terp-ov-tab {
   background: none;
@@ -212,17 +212,17 @@
   padding: 0.55rem 1.1rem;
   font-size: 0.88rem;
   font-weight: 600;
-  color: #4a7c63;
+  color: rgba(168, 220, 207, 0.65);
   cursor: pointer;
   border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
+  margin-bottom: -1px;
   transition: color 0.15s, border-color 0.15s;
   font-family: 'Georgia', serif;
 }
-.terp-ov-tab:hover { color: #2C5F4D; }
+.terp-ov-tab:hover { color: #7dd4bc; }
 .terp-ov-tab--active {
-  color: #2C5F4D;
-  border-bottom-color: #2C5F4D;
+  color: #7dd4bc;
+  border-bottom-color: #7dd4bc;
 }
 
 /* ── Sessions panel ── */
@@ -266,7 +266,7 @@
   background: rgba(44,95,77,0.18) !important;
   border-color: rgba(44,95,77,0.55) !important;
 }
-.terp-ov-sbi-date { font-size: 0.8rem; font-weight: 600; color: #2C5F4D; }
+.terp-ov-sbi-date { font-size: 0.8rem; font-weight: 600; color: #e8f5e9; }
 .terp-ov-sbi-meta { display: flex; gap: 0.4rem; align-items: center; }
 .terp-ov-sbi-dur  { font-size: 0.7rem; color: #7aab96; }
 .terp-ov-report-dot { font-size: 0.68rem; color: #4a9b7e; font-weight: 700; }
@@ -327,15 +327,15 @@
   max-width: 88%;
 }
 .terp-ov-msg--patient .terp-ov-msg-text {
-  background: rgba(44,95,77,0.12);
-  color: #2C5F4D;
+  background: rgba(44,95,77,0.25);
+  color: #e8f5e9;
   align-self: flex-end;
 }
 .terp-ov-msg--coach .terp-ov-msg-text,
 .terp-ov-msg--system .terp-ov-msg-text {
-  background: rgba(44,95,77,0.06);
-  color: #4a7c63;
-  border: 1px solid rgba(44,95,77,0.1);
+  background: rgba(44,95,77,0.12);
+  color: #a8dccf;
+  border: 1px solid rgba(99,202,183,0.12);
 }
 
 /* SUDS pills in session detail */
@@ -354,7 +354,7 @@
   margin: 0; padding-left: 1.1rem;
   display: flex; flex-direction: column; gap: 0.2rem;
 }
-.terp-ov-fb-list li { font-size: 0.82rem; color: #4a7c63; line-height: 1.4; }
+.terp-ov-fb-list li { font-size: 0.82rem; color: #a8dccf; line-height: 1.4; }
 
 /* Clinical report */
 .terp-ov-clinical-panel { display: flex; flex-direction: column; gap: 0.7rem; }
@@ -364,11 +364,11 @@
 .terp-ov-json-pre {
   font-family: monospace;
   font-size: 0.77rem;
-  background: rgba(44,95,77,0.07);
-  border: 1px solid rgba(44,95,77,0.12);
+  background: rgba(10, 24, 20, 0.5);
+  border: 1px solid rgba(99, 202, 183, 0.12);
   border-radius: 6px;
   padding: 0.7rem;
-  color: #2C5F4D;
+  color: #a8dccf;
   overflow-x: auto;
   white-space: pre-wrap;
   word-break: break-all;
@@ -385,7 +385,7 @@
 }
 .terp-ov-cross-session-summary {
   font-size: 0.84rem;
-  color: #1a3d30;
+  color: #a8dccf;
   line-height: 1.6;
   margin: 0.4rem 0 0.3rem;
 }
@@ -396,7 +396,7 @@
   gap: 0.25rem;
 }
 .terp-ov-cross-session-blockers .terp-ov-fb-label { color: #b45309; }
-.terp-ov-cross-session-blockers .terp-ov-fb-list li { color: #92400e; }
+.terp-ov-cross-session-blockers .terp-ov-fb-list li { color: #fca5a5; }
 .terp-ov-cross-session-empty {
   font-size: 0.82rem;
   color: #7aab96;
@@ -412,7 +412,7 @@
 }
 .terp-ov-cross-session-error {
   font-size: 0.78rem;
-  color: #dc2626;
+  color: #fca5a5;
   margin: 0;
 }
 .terp-ov-generate-btn {
@@ -438,15 +438,15 @@
   gap: 1rem;
 }
 .terp-ov-script-error {
-  background: #fee2e2;
-  color: #b91c1c;
+  background: rgba(80, 20, 20, 0.5);
+  color: #fca5a5;
   padding: 0.6rem 0.9rem;
   border-radius: 8px;
   font-size: 0.82rem;
 }
 .terp-ov-script-intro {
   font-size: 0.82rem;
-  color: #4a7c63;
+  color: #a8dccf;
   line-height: 1.55;
   margin: 0;
 }
@@ -465,12 +465,12 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #3d6b58;
+  color: rgba(125, 212, 188, 0.8);
 }
 .terp-ov-sf-readonly {
   font-size: 0.85rem;
-  color: #2c3e35;
-  background: rgba(44,95,77,0.07);
+  color: #a8dccf;
+  background: rgba(10, 24, 20, 0.4);
   border-radius: 6px;
   padding: 0.45rem 0.7rem;
   line-height: 1.5;
@@ -480,36 +480,36 @@
   width: fit-content;
   padding: 0.2rem 0.7rem;
   border-radius: 99px;
-  background: rgba(44,95,77,0.12);
+  background: rgba(99, 202, 183, 0.15);
   font-weight: 600;
   font-size: 0.78rem;
-  color: #2C5F4D;
+  color: #7dd4bc;
 }
 .terp-ov-sf-input {
-  border: 1.5px solid rgba(44,95,77,0.25);
+  border: 1.5px solid rgba(99, 202, 183, 0.2);
   border-radius: 8px;
   padding: 0.5rem 0.75rem;
   font-size: 0.88rem;
-  color: #1e3329;
-  background: #fff;
+  color: #e8f5e9;
+  background: rgba(10, 24, 20, 0.5);
   outline: none;
   transition: border-color 0.15s;
 }
-.terp-ov-sf-input:focus { border-color: #2C5F4D; }
+.terp-ov-sf-input:focus { border-color: #7dd4bc; }
 .terp-ov-sf-textarea {
-  border: 1.5px solid rgba(44,95,77,0.25);
+  border: 1.5px solid rgba(99, 202, 183, 0.2);
   border-radius: 8px;
   padding: 0.55rem 0.75rem;
   font-size: 0.88rem;
-  color: #1e3329;
-  background: #fff;
+  color: #e8f5e9;
+  background: rgba(10, 24, 20, 0.5);
   resize: vertical;
   outline: none;
   font-family: inherit;
   line-height: 1.5;
   transition: border-color 0.15s;
 }
-.terp-ov-sf-textarea:focus { border-color: #2C5F4D; }
+.terp-ov-sf-textarea:focus { border-color: #7dd4bc; }
 
 /* Spinner */
 .terp-ov-script-generating {
@@ -518,7 +518,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 2rem 0;
-  color: #4a7c63;
+  color: #a8dccf;
   font-size: 0.85rem;
 }
 .terp-ov-script-spinner {
@@ -545,13 +545,13 @@
 .terp-ov-script-pre {
   white-space: pre-wrap;
   word-break: break-word;
-  background: rgba(44,95,77,0.05);
-  border: 1px solid rgba(44,95,77,0.15);
+  background: rgba(10, 24, 20, 0.5);
+  border: 1px solid rgba(99, 202, 183, 0.12);
   border-radius: 10px;
   padding: 1rem;
   font-family: inherit;
   font-size: 0.85rem;
-  color: #1e3329;
+  color: #a8dccf;
   line-height: 1.65;
   max-height: 420px;
   overflow-y: auto;
@@ -575,8 +575,8 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: rgba(44,95,77,0.12);
-  color: #2C5F4D;
+  background: rgba(99, 202, 183, 0.15);
+  color: #7dd4bc;
   font-size: 1.6rem;
   display: flex;
   align-items: center;
@@ -585,12 +585,12 @@
 .terp-ov-script-done-title {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #1e3329;
+  color: #e8f5e9;
   margin: 0;
 }
 .terp-ov-script-done-sub {
   font-size: 0.82rem;
-  color: #4a7c63;
+  color: #a8dccf;
   max-width: 360px;
   margin: 0;
   line-height: 1.55;

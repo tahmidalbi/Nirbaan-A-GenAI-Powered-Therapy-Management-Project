@@ -2,6 +2,7 @@
 
 .tisp-container {
   min-height: 100vh;
+  background: linear-gradient(160deg, #1a3832 0%, #22453d 45%, #1c3d35 100%);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -34,7 +35,7 @@
 .tisp-context-label:not(:first-child) { margin-top: 0.6rem; }
 .tisp-context-text {
   font-size: 0.88rem;
-  color: #2a3730;
+  color: #e8f5e9;
   line-height: 1.5;
 }
 
@@ -47,16 +48,16 @@
 .tisp-tab {
   flex: 1;
   padding: 0.65rem 0;
-  border: 1px solid rgba(44, 95, 77, 0.2);
+  border: 1px solid rgba(125, 212, 188, 0.2);
   border-radius: 10px;
   background: transparent;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #4a7c63;
+  color: rgba(168, 220, 207, 0.75);
   cursor: pointer;
   transition: all 0.2s;
 }
-.tisp-tab:hover { background: rgba(44, 95, 77, 0.06); }
+.tisp-tab:hover { background: rgba(125, 212, 188, 0.07); }
 .tisp-tab--active {
   background: #2C5F4D;
   color: #fff;
@@ -65,17 +66,17 @@
 
 /* Panel */
 .tisp-panel {
-  background: rgba(255, 255, 255, 0.65);
-  border: 1px solid rgba(44, 95, 77, 0.15);
+  background: rgba(10, 24, 20, 0.52);
+  border: 1px solid rgba(125, 212, 188, 0.12);
   border-radius: 14px;
   padding: 1.5rem;
   backdrop-filter: blur(6px);
 }
 
 .tisp-error {
-  background: rgba(200, 50, 50, 0.08);
-  border: 1px solid rgba(200, 50, 50, 0.25);
-  color: #b33;
+  background: rgba(80, 20, 20, 0.55);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
   padding: 0.6rem 0.9rem;
   border-radius: 8px;
   font-size: 0.82rem;
@@ -84,31 +85,31 @@
 
 /* Form */
 .tisp-form { display: flex; flex-direction: column; gap: 0.75rem; }
-.tisp-form-intro { font-size: 0.84rem; color: #5d7c6a; margin-bottom: 0.25rem; }
+.tisp-form-intro { font-size: 0.84rem; color: #a8dccf; margin-bottom: 0.25rem; }
 .tisp-label {
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #4a7c63;
+  color: rgba(125, 212, 188, 0.85);
 }
 .tisp-textarea,
 .tisp-input {
   width: 100%;
   padding: 0.6rem 0.8rem;
-  border: 1px solid rgba(44, 95, 77, 0.25);
+  border: 1px solid rgba(125, 212, 188, 0.18);
   border-radius: 8px;
   font-size: 0.85rem;
   font-family: inherit;
-  color: #2a3730;
-  background: rgba(255, 255, 255, 0.7);
+  color: #e8f5e9;
+  background: rgba(10, 24, 20, 0.45);
   resize: vertical;
 }
 .tisp-textarea:focus,
 .tisp-input:focus {
   outline: none;
-  border-color: #2C5F4D;
-  box-shadow: 0 0 0 2px rgba(44, 95, 77, 0.1);
+  border-color: #7dd4bc;
+  box-shadow: 0 0 0 2px rgba(125, 212, 188, 0.18);
 }
 
 /* Buttons */
@@ -134,11 +135,11 @@
   align-items: center;
   gap: 1rem;
   padding: 2rem 0;
-  color: #5d7c6a;
+  color: #a8dccf;
 }
 .tisp-spinner {
   width: 36px; height: 36px;
-  border: 3px solid rgba(44, 95, 77, 0.15);
+  border: 3px solid rgba(125, 212, 188, 0.18);
   border-top-color: #2C5F4D;
   border-radius: 50%;
   animation: tisp-spin 0.7s linear infinite;
@@ -150,18 +151,18 @@
 .tisp-review-title {
   font-size: 0.92rem;
   font-weight: 700;
-  color: #2a3730;
+  color: #e8f5e9;
 }
 .tisp-script-pre {
-  background: rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(44, 95, 77, 0.12);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(125, 212, 188, 0.12);
   border-radius: 10px;
   padding: 1rem;
   white-space: pre-wrap;
   word-break: break-word;
   font-size: 0.82rem;
   line-height: 1.7;
-  color: #333;
+  color: #e8f5e9;
   max-height: 400px;
   overflow-y: auto;
 }
@@ -182,8 +183,8 @@
   line-height: 56px;
   margin: 0 auto 0.75rem;
 }
-.tisp-done h3 { color: #2a3730; margin-bottom: 0.3rem; }
-.tisp-done p { color: #5d7c6a; font-size: 0.85rem; }
+.tisp-done h3 { color: #e8f5e9; margin-bottom: 0.3rem; }
+.tisp-done p { color: #a8dccf; font-size: 0.85rem; }
 
 /* Audio */
 .tisp-audio-box {
@@ -207,7 +208,7 @@
 /* ── Past Scripts list ── */
 .tisp-past-list { display: flex; flex-direction: column; gap: 0.75rem; }
 .tisp-past-card {
-  border: 1px solid rgba(44, 95, 77, 0.18);
+  border: 1px solid rgba(125, 212, 188, 0.15);
   border-radius: 12px;
   overflow: hidden;
 }
@@ -217,15 +218,15 @@
   gap: 0.5rem;
   padding: 0.75rem 1rem;
   cursor: pointer;
-  background: rgba(44, 95, 77, 0.04);
+  background: rgba(125, 212, 188, 0.05);
   transition: background 0.15s;
 }
-.tisp-past-header:hover { background: rgba(44, 95, 77, 0.08); }
-.tisp-past-num { font-weight: 700; color: #2a3730; font-size: 0.85rem; }
+.tisp-past-header:hover { background: rgba(125, 212, 188, 0.08); }
+.tisp-past-num { font-weight: 700; color: #e8f5e9; font-size: 0.85rem; }
 .tisp-past-tag {
-  background: rgba(100, 200, 160, 0.15);
-  color: #2C5F4D;
-  border: 1px solid rgba(100, 200, 160, 0.3);
+  background: rgba(125, 212, 188, 0.12);
+  color: #7dd4bc;
+  border: 1px solid rgba(125, 212, 188, 0.25);
   border-radius: 99px;
   padding: 0.1rem 0.55rem;
   font-size: 0.7rem;
@@ -233,12 +234,12 @@
 }
 .tisp-past-date {
   margin-left: auto;
-  color: #7aab96;
+  color: rgba(168, 220, 207, 0.7);
   font-size: 0.72rem;
 }
 .tisp-past-toggle {
   font-size: 0.85rem;
-  color: #7aab96;
+  color: rgba(168, 220, 207, 0.7);
   margin-left: 0.5rem;
 }
 .tisp-past-body {
@@ -246,7 +247,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  border-top: 1px solid rgba(44, 95, 77, 0.1);
+  border-top: 1px solid rgba(125, 212, 188, 0.12);
 }
 .tisp-past-script-text {
   display: flex;

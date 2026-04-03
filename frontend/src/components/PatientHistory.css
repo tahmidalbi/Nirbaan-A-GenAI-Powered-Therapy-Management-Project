@@ -1,25 +1,25 @@
 :root {
-  --bg1: #a8d5ba;
-  --bg2: #7fb89a;
+  --bg1: #1a3832;
+  --bg2: #22453d;
 
-  --ink: #16352b;
-  --muted: #5a6c7d;
+  --ink: #e8f5e9;
+  --muted: rgba(168, 220, 207, 0.75);
 
-  --card: rgba(250, 248, 242, 0.98);
-  --surface: #ffffff;
+  --card: rgba(15, 32, 28, 0.82);
+  --surface: rgba(15, 32, 28, 0.65);
 
-  --border: rgba(18, 63, 49, 0.12);
-  --border-strong: rgba(18, 63, 49, 0.18);
+  --border: rgba(125, 212, 188, 0.15);
+  --border-strong: rgba(125, 212, 188, 0.28);
 
-  --shadow: 0 14px 50px rgba(0, 0, 0, 0.18);
-  --shadow-soft: 0 6px 18px rgba(0, 0, 0, 0.08);
+  --shadow: 0 14px 50px rgba(0, 0, 0, 0.35);
+  --shadow-soft: 0 6px 18px rgba(0, 0, 0, 0.18);
 
   --r: 16px;
 }
 
 .ph-page {
   min-height: calc(100vh - 80px);
-  background: radial-gradient(1200px 600px at 20% 10%, rgba(255, 255, 255, 0.35), transparent 60%),
+  background: radial-gradient(1200px 600px at 20% 10%, rgba(125, 212, 188, 0.06), transparent 60%),
     linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
   padding: 28px;
 }
@@ -47,15 +47,15 @@
   width: 14px;
   height: 14px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #1f6b55, #7fb89a);
-  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.25);
+  background: linear-gradient(135deg, #2d7a6a, #7dd4bc);
+  box-shadow: 0 0 0 6px rgba(125, 212, 188, 0.15);
 }
 
 .ph-title {
   margin: 0;
   font-family: Georgia, serif;
   letter-spacing: 0.4px;
-  color: #103126;
+  color: #e8f5e9;
   font-size: 30px;
   line-height: 1.1;
 }
@@ -63,14 +63,14 @@
 .ph-subtitle {
   margin: 4px 0 0 0;
   font-family: Georgia, serif;
-  color: rgba(16, 49, 38, 0.75);
+  color: rgba(168, 220, 207, 0.75);
   font-style: italic;
 }
 
 .ph-refreshBtn {
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  background: rgba(255, 255, 255, 0.25);
-  color: #103126;
+  border: 1px solid rgba(125, 212, 188, 0.35);
+  background: rgba(125, 212, 188, 0.08);
+  color: #a8dccf;
   padding: 10px 14px;
   border-radius: 12px;
   cursor: pointer;
@@ -80,7 +80,7 @@
   transition: transform 0.18s ease, background 0.18s ease;
 }
 .ph-refreshBtn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(125, 212, 188, 0.16);
   transform: translateY(-1px);
 }
 .ph-refreshBtn:disabled {
@@ -125,14 +125,14 @@
   justify-content: space-between;
   gap: 10px;
   padding-bottom: 10px;
-  border-bottom: 1px solid rgba(18, 63, 49, 0.09);
+  border-bottom: 1px solid rgba(125, 212, 188, 0.12);
 }
 
 .ph-patientName {
   margin: 0;
   font-family: Georgia, serif;
   font-size: 18px;
-  color: var(--ink);
+  color: #e8f5e9;
   letter-spacing: 0.2px;
 }
 
@@ -143,9 +143,9 @@
   white-space: nowrap;
   padding: 6px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(127, 184, 154, 0.45);
-  background: rgba(168, 213, 186, 0.18);
-  color: #1e5a49;
+  border: 1px solid rgba(125, 212, 188, 0.3);
+  background: rgba(125, 212, 188, 0.08);
+  color: #a8dccf;
   font-family: Georgia, serif;
   font-weight: 700;
   font-size: 12px;
@@ -166,7 +166,7 @@
 
 .ph-label {
   font-family: Georgia, serif;
-  color: rgba(22, 53, 43, 0.6);
+  color: rgba(168, 220, 207, 0.65);
   font-weight: 700;
   font-size: 12px;
   text-transform: uppercase;
@@ -175,7 +175,7 @@
 
 .ph-value {
   font-family: Georgia, serif;
-  color: rgba(22, 53, 43, 0.9);
+  color: #e8f5e9;
   font-size: 14px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -191,11 +191,11 @@
 
 .ph-link {
   font-family: Georgia, serif;
-  color: #1f6b55;
+  color: #7dd4bc;
   font-weight: 800;
 }
 .ph-arrow {
-  color: #1f6b55;
+  color: #7dd4bc;
   font-weight: 900;
 }
 
@@ -214,9 +214,9 @@
 }
 
 .ph-backBtn {
-  background: rgba(255, 255, 255, 0.26);
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  color: #103126;
+  background: rgba(125, 212, 188, 0.08);
+  border: 1px solid rgba(125, 212, 188, 0.35);
+  color: #a8dccf;
   padding: 10px 14px;
   border-radius: 12px;
   font-family: Georgia, serif;
@@ -227,7 +227,7 @@
 }
 .ph-backBtn:hover {
   transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.34);
+  background: rgba(125, 212, 188, 0.15);
 }
 
 .ph-patientSummary {
@@ -252,7 +252,7 @@
 .ph-patientTitle {
   margin: 0;
   font-family: Georgia, serif;
-  color: #103126;
+  color: #e8f5e9;
   font-size: 22px;
   letter-spacing: 0.3px;
 }
@@ -262,7 +262,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: rgba(16, 49, 38, 0.78);
+  color: rgba(168, 220, 207, 0.82);
   font-family: Georgia, serif;
 }
 
@@ -275,8 +275,8 @@
   display: flex;
   gap: 8px;
   padding: 6px;
-  background: rgba(168, 213, 186, 0.18);
-  border: 1px solid rgba(18, 63, 49, 0.12);
+  background: rgba(125, 212, 188, 0.05);
+  border: 1px solid rgba(125, 212, 188, 0.15);
   border-radius: 14px;
   margin-bottom: 14px;
 }
@@ -284,7 +284,7 @@
 .ph-tab {
   border: 1px solid transparent;
   background: transparent;
-  color: rgba(16, 49, 38, 0.72);
+  color: rgba(168, 220, 207, 0.72);
   padding: 10px 14px;
   border-radius: 12px;
   font-family: Georgia, serif;
@@ -293,18 +293,18 @@
   transition: background 0.18s ease, transform 0.18s ease, color 0.18s ease;
 }
 .ph-tab:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(125, 212, 188, 0.1);
   transform: translateY(-1px);
-  color: #103126;
+  color: #e8f5e9;
 }
 .ph-tab:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
 .ph-tabActive {
-  background: rgba(255, 255, 255, 0.65);
-  border-color: rgba(18, 63, 49, 0.12);
-  color: #103126;
+  background: rgba(125, 212, 188, 0.12);
+  border-color: rgba(125, 212, 188, 0.28);
+  color: #e8f5e9;
 }
 
 /* Content */
@@ -315,17 +315,17 @@
 }
 
 .ph-section {
-  background: white;
-  border: 1px solid rgba(18, 63, 49, 0.10);
+  background: rgba(15, 32, 28, 0.55);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 14px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
 }
 
 .ph-section h3 {
   margin: 0 0 8px 0;
   font-family: Georgia, serif;
-  color: #103126;
+  color: rgba(168, 220, 207, 0.85);
   font-size: 16px;
   letter-spacing: 0.2px;
 }
@@ -333,7 +333,7 @@
 .ph-section p {
   margin: 0;
   font-family: Georgia, serif;
-  color: rgba(22, 53, 43, 0.92);
+  color: #e8f5e9;
   line-height: 1.7;
   white-space: pre-wrap;
   font-size: 14px;
@@ -349,7 +349,7 @@
 
 .ph-muted {
   font-family: Georgia, serif;
-  color: rgba(22, 53, 43, 0.58);
+  color: rgba(168, 220, 207, 0.6);
   font-size: 13px;
   font-style: italic;
 }
@@ -374,25 +374,25 @@
   font-family: Georgia, serif;
   font-weight: 900;
   font-size: 12px;
-  border: 1px solid rgba(18, 63, 49, 0.16);
-  background: rgba(168, 213, 186, 0.18);
-  color: #1f6b55;
+  border: 1px solid rgba(125, 212, 188, 0.25);
+  background: rgba(125, 212, 188, 0.08);
+  color: #7dd4bc;
 }
 .ph-badge.no {
   background: rgba(231, 76, 60, 0.10);
-  color: #b23b2e;
+  color: #f87171;
   border-color: rgba(231, 76, 60, 0.22);
 }
 .ph-badge.ok {
   background: rgba(46, 204, 113, 0.10);
-  color: #1b7e47;
+  color: #4ade80;
   border-color: rgba(46, 204, 113, 0.22);
 }
 
 .ph-box {
   margin-top: 10px;
-  background: rgba(168, 213, 186, 0.14);
-  border: 1px solid rgba(127, 184, 154, 0.35);
+  background: rgba(125, 212, 188, 0.05);
+  border: 1px solid rgba(125, 212, 188, 0.2);
   border-radius: 12px;
   padding: 12px;
 }
@@ -405,8 +405,8 @@
 }
 
 .ph-issueCard {
-  border: 1px solid rgba(18, 63, 49, 0.10);
-  background: rgba(168, 213, 186, 0.10);
+  border: 1px solid rgba(125, 212, 188, 0.12);
+  background: rgba(15, 32, 28, 0.5);
   border-radius: 14px;
   padding: 12px;
 }
@@ -421,7 +421,7 @@
 
 .ph-issueName {
   font-family: Georgia, serif;
-  color: #103126;
+  color: #e8f5e9;
   font-weight: 900;
   font-size: 14px;
 }
@@ -432,16 +432,16 @@
   gap: 4px;
   padding: 6px 10px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(18, 63, 49, 0.10);
+  background: rgba(15, 32, 28, 0.65);
+  border: 1px solid rgba(125, 212, 188, 0.15);
   font-family: Georgia, serif;
-  color: #103126;
+  color: #a8dccf;
 }
 .ph-sevPill strong {
   font-size: 16px;
 }
 .ph-sevPill span {
-  color: rgba(22, 53, 43, 0.6);
+  color: rgba(168, 220, 207, 0.6);
   font-size: 12px;
   font-weight: 800;
 }
@@ -449,12 +449,12 @@
 .ph-bar {
   height: 10px;
   border-radius: 999px;
-  background: rgba(16, 49, 38, 0.10);
+  background: rgba(125, 212, 188, 0.1);
   overflow: hidden;
 }
 .ph-barFill {
   height: 100%;
-  background: linear-gradient(90deg, #a8d5ba, #1f6b55);
+  background: linear-gradient(90deg, rgba(125, 212, 188, 0.4), #7dd4bc);
   border-radius: 999px;
   transition: width 0.4s ease;
 }
@@ -462,10 +462,10 @@
 .ph-emptyInline {
   padding: 10px 12px;
   border-radius: 12px;
-  border: 1px dashed rgba(18, 63, 49, 0.22);
-  background: rgba(255, 255, 255, 0.6);
+  border: 1px dashed rgba(125, 212, 188, 0.22);
+  background: rgba(125, 212, 188, 0.04);
   font-family: Georgia, serif;
-  color: rgba(22, 53, 43, 0.75);
+  color: rgba(168, 220, 207, 0.75);
 }
 
 /* AI Section */
@@ -554,11 +554,11 @@
   gap: 10px;
   font-family: Georgia, serif;
   line-height: 1.6;
-  color: #123f31;
+  color: #e8f5e9;
 }
 
 .ph-bulletDot {
-  color: #7FB89A;
+  color: #7dd4bc;
   font-size: 18px;
   font-weight: bold;
   margin-top: 2px;
@@ -567,7 +567,7 @@
 
 .ph-aiTimestamp {
   font-size: 12px;
-  color: #7FB89A;
+  color: #7dd4bc;
   font-style: italic;
   margin: 12px 0 0 0;
   text-align: right;
@@ -589,7 +589,7 @@
 
 .ph-aiError h4 {
   margin: 0 0 6px 0;
-  color: #c62828;
+  color: #f87171;
   font-size: 14px;
 }
 
@@ -601,15 +601,16 @@
 .ph-primaryBtn {
   padding: 10px 14px;
   border-radius: 12px;
-  border: none;
+  border: 1px solid rgba(125, 212, 188, 0.4);
   cursor: pointer;
   font-family: Georgia, serif;
   font-weight: 900;
-  background: linear-gradient(135deg, #a8d5ba, #1f6b55);
-  color: white;
-  transition: transform 0.18s ease, opacity 0.18s ease;
+  background: rgba(125, 212, 188, 0.1);
+  color: #a8dccf;
+  transition: transform 0.18s ease, background 0.18s ease;
 }
 .ph-primaryBtn:hover:not(:disabled) {
+  background: rgba(125, 212, 188, 0.2);
   transform: translateY(-1px);
 }
 .ph-primaryBtn:disabled {
@@ -626,8 +627,8 @@
 }
 
 .ph-footItem {
-  background: rgba(168, 213, 186, 0.12);
-  border: 1px solid rgba(18, 63, 49, 0.10);
+  background: rgba(125, 212, 188, 0.05);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 12px;
 }
@@ -635,7 +636,7 @@
 .ph-footLabel {
   display: block;
   font-family: Georgia, serif;
-  color: rgba(22, 53, 43, 0.60);
+  color: rgba(168, 220, 207, 0.60);
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -645,7 +646,7 @@
 
 .ph-footValue {
   font-family: Georgia, serif;
-  color: rgba(22, 53, 43, 0.92);
+  color: #e8f5e9;
   font-weight: 800;
 }
 
@@ -655,7 +656,7 @@
   place-items: center;
   padding: 50px 12px;
   gap: 10px;
-  color: rgba(16, 49, 38, 0.85);
+  color: rgba(168, 220, 207, 0.85);
   font-family: Georgia, serif;
   font-style: italic;
 }
@@ -664,8 +665,8 @@
   width: 34px;
   height: 34px;
   border-radius: 999px;
-  border: 4px solid rgba(255, 255, 255, 0.6);
-  border-top-color: rgba(16, 49, 38, 0.65);
+  border: 4px solid rgba(125, 212, 188, 0.2);
+  border-top-color: rgba(125, 212, 188, 0.8);
   animation: spin 0.9s linear infinite;
 }
 
@@ -677,7 +678,7 @@
   text-align: center;
   padding: 54px 18px;
   font-family: Georgia, serif;
-  color: rgba(16, 49, 38, 0.85);
+  color: rgba(168, 220, 207, 0.85);
 }
 
 .ph-emptyIcon {
@@ -688,24 +689,24 @@
 .ph-empty h3 {
   margin: 0 0 6px 0;
   font-size: 18px;
-  color: #103126;
+  color: #e8f5e9;
 }
 
 .ph-empty p {
   margin: 0;
-  color: rgba(22, 53, 43, 0.70);
+  color: rgba(168, 220, 207, 0.70);
 }
 
 .ph-error {
   display: flex;
   gap: 12px;
   align-items: flex-start;
-  background: rgba(231, 76, 60, 0.10);
-  border: 1px solid rgba(231, 76, 60, 0.20);
+  background: rgba(180, 40, 40, 0.12);
+  border: 1px solid rgba(220, 80, 80, 0.25);
   border-radius: 14px;
   padding: 14px;
   font-family: Georgia, serif;
-  color: #7a1e17;
+  color: #f87171;
 }
 
 .ph-errorIcon {
@@ -715,11 +716,11 @@
 
 .ph-error h4 {
   margin: 0 0 4px 0;
-  color: #7a1e17;
+  color: #f87171;
 }
 .ph-error p {
   margin: 0;
-  color: rgba(122, 30, 23, 0.85);
+  color: rgba(248, 113, 113, 0.85);
 }
 
 /* Responsive */
@@ -777,19 +778,19 @@
   align-items: center;
   padding: 6px 14px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #1f6b55, #7fb89a);
+  background: linear-gradient(135deg, #1f6b55, #7dd4bc);
   color: #fff;
   font-family: Georgia, serif;
   font-weight: 900;
   font-size: 13px;
   letter-spacing: 0.05em;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
 }
 
 .ph-weekDate {
   font-family: Georgia, serif;
   font-size: 14px;
-  color: rgba(16, 49, 38, 0.70);
+  color: rgba(168, 220, 207, 0.70);
   font-style: italic;
 }
 
@@ -807,15 +808,15 @@
   gap: 14px;
   align-items: center;
   padding: 10px 12px;
-  background: rgba(168, 213, 186, 0.12);
-  border: 1px solid rgba(18, 63, 49, 0.08);
+  background: rgba(125, 212, 188, 0.06);
+  border: 1px solid rgba(125, 212, 188, 0.1);
   border-radius: 12px;
 }
 
 .ph-sudsLabel {
   font-family: Georgia, serif;
   font-size: 14px;
-  color: #103126;
+  color: #e8f5e9;
   line-height: 1.4;
 }
 
@@ -830,14 +831,14 @@
   flex: 1;
   height: 8px;
   border-radius: 999px;
-  background: rgba(18, 63, 49, 0.10);
+  background: rgba(125, 212, 188, 0.1);
   overflow: hidden;
 }
 
 .ph-sudsBarFill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, #a8d5ba, #1f6b55);
+  background: linear-gradient(90deg, rgba(125, 212, 188, 0.4), #7dd4bc);
   transition: width 0.4s ease;
 }
 
@@ -848,10 +849,10 @@
   min-width: 38px;
   padding: 4px 8px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.80);
-  border: 1px solid rgba(18, 63, 49, 0.14);
+  background: rgba(15, 32, 28, 0.65);
+  border: 1px solid rgba(125, 212, 188, 0.2);
   font-family: Georgia, serif;
   font-weight: 900;
   font-size: 14px;
-  color: #1f6b55;
+  color: #7dd4bc;
 }

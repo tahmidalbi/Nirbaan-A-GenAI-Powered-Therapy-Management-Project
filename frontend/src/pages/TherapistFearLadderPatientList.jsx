@@ -7,7 +7,7 @@ import './TherapistFearLadderPatientList.css';
 const TherapistFearLadderPatientList = () => {
   const navigate = useNavigate();
   const { logout } = useAuthStore();
-  const [allLadders, setAllLadders] = useState([]);
+  const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -19,10 +19,20 @@ const TherapistFearLadderPatientList = () => {
     try {
       setLoading(true);
       const response = await getAllFearLadders();
-      setAllLadders(response.data || []);
+      const ladders = response.data || [];
+      // Deduplicate by patient_id — keep the most recent per patient
+      const seen = new Set();
+      const unique = [];
+      ladders.forEach((l) => {
+        if (!seen.has(l.patient_id)) {
+          seen.add(l.patient_id);
+          unique.push(l);
+        }
+      });
+      setPatients(unique);
     } catch (error) {
       console.error('Error fetching fear ladders:', error);
-      setErrorMessage('Error loading fear ladders.');
+      setErrorMessage('Error loading patients.');
       setTimeout(() => setErrorMessage(''), 5000);
     } finally {
       setLoading(false);
@@ -30,7 +40,7 @@ const TherapistFearLadderPatientList = () => {
   };
 
   const handleBack = () => {
-    navigate('/therapist/dashboard/fear-ladder');
+    navigate('/therapist/dashboard');
   };
 
   const handleLogout = () => {
@@ -47,22 +57,9 @@ const TherapistFearLadderPatientList = () => {
     });
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'approved':
-        return 'status-approved';
-      case 'pending':
-        return 'status-pending';
-      case 'rejected':
-        return 'status-rejected';
-      default:
-        return '';
-    }
-  };
-
   return (
     <div className="patient-list-container">
-      {/* Vintage background */}
+      {/* Background */}
       <div className="dashboard-background">
         <div className="geometric-pattern"></div>
         <div className="art-deco-line art-deco-line-top"></div>
@@ -72,7 +69,7 @@ const TherapistFearLadderPatientList = () => {
       {/* Header */}
       <header className="dashboard-header">
         <div className="header-content">
-          <h1 className="logo">Patient Fear Ladders</h1>
+          <h1 className="logo">Fear Ladder — Patients</h1>
           <div className="header-actions">
             <button onClick={handleBack} className="back-btn">← Back</button>
             <button onClick={handleLogout} className="logout-btn">Logout</button>
@@ -84,42 +81,38 @@ const TherapistFearLadderPatientList = () => {
       <main className="patient-list-main">
         <div className="list-content-wrapper">
           {errorMessage && (
-            <div className="error-message">
-              {errorMessage}
-            </div>
+            <div className="fl-error-message">{errorMessage}</div>
           )}
 
           {loading ? (
-            <div className="loading-message">Loading patient fear ladders...</div>
-          ) : allLadders.length === 0 ? (
+            <div className="loading-message">Loading patients…</div>
+          ) : patients.length === 0 ? (
             <div className="no-data-message">
-              <h3>No Fear Ladders Yet</h3>
-              <p>Fear ladders submitted by patients will appear here</p>
+              <h3>No Patients Yet</h3>
+              <p>Patients who have submitted fear ladders will appear here</p>
             </div>
           ) : (
-            <div className="patients-grid">
-              {allLadders.map((ladder) => (
-                <div 
-                  key={ladder.patient_id} 
-                  className="patient-card"
+            <div className="fl-patient-list">
+              <p className="fl-list-intro">{patients.length} patient{patients.length !== 1 ? 's' : ''} with fear ladders</p>
+              {patients.map((ladder) => (
+                <button
+                  key={ladder.patient_id}
+                  className="fl-patient-row"
                   onClick={() => handlePatientClick(ladder)}
                 >
-                  <div className="patient-card-header">
-                    <h3>{ladder.patient_name}</h3>
-                    <span className={`status-badge ${getStatusColor(ladder.status)}`}>
-                      {ladder.status.charAt(0).toUpperCase() + ladder.status.slice(1)}
+                  <div className="fl-patient-row-left">
+                    <span className="fl-patient-avatar">
+                      {(ladder.patient_name || 'P').charAt(0).toUpperCase()}
                     </span>
+                    <span className="fl-patient-name">{ladder.patient_name || `Patient ${ladder.patient_id}`}</span>
                   </div>
-                  <div className="patient-card-body">
-                    <p className="patient-email">{ladder.patient_email}</p>
-                    <p className="patient-items">
-                      {ladder.items?.length || 0} fear ladder items
-                    </p>
+                  <div className="fl-patient-row-right">
+                    <span className={`fl-status-badge fl-status-${ladder.status}`}>
+                      {ladder.status}
+                    </span>
+                    <span className="fl-arrow">→</span>
                   </div>
-                  <div className="patient-card-footer">
-                    <span className="view-link">View Details →</span>
-                  </div>
-                </div>
+                </button>
               ))}
             </div>
           )}

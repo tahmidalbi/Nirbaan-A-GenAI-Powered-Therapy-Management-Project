@@ -1,6 +1,6 @@
 .patient-view-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #E8F3EE 0%, #D4E9E0 100%);
+  background: linear-gradient(160deg, #1a3832 0%, #22453d 45%, #1c3d35 100%);
   position: relative;
   overflow-x: hidden;
 }
@@ -56,9 +56,10 @@
 .dashboard-header {
   position: relative;
   z-index: 10;
-  background: linear-gradient(135deg, #2C5F4D 0%, #3d7a64 100%);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  border-bottom: 3px solid #1a3d30;
+  background: rgba(15, 32, 28, 0.92);
+  backdrop-filter: blur(30px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .header-content {
@@ -144,17 +145,17 @@
 }
 
 .action-message.success {
-  background: linear-gradient(135deg, rgba(102, 187, 106, 0.15), rgba(102, 187, 106, 0.08));
-  border: 2px solid #66BB6A;
-  color: #1B5E20;
-  border-left: 6px solid #43A047;
+  background: rgba(10, 40, 20, 0.8);
+  border: 1px solid rgba(102, 187, 106, 0.4);
+  color: #a5d6a7;
+  border-left: 4px solid #43A047;
 }
 
 .action-message.error {
-  background: linear-gradient(135deg, rgba(239, 83, 80, 0.15), rgba(239, 83, 80, 0.08));
-  border: 2px solid #EF5350;
-  color: #B71C1C;
-  border-left: 6px solid #D32F2F;
+  background: rgba(50, 10, 10, 0.8);
+  border: 1px solid rgba(239, 83, 80, 0.4);
+  color: #ffb3b3;
+  border-left: 4px solid #D32F2F;
 }
 
 @keyframes slideIn {
@@ -172,7 +173,7 @@
 .loading-message {
   text-align: center;
   padding: 4rem;
-  color: #6B9B8D;
+  color: rgba(255, 255, 255, 0.8);
   font-size: 1.3rem;
   font-weight: 600;
   animation: pulse 1.5s ease-in-out infinite;
@@ -191,14 +192,14 @@
 .no-data-message {
   text-align: center;
   padding: 4rem 2rem;
-  background: #ffffff;
+  background: rgba(15, 32, 28, 0.65);
   border-radius: 12px;
-  border: 2px solid #e0e0e0;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  border: 1px solid rgba(125, 212, 188, 0.18);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
 }
 
 .no-data-message h3 {
-  color: #2C5F4D;
+  color: #e8f5e9;
   font-size: 1.8rem;
   font-weight: 700;
   font-family: 'Georgia', serif;
@@ -206,7 +207,7 @@
 }
 
 .no-data-message p {
-  color: #5A7A70;
+  color: #a8dccf;
   font-size: 1.1rem;
   margin: 0;
 }
@@ -232,10 +233,10 @@
 
 /* Ladder Section (Left - 70%) */
 .ladder-section {
-  background: #ffffff;
+  background: rgba(15, 32, 28, 0.72);
   border-radius: 12px;
-  border: 2px solid #e0e0e0;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(125, 212, 188, 0.18);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
   overflow: hidden;
   position: relative;
 }
@@ -252,7 +253,7 @@
 
 .ladder-section .section-header {
   padding: 2rem 2rem 1.5rem 2rem;
-  border-bottom: 3px solid #f0f0f0;
+  border-bottom: 1px solid rgba(125, 212, 188, 0.12);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -260,7 +261,7 @@
 }
 
 .patient-info h2 {
-  color: #2C5F4D;
+  color: #e8f5e9;
   font-size: 1.8rem;
   font-weight: 700;
   font-family: 'Georgia', serif;
@@ -269,7 +270,7 @@
 }
 
 .patient-email {
-  color: #5A7A70;
+  color: #a8dccf;
   font-size: 1.05rem;
   margin: 0;
   font-weight: 500;
@@ -310,7 +311,7 @@
 .therapist-actions {
   margin-top: 2rem;
   padding-top: 2rem;
-  border-top: 2px solid #f0f0f0;
+  border-top: 1px solid rgba(125, 212, 188, 0.12);
   display: flex;
   justify-content: center;
 }
@@ -342,10 +343,10 @@
 
 /* AI Details Section (Right - 30%) */
 .ai-details-section {
-  background: #ffffff;
+  background: rgba(15, 32, 28, 0.72);
   border-radius: 12px;
-  border: 2px solid #e0e0e0;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(125, 212, 188, 0.18);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
   overflow: hidden;
   position: relative;
   max-height: 800px;
@@ -363,15 +364,15 @@
 
 .ai-details-section .section-header {
   padding: 1.5rem;
-  border-bottom: 3px solid #f0f0f0;
-  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  border-bottom: 1px solid rgba(125, 212, 188, 0.12);
+  background: rgba(10, 24, 20, 0.4);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .ai-details-section .section-header h3 {
-  color: #2C5F4D;
+  color: #e8f5e9;
   font-size: 1.4rem;
   font-weight: 700;
   font-family: 'Georgia', serif;
@@ -403,7 +404,7 @@
 }
 
 .placeholder-content h4 {
-  color: #2C5F4D;
+  color: #e8f5e9;
   font-size: 1.3rem;
   font-weight: 700;
   font-family: 'Georgia', serif;
@@ -411,7 +412,7 @@
 }
 
 .placeholder-content p {
-  color: #5A7A70;
+  color: #a8dccf;
   font-size: 1rem;
   line-height: 1.6;
   margin: 0 0 1.5rem 0;
@@ -425,12 +426,12 @@
 }
 
 .placeholder-content li {
-  color: #6B9B8D;
+  color: #7dd4bc;
   font-size: 0.95rem;
   padding: 0.6rem 1rem;
   margin-bottom: 0.5rem;
-  background: rgba(107, 155, 141, 0.08);
-  border-left: 3px solid #6B9B8D;
+  background: rgba(125, 212, 188, 0.08);
+  border-left: 3px solid rgba(125, 212, 188, 0.4);
   border-radius: 4px;
   font-weight: 500;
 }

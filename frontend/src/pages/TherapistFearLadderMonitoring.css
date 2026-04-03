@@ -1,6 +1,6 @@
 .therapist-monitoring-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #E8F3EE 0%, #D4E9E0 100%);
+  background: linear-gradient(160deg, #1a3832 0%, #22453d 45%, #1c3d35 100%);
   position: relative;
   overflow-x: hidden;
 }
@@ -56,9 +56,10 @@
 .dashboard-header {
   position: relative;
   z-index: 10;
-  background: linear-gradient(135deg, #2C5F4D 0%, #3d7a64 100%);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  border-bottom: 3px solid #1a3d30;
+  background: rgba(15, 32, 28, 0.92);
+  backdrop-filter: blur(30px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .header-content {

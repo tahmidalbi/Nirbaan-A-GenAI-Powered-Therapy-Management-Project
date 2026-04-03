@@ -22,6 +22,7 @@ import PatientFearLadderPage from '../pages/PatientFearLadderPage';
 import PatientFearLadderMonitoring from '../pages/PatientFearLadderMonitoring';
 import TherapistFearLadderHub from '../pages/TherapistFearLadderHub';
 import TherapistFearLadderPatientList from '../pages/TherapistFearLadderPatientList';
+import TherapistFearLadderLadderList from '../pages/TherapistFearLadderLadderList';
 import TherapistFearLadderPatientView from '../pages/TherapistFearLadderPatientView';
 import TherapistFearLadderMonitoring from '../pages/TherapistFearLadderMonitoring';
 import EmergencyPersonnelDashboard from '../dashboards/EmergencyPersonnelDashboard';
@@ -346,9 +347,19 @@ const AppRoutes = () => {
         }
       />
 
-      {/* Protected Routes - Therapist Fear Ladder Patient View */}
+      {/* Protected Routes - Therapist Fear Ladder : patient's ladder list */}
       <Route
         path="/therapist/dashboard/fear-ladder/patient/:patientId"
+        element={
+          <ProtectedRoute allowedRoles={['therapist']}>
+            <TherapistFearLadderLadderList />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Therapist Fear Ladder : full view/edit */}
+      <Route
+        path="/therapist/dashboard/fear-ladder/patient/:patientId/view"
         element={
           <ProtectedRoute allowedRoles={['therapist']}>
             <TherapistFearLadderPatientView />

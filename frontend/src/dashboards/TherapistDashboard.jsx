@@ -8,13 +8,44 @@ import {
   createTherapySession,
   deleteTherapySession,
 } from '../api/sessions.api';
-import AddPatient from'../components/AddPatient';
+import AddPatient from '../components/AddPatient';
 import AddEmergencyPersonnel from '../components/AddEmergencyPersonnel';
 import ResourceManager from '../components/ResourceManager';
-import RAGChat from '../components/RAGChat';
 import PatientHistory from '../components/PatientHistory';
 import ActiveSessions from '../components/ActiveSessions';
+import TherapistChat from '../components/TherapistChat';
+import NirbaanAITherapistChat from '../components/NirbaanAITherapistChat';
 import './TherapistDashboard.css';
+
+/* ─── Back-destination map ──────────────────────────────────────── */
+const BACK_MAP = {
+  patients: 'personnel',
+  emergency: 'personnel',
+  live_sessions: 'sessions',
+  active_sessions: 'sessions',
+  personnel: null,
+  community: null,
+  resources: null,
+  tools: null,
+  history: null,
+  sessions: null,
+  nirbaan_ai: null,
+  payment: null,
+};
+
+const VIEW_LABELS = {
+  personnel: 'Personnel',
+  patients: 'Patients',
+  emergency: 'Emergency Personnel',
+  community: 'Community',
+  resources: 'Resources',
+  tools: 'Tools',
+  history: 'History',
+  sessions: 'Sessions',
+  live_sessions: 'Live Sessions',
+  active_sessions: 'Active Sessions',
+  nirbaan_ai: 'Nirbaan AI',
+};
 
 const TherapistDashboard = () => {
   const navigate = useNavigate();
@@ -24,7 +55,7 @@ const TherapistDashboard = () => {
   const [emergencyPersonnel, setEmergencyPersonnel] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [activeSection, setActiveSection] = useState(null);
+  const [view, setView] = useState(null);
 
   // Sessions section state (therapy transcripts)
   const [sessionsPatients, setSessionsPatients] = useState([]);
@@ -45,14 +76,14 @@ const TherapistDashboard = () => {
   const [sessionFormError, setSessionFormError] = useState('');
 
   useEffect(() => {
-    if (activeSection === 'patients') {
+    if (view === 'patients') {
       fetchPatients();
-    } else if (activeSection === 'emergency') {
+    } else if (view === 'emergency') {
       fetchEmergencyPersonnel();
-    } else if (activeSection === 'sessions') {
+    } else if (view === 'active_sessions') {
       fetchSessionsPatients();
     }
-  }, [activeSection]);
+  }, [view]);
 
   const fetchPatients = async () => {
     try {
@@ -170,6 +201,9 @@ const TherapistDashboard = () => {
     navigate('/');
   };
 
+  const goTo = (v) => setView(v);
+  const goBack = () => setView(BACK_MAP[view] ?? null);
+
   const handlePatientClick = (patientId) => {
     navigate(`/therapist/patients/${patientId}`);
   };
@@ -183,147 +217,235 @@ const TherapistDashboard = () => {
   };
 
   return (
-    <div className="therapist-dashboard-container">
-      {/* Vintage background similar to landing page */}
-      <div className="dashboard-background">
-        <div className="geometric-pattern"></div>
-        <div className="art-deco-line art-deco-line-top"></div>
-        <div className="art-deco-line art-deco-line-bottom"></div>
+    <div className="td-root">
+      {/* Decorative background */}
+      <div className="td-bg">
+        <div className="td-bg-grid" />
+        <div className="td-bg-orb td-bg-orb--1" />
+        <div className="td-bg-orb td-bg-orb--2" />
       </div>
 
-      {/* Header with Navigation */}
-      <header className="dashboard-header">
-        <div className="header-content">
-          <h1 className="logo">Nirbaan</h1>
-          <nav className="nav-menu">
-            <button
-              className={`nav-btn ${activeSection === 'patients' ? 'active' : ''}`}
-              onClick={() => setActiveSection('patients')}
-            >
-              Patients
-            </button>
-            <button
-              className={`nav-btn ${activeSection === 'emergency' ? 'active' : ''}`}
-              onClick={() => setActiveSection('emergency')}
-            >
-              Emergency Personnel
-            </button>
-            <button
-              className={`nav-btn ${activeSection === 'community' ? 'active' : ''}`}
-              onClick={() => setActiveSection('community')}
-            >
-              Community
-            </button>
-            <button
-              className={`nav-btn ${activeSection === 'resources' ? 'active' : ''}`}
-              onClick={() => setActiveSection('resources')}
-            >
-              Resources
-            </button>
-            <button
-              className={`nav-btn ${activeSection === 'tools' ? 'active' : ''}`}
-              onClick={() => navigate('/therapist/dashboard/tools')}
-            >
-              Tools
-            </button>
-            <button
-              className={`nav-btn ${activeSection === 'history' ? 'active' : ''}`}
-              onClick={() => setActiveSection('history')}
-            >
-              History
-            </button>
-            <button
-              className="nav-btn"
-              onClick={() => navigate('/therapist/nirbaanai')}
-            >
-              Nirbaan AI
-            </button>
-            <button
-              className="nav-btn"
-              onClick={() => navigate('/therapist/chat')}
-            >
-              Chat
-            </button>
-            <button
-              className={`nav-btn ${activeSection === 'live_sessions' ? 'active' : ''}`}
-              onClick={() => setActiveSection('live_sessions')}
-            >
-              Live Sessions
-            </button>
-            <button
-              className={`nav-btn ${activeSection === 'sessions' ? 'active' : ''}`}
-              onClick={() => setActiveSection('sessions')}
-            >
-              Active Sessions
-            </button>
-          </nav>
-          <button onClick={handleLogout} className="logout-btn">Logout</button>
+      {/* ── Header ─────────────────────────────────────────────── */}
+      <header className="td-header">
+        <div className="td-header-inner">
+          <div className="td-brand">
+            <span className="td-brand-logo">Nirbaan</span>
+            {view && (
+              <span className="td-brand-breadcrumb">
+                <span className="td-brand-sep">/</span>
+                {VIEW_LABELS[view] || view}
+              </span>
+            )}
+          </div>
+          <div className="td-header-actions">
+            {view && (
+              <button className="td-back-btn" onClick={goBack}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M19 12H5M12 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Back
+              </button>
+            )}
+            <button className="td-logout-btn" onClick={handleLogout}>Logout</button>
+          </div>
         </div>
       </header>
 
-      {/* Video Call Button - Only on landing page */}
-      {!activeSection && (
-        <button className="video-call-btn" title="Start Video Call">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
-          </svg>
-        </button>
-      )}
+      {/* ── Main ───────────────────────────────────────────────── */}
+      <main className="td-main">
 
-      {/* Main Content */}
-      <main className="dashboard-main">
-        {activeSection === 'patients' && (
-          <div className="patients-section">
-            <div className="section-header">
-              <h2>Your Patients</h2>
+        {/* HOME — 7 main tiles */}
+        {!view && (
+          <div className="td-home">
+            <div className="td-welcome">
+              <p className="td-welcome-greeting">Welcome back,</p>
+              <h1 className="td-welcome-name">{user?.name || 'Doctor'}</h1>
+              <p className="td-welcome-sub">Your therapeutic practice dashboard</p>
             </div>
 
-            {error && <div className="error-banner">{error}</div>}
+            <div className="td-tiles-grid td-tiles-grid--home">
+              <button className="td-tile" onClick={() => goTo('personnel')}>
+                <span className="td-tile-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <circle cx="9" cy="7" r="4" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
+                <span className="td-tile-label">Personnel</span>
+                <span className="td-tile-sub">Patients &amp; emergency contacts</span>
+              </button>
 
+              <button className="td-tile" onClick={() => navigate('/therapist/chat')}>
+                <span className="td-tile-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
+                <span className="td-tile-label">Community</span>
+                <span className="td-tile-sub">Group chat &amp; messaging</span>
+              </button>
+
+              <button className="td-tile" onClick={() => goTo('resources')}>
+                <span className="td-tile-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
+                <span className="td-tile-label">Resources</span>
+                <span className="td-tile-sub">Therapeutic library</span>
+              </button>
+
+              <button className="td-tile" onClick={() => goTo('tools')}>
+                <span className="td-tile-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
+                <span className="td-tile-label">Tools</span>
+                <span className="td-tile-sub">Clinical assessment tools</span>
+              </button>
+
+              <button className="td-tile" onClick={() => goTo('history')}>
+                <span className="td-tile-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round"/>
+                    <polyline points="12 6 12 12 16 14" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
+                <span className="td-tile-label">History</span>
+                <span className="td-tile-sub">Patient records &amp; notes</span>
+              </button>
+
+              <button className="td-tile" onClick={() => goTo('sessions')}>
+                <span className="td-tile-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <line x1="16" y1="2" x2="16" y2="6" strokeLinecap="round" strokeLinejoin="round"/>
+                    <line x1="8" y1="2" x2="8" y2="6" strokeLinecap="round" strokeLinejoin="round"/>
+                    <line x1="3" y1="10" x2="21" y2="10" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
+                <span className="td-tile-label">Sessions</span>
+                <span className="td-tile-sub">Manage therapy sessions</span>
+              </button>
+
+              <button className="td-tile td-tile--ai" onClick={() => goTo('nirbaan_ai')}>
+                <span className="td-tile-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M12 2a6 6 0 0 1 6 6c0 4-6 12-6 12S6 12 6 8a6 6 0 0 1 6-6z" strokeLinecap="round" strokeLinejoin="round"/>
+                    <circle cx="12" cy="8" r="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M8 21h8M9 18l1.5-3h3L15 18" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
+                <span className="td-tile-label">Nirbaan AI</span>
+                <span className="td-tile-sub">AI-powered clinical support</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* PERSONNEL SUB-MENU */}
+        {view === 'personnel' && (
+          <div className="td-submenu">
+            <h2 className="td-submenu-title">Personnel</h2>
+            <p className="td-submenu-sub">Select a category to manage</p>
+            <div className="td-tiles-grid td-tiles-grid--sub">
+              <button className="td-tile td-tile--large" onClick={() => goTo('patients')}>
+                <span className="td-tile-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <circle cx="12" cy="7" r="4" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
+                <span className="td-tile-label">Patients</span>
+                <span className="td-tile-sub">View &amp; manage patient list</span>
+              </button>
+
+              <button className="td-tile td-tile--large" onClick={() => goTo('emergency')}>
+                <span className="td-tile-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.02z" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
+                <span className="td-tile-label">Emergency Personnel</span>
+                <span className="td-tile-sub">Crisis response contacts</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* SESSIONS SUB-MENU */}
+        {view === 'sessions' && (
+          <div className="td-submenu">
+            <h2 className="td-submenu-title">Sessions</h2>
+            <p className="td-submenu-sub">Select a session type</p>
+            <div className="td-tiles-grid td-tiles-grid--sub">
+              <button className="td-tile td-tile--large" onClick={() => goTo('live_sessions')}>
+                <span className="td-tile-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <polygon points="23 7 16 12 23 17 23 7" strokeLinecap="round" strokeLinejoin="round"/>
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
+                <span className="td-tile-label">Live Sessions</span>
+                <span className="td-tile-sub">Real-time video consultations</span>
+              </button>
+
+              <button className="td-tile td-tile--large" onClick={() => goTo('active_sessions')}>
+                <span className="td-tile-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" strokeLinecap="round" strokeLinejoin="round"/>
+                    <polyline points="14 2 14 8 20 8" strokeLinecap="round" strokeLinejoin="round"/>
+                    <line x1="16" y1="13" x2="8" y2="13" strokeLinecap="round" strokeLinejoin="round"/>
+                    <line x1="16" y1="17" x2="8" y2="17" strokeLinecap="round" strokeLinejoin="round"/>
+                    <polyline points="10 9 9 9 8 9" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
+                <span className="td-tile-label">Active Sessions</span>
+                <span className="td-tile-sub">Transcripts &amp; session records</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* PATIENTS LIST */}
+        {view === 'patients' && (
+          <div className="td-content-panel">
+            <div className="td-panel-header">
+              <h2>Patients</h2>
+            </div>
+            {error && <div className="td-error-banner">{error}</div>}
             {loading ? (
-              <div className="loading-state">
-                <div className="spinner"></div>
-                <p>Loading patients...</p>
-              </div>
+              <div className="td-loading"><span className="td-spinner" /><p>Loading patients…</p></div>
             ) : patients.length === 0 ? (
-              <div className="empty-state">
-                <div className="empty-icon">👥</div>
+              <div className="td-empty">
+                <span className="td-empty-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                  </svg>
+                </span>
                 <h3>No Patients Yet</h3>
-                <p>Add your first patient to get started with therapy management</p>
+                <p>Add your first patient to get started</p>
               </div>
             ) : (
-              <div className="patients-grid">
+              <div className="td-cards-grid">
                 {patients.map((patient) => (
-                  <div
-                    key={patient.id}
-                    className="patient-card"
-                  >
-                    <div className="patient-avatar">
-                      {patient.name.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="patient-info">
+                  <div key={patient.id} className="td-card">
+                    <div className="td-card-avatar">{patient.name.charAt(0).toUpperCase()}</div>
+                    <div className="td-card-body">
                       <h3>{patient.name}</h3>
-                      <p className="patient-email">{patient.email}</p>
-                      <p className="patient-conditions">{patient.conditions}</p>
+                      <p className="td-card-meta">{patient.email}</p>
+                      <p className="td-card-tag">{patient.conditions}</p>
                     </div>
-                    <div className="patient-meta">
-                      <span className="patient-date">
-                        Added {new Date(patient.created_at).toLocaleDateString()}
-                      </span>
-                      <div className="patient-actions">
-                        <button
-                          className="view-patient-btn"
-                          onClick={() => handlePatientClick(patient.id)}
-                          title="View Patient"
-                        >
-                          👤 View
-                        </button>
-                        <button
-                          className="start-call-btn"
-                          onClick={() => handleStartCall(patient.id)}
-                          title="Start Video Call"
-                        >
-                          📹 Start Call
+                    <div className="td-card-footer">
+                      <span className="td-card-date">Added {new Date(patient.created_at).toLocaleDateString()}</span>
+                      <div className="td-card-actions">
+                        <button className="td-btn td-btn--outline" onClick={() => handlePatientClick(patient.id)}>View</button>
+                        <button className="td-btn td-btn--primary" onClick={() => handleStartCall(patient.id)}>
+                          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+                          Call
                         </button>
                       </div>
                     </div>
@@ -334,45 +456,37 @@ const TherapistDashboard = () => {
           </div>
         )}
 
-        {activeSection === 'emergency' && (
-          <div className="patients-section">
-            <div className="section-header">
+        {/* EMERGENCY PERSONNEL LIST */}
+        {view === 'emergency' && (
+          <div className="td-content-panel">
+            <div className="td-panel-header">
               <h2>Emergency Personnel</h2>
             </div>
-
-            {error && <div className="error-banner">{error}</div>}
-
+            {error && <div className="td-error-banner">{error}</div>}
             {loading ? (
-              <div className="loading-state">
-                <div className="spinner"></div>
-                <p>Loading emergency personnel...</p>
-              </div>
+              <div className="td-loading"><span className="td-spinner" /><p>Loading personnel…</p></div>
             ) : emergencyPersonnel.length === 0 ? (
-              <div className="empty-state">
-                <div className="empty-icon">🚨</div>
+              <div className="td-empty">
+                <span className="td-empty-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 18z"/>
+                  </svg>
+                </span>
                 <h3>No Emergency Personnel Yet</h3>
-                <p>Add your first emergency personnel to build your crisis response team</p>
+                <p>Add emergency contacts to build your crisis response team</p>
               </div>
             ) : (
-              <div className="patients-grid">
+              <div className="td-cards-grid">
                 {emergencyPersonnel.map((personnel) => (
-                  <div
-                    key={personnel.id}
-                    className="patient-card"
-                    onClick={() => handleEmergencyPersonnelClick(personnel.id)}
-                  >
-                    <div className="patient-avatar">
-                      {personnel.name.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="patient-info">
+                  <div key={personnel.id} className="td-card" onClick={() => handleEmergencyPersonnelClick(personnel.id)} style={{cursor:'pointer'}}>
+                    <div className="td-card-avatar td-card-avatar--emergency">{personnel.name.charAt(0).toUpperCase()}</div>
+                    <div className="td-card-body">
                       <h3>{personnel.name}</h3>
-                      <p className="patient-email">{personnel.email}</p>
-                      <p className="patient-conditions">{personnel.education}</p>
+                      <p className="td-card-meta">{personnel.email}</p>
+                      <p className="td-card-tag">{personnel.education}</p>
                     </div>
-                    <div className="patient-meta">
-                      <span className="patient-date">
-                        Added {new Date(personnel.created_at).toLocaleDateString()}
-                      </span>
+                    <div className="td-card-footer">
+                      <span className="td-card-date">Added {new Date(personnel.created_at).toLocaleDateString()}</span>
                     </div>
                   </div>
                 ))}
@@ -381,80 +495,106 @@ const TherapistDashboard = () => {
           </div>
         )}
 
-        {activeSection === 'community' && (
-          <div className="section-content-blank">
-            {/* Community section - to be implemented */}
+        {/* COMMUNITY (Chat) */}
+        {view === 'community' && (
+          <div className="td-fullpage-view">
+            <TherapistChat />
           </div>
         )}
 
-        {activeSection === 'resources' && (
-          <div className="section-content">
+        {/* RESOURCES */}
+        {view === 'resources' && (
+          <div className="td-fullpage-view">
             <ResourceManager />
           </div>
         )}
 
-        {activeSection === 'history' && (
-          <div className="section-content">
+        {/* TOOLS */}
+        {view === 'tools' && (
+          <div className="td-content-panel">
+            <div className="td-panel-header">
+              <h2>Clinical Tools</h2>
+            </div>
+            <div className="td-tools-grid">
+              <button className="td-tool-card" onClick={() => navigate('/therapist/dashboard/fear-ladder/patients')}>
+                <span className="td-tool-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <line x1="8" y1="6" x2="21" y2="6" strokeLinecap="round"/><line x1="8" y1="12" x2="21" y2="12" strokeLinecap="round"/><line x1="8" y1="18" x2="21" y2="18" strokeLinecap="round"/>
+                    <line x1="3" y1="6" x2="3.01" y2="6" strokeLinecap="round"/><line x1="3" y1="12" x2="3.01" y2="12" strokeLinecap="round"/><line x1="3" y1="18" x2="3.01" y2="18" strokeLinecap="round"/>
+                  </svg>
+                </span>
+                <h3>Fear Ladder Maker</h3>
+                <p>Create and manage exposure hierarchies for your patients</p>
+                <span className="td-tool-arrow">→</span>
+              </button>
+
+              <button className="td-tool-card" onClick={() => navigate('/therapist/dashboard/erp')}>
+                <span className="td-tool-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
+                <h3>ERP Workspace</h3>
+                <p>Monitor and guide patient exposure exercises</p>
+                <span className="td-tool-arrow">→</span>
+              </button>
+
+              <button className="td-tool-card" onClick={() => navigate('/therapist/dashboard/imaginal')}>
+                <span className="td-tool-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <circle cx="12" cy="12" r="10" strokeLinecap="round"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" strokeLinecap="round"/><line x1="12" y1="17" x2="12.01" y2="17" strokeLinecap="round"/>
+                  </svg>
+                </span>
+                <h3>Imaginal Exposures</h3>
+                <p>Design and track imaginal exposure protocols</p>
+                <span className="td-tool-arrow">→</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* HISTORY */}
+        {view === 'history' && (
+          <div className="td-content-panel">
             <PatientHistory />
           </div>
         )}
 
-        {activeSection === 'ai' && (
-          <div className="section-content">
-            <RAGChat />
-          </div>
-        )}
 
-        {activeSection === 'live_sessions' && (
-          <div className="section-content">
+
+        {/* LIVE SESSIONS */}
+        {view === 'live_sessions' && (
+          <div className="td-content-panel">
             <ActiveSessions />
           </div>
         )}
 
-        {activeSection === 'sessions' && (
-          <div className="sessions-section">
-
+        {/* ACTIVE SESSIONS (transcripts) */}
+        {view === 'active_sessions' && (
+          <div className="td-content-panel">
             {/* Step 1: patient picker */}
             {!selectedSessionPatient && (
               <>
-                <div className="sessions-section-header">
-                  <h2 className="sessions-section-title">Active Sessions — Select a Patient</h2>
+                <div className="td-panel-header">
+                  <h2>Active Sessions — Select a Patient</h2>
                 </div>
-
-                {sessionsLoading && (
-                  <div className="loading-state">
-                    <div className="spinner"></div>
-                    <p>Loading patients...</p>
-                  </div>
-                )}
-                {sessionsError && <div className="error-banner">{sessionsError}</div>}
-
+                {sessionsLoading && <div className="td-loading"><span className="td-spinner" /><p>Loading…</p></div>}
+                {sessionsError && <div className="td-error-banner">{sessionsError}</div>}
                 {!sessionsLoading && sessionsPatients.length === 0 && !sessionsError && (
-                  <div className="empty-state">
-                    <div className="empty-icon">👥</div>
-                    <h3>No Patients Yet</h3>
-                    <p>Add patients first before logging sessions.</p>
-                  </div>
+                  <div className="td-empty"><h3>No Patients Yet</h3><p>Add patients first before logging sessions.</p></div>
                 )}
-
                 {!sessionsLoading && (
-                  <div className="patients-grid">
+                  <div className="td-cards-grid">
                     {sessionsPatients.map((patient) => (
-                      <div
-                        key={patient.id}
-                        className="patient-card sessions-patient-card"
-                        onClick={() => handleSelectSessionPatient(patient)}
-                      >
-                        <div className="patient-avatar">
-                          {patient.name.charAt(0).toUpperCase()}
-                        </div>
-                        <div className="patient-info">
+                      <div key={patient.id} className="td-card td-card--clickable" onClick={() => handleSelectSessionPatient(patient)}>
+                        <div className="td-card-avatar">{patient.name.charAt(0).toUpperCase()}</div>
+                        <div className="td-card-body">
                           <h3>{patient.name}</h3>
-                          <p className="patient-email">{patient.email}</p>
-                          <p className="patient-conditions">{patient.conditions}</p>
+                          <p className="td-card-meta">{patient.email}</p>
+                          <p className="td-card-tag">{patient.conditions}</p>
                         </div>
-                        <div className="patient-meta">
-                          <span className="view-sessions-hint">View Sessions →</span>
+                        <div className="td-card-footer">
+                          <span className="td-card-date">View Sessions →</span>
                         </div>
                       </div>
                     ))}
@@ -463,62 +603,36 @@ const TherapistDashboard = () => {
               </>
             )}
 
-            {/* Step 2: sessions list for selected patient */}
+            {/* Step 2: sessions for selected patient */}
             {selectedSessionPatient && (
               <>
-                <div className="sessions-section-header">
-                  <div className="sessions-breadcrumb">
-                    <button className="sessions-back-btn" onClick={handleBackToSessionsPatients}>
-                      ← All Patients
-                    </button>
-                    <span className="sessions-breadcrumb-sep">/</span>
-                    <span className="sessions-breadcrumb-patient">
-                      {selectedSessionPatient.name}
-                    </span>
+                <div className="td-panel-header td-panel-header--split">
+                  <div className="td-breadcrumb-row">
+                    <button className="td-back-inline" onClick={handleBackToSessionsPatients}>← All Patients</button>
+                    <span className="td-sep">/</span>
+                    <span className="td-crumb-name">{selectedSessionPatient.name}</span>
                   </div>
-                  <button
-                    className="add-session-btn"
-                    onClick={() => { setShowAddModal(true); setSessionFormError(''); }}
-                  >
+                  <button className="td-btn td-btn--primary" onClick={() => { setShowAddModal(true); setSessionFormError(''); }}>
                     + Add Session
                   </button>
                 </div>
 
-                {patientSessionsLoading && (
-                  <div className="loading-state">
-                    <div className="spinner"></div>
-                    <p>Loading sessions...</p>
-                  </div>
-                )}
-
+                {patientSessionsLoading && <div className="td-loading"><span className="td-spinner" /><p>Loading sessions…</p></div>}
                 {!patientSessionsLoading && patientSessions.length === 0 && (
-                  <div className="sessions-empty">
-                    <p>
-                      No sessions logged yet for <strong>{selectedSessionPatient.name}</strong>.
-                      Click <strong>+ Add Session</strong> to log the first one.
-                    </p>
-                  </div>
+                  <div className="td-empty"><p>No sessions logged yet for <strong>{selectedSessionPatient.name}</strong>.</p></div>
                 )}
 
                 <div className="sessions-list">
                   {patientSessions.map((s) => (
                     <div key={s.id} className="session-card">
-                      <button
-                        className="session-card-header"
-                        onClick={() => setExpandedSession(expandedSession === s.id ? null : s.id)}
-                      >
+                      <button className="session-card-header" onClick={() => setExpandedSession(expandedSession === s.id ? null : s.id)}>
                         <div className="session-card-meta">
                           <span className="session-badge">Session {s.session_number}</span>
                           <span className="session-title-text">{s.title}</span>
-                          <span className="session-date-text">
-                            {new Date(s.session_date).toLocaleDateString('en-US', {
-                              year: 'numeric', month: 'long', day: 'numeric',
-                            })}
-                          </span>
+                          <span className="session-date-text">{new Date(s.session_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                         </div>
                         <span className="session-chevron">{expandedSession === s.id ? '▲' : '▼'}</span>
                       </button>
-
                       {expandedSession === s.id && (
                         <div className="session-card-body">
                           <div className="session-body-section">
@@ -527,20 +641,12 @@ const TherapistDashboard = () => {
                           </div>
                           {s.therapist_notes && (
                             <div className="session-body-section">
-                              <h4 className="session-body-label">
-                                Therapist Notes
-                                <span className="notes-private-badge">Private</span>
-                              </h4>
+                              <h4 className="session-body-label">Therapist Notes <span className="notes-private-badge">Private</span></h4>
                               <p className="session-notes-text">{s.therapist_notes}</p>
                             </div>
                           )}
                           <div className="session-card-actions">
-                            <button
-                              className="session-delete-btn"
-                              onClick={() => handleDeleteSession(s.id)}
-                            >
-                              Delete Session
-                            </button>
+                            <button className="session-delete-btn" onClick={() => handleDeleteSession(s.id)}>Delete Session</button>
                           </div>
                         </div>
                       )}
@@ -548,7 +654,6 @@ const TherapistDashboard = () => {
                   ))}
                 </div>
 
-                {/* Add Session Modal */}
                 {showAddModal && (
                   <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
                     <div className="modal-box" onClick={(e) => e.stopPropagation()}>
@@ -556,67 +661,20 @@ const TherapistDashboard = () => {
                         <h3>Log New Session — {selectedSessionPatient.name}</h3>
                         <button className="modal-close-btn" onClick={() => setShowAddModal(false)}>✕</button>
                       </div>
-
                       {sessionFormError && <p className="modal-error">{sessionFormError}</p>}
-
+                      <div className="modal-field"><label>Session Date</label><input type="date" name="session_date" value={sessionForm.session_date} onChange={handleSessionFormChange} className="modal-input" /></div>
+                      <div className="modal-field"><label>Title</label><input type="text" name="title" value={sessionForm.title} onChange={handleSessionFormChange} placeholder="e.g. Session 1 – Exposure Hierarchy" className="modal-input" /></div>
                       <div className="modal-field">
-                        <label>Session Date</label>
-                        <input
-                          type="date"
-                          name="session_date"
-                          value={sessionForm.session_date}
-                          onChange={handleSessionFormChange}
-                          className="modal-input"
-                        />
+                        <label>Transcript <span className="field-hint">(full session transcript)</span></label>
+                        <textarea name="transcript" value={sessionForm.transcript} onChange={handleSessionFormChange} rows={12} placeholder="Paste or type the session transcript here…" className="modal-textarea" />
                       </div>
-
                       <div className="modal-field">
-                        <label>Title</label>
-                        <input
-                          type="text"
-                          name="title"
-                          value={sessionForm.title}
-                          onChange={handleSessionFormChange}
-                          placeholder="e.g. Session 1 – Exposure Hierarchy"
-                          className="modal-input"
-                        />
+                        <label>Therapist Notes <span className="field-hint">(private – not visible to patient)</span></label>
+                        <textarea name="therapist_notes" value={sessionForm.therapist_notes} onChange={handleSessionFormChange} rows={4} placeholder="Private notes for your reference…" className="modal-textarea" />
                       </div>
-
-                      <div className="modal-field">
-                        <label>
-                          Transcript
-                          <span className="field-hint"> (full 60-min session transcript)</span>
-                        </label>
-                        <textarea
-                          name="transcript"
-                          value={sessionForm.transcript}
-                          onChange={handleSessionFormChange}
-                          rows={12}
-                          placeholder="Paste or type the session transcript here..."
-                          className="modal-textarea"
-                        />
-                      </div>
-
-                      <div className="modal-field">
-                        <label>
-                          Therapist Notes
-                          <span className="field-hint"> (private – not visible to patient)</span>
-                        </label>
-                        <textarea
-                          name="therapist_notes"
-                          value={sessionForm.therapist_notes}
-                          onChange={handleSessionFormChange}
-                          rows={4}
-                          placeholder="Private notes for your reference..."
-                          className="modal-textarea"
-                        />
-                      </div>
-
                       <div className="modal-actions">
                         <button className="modal-cancel-btn" onClick={() => setShowAddModal(false)}>Cancel</button>
-                        <button className="modal-save-btn" onClick={handleAddSession} disabled={sessionSaving}>
-                          {sessionSaving ? 'Saving...' : 'Save Session'}
-                        </button>
+                        <button className="modal-save-btn" onClick={handleAddSession} disabled={sessionSaving}>{sessionSaving ? 'Saving…' : 'Save Session'}</button>
                       </div>
                     </div>
                   </div>
@@ -625,18 +683,26 @@ const TherapistDashboard = () => {
             )}
           </div>
         )}
+
+        {/* NIRBAAN AI */}
+        {view === 'nirbaan_ai' && (
+          <div className="td-fullpage-view td-fullpage-view--cover">
+            <NirbaanAITherapistChat onBack={() => goTo(null)} />
+          </div>
+        )}
+
       </main>
 
-      {/* Floating Add Patient Button */}
-      {activeSection === 'patients' && (
-        <div className="floating-add-patient">
+      {/* Floating Add Patient */}
+      {view === 'patients' && (
+        <div className="td-fab-zone">
           <AddPatient onPatientAdded={handlePatientAdded} />
         </div>
       )}
 
-      {/* Floating Add Emergency Personnel Button */}
-      {activeSection === 'emergency' && (
-        <div className="floating-add-patient">
+      {/* Floating Add Emergency Personnel */}
+      {view === 'emergency' && (
+        <div className="td-fab-zone">
           <AddEmergencyPersonnel onPersonnelAdded={handleEmergencyPersonnelAdded} />
         </div>
       )}

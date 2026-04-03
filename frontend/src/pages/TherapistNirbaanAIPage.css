@@ -2,4 +2,5 @@
   position: fixed;
   inset: 0;
   z-index: 100;
+  background: linear-gradient(160deg, #1a3832 0%, #22453d 45%, #1c3d35 100%);
 }

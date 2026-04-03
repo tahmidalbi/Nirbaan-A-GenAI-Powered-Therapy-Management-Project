@@ -150,8 +150,9 @@ export default function NirbaanAITherapistChat({ onBack }) {
   const [clarificationLoading, setClarificationLoading] = useState(false);
 
   // Sidebar
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [patientPanelOpen, setPatientPanelOpen] = useState(false);
+  const [sidebarSearch, setSidebarSearch] = useState('');
 
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
@@ -191,7 +192,6 @@ export default function NirbaanAITherapistChat({ onBack }) {
       // ignore
     } finally {
       setLoading(false);
-      setSidebarOpen(false);
     }
   }, [patients]);
 
@@ -200,7 +200,6 @@ export default function NirbaanAITherapistChat({ onBack }) {
     setMessages([]);
     setPendingClarification(null);
     setInput('');
-    setSidebarOpen(false);
     inputRef.current?.focus();
   };
 
@@ -211,6 +210,21 @@ export default function NirbaanAITherapistChat({ onBack }) {
   const visibleThreads = selectedPatient
     ? threads.filter((t) => t.patient_id === selectedPatient.id)
     : threads;
+
+  const filteredThreads = sidebarSearch.trim()
+    ? visibleThreads.filter((t) =>
+        (t.title || '').toLowerCase().includes(sidebarSearch.toLowerCase())
+      )
+    : visibleThreads;
+
+  const formatThreadDate = (iso) => {
+    const d = new Date(iso);
+    const now = new Date();
+    const diff = now - d;
+    if (diff < 86400000) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    if (diff < 604800000) return d.toLocaleDateString([], { weekday: 'short' });
+    return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+  };
 
   // ── Send message ──────────────────────────────────────────────────────────
   const handleSend = async () => {
@@ -422,65 +436,120 @@ export default function NirbaanAITherapistChat({ onBack }) {
         </>
       )}
 
-      {/* ── Thread history sidebar ───────────────────────────────────── */}
-      <aside className={`nait-sidebar ${sidebarOpen ? 'open' : ''}`}>
-        <div className="nait-sidebar-header">
-          <span>Conversations</span>
-          <button className="nait-new-btn" onClick={startNewChat}>
-            + New
-          </button>
-        </div>
+      {/* ── Body: history panel + chat side by side ─────────────────── */}
+      <div className="nait-body">
 
-        {selectedPatient && (
-          <div className="nait-sidebar-patient-tag">
-            <span className="nait-sidebar-patient-dot" />
-            {selectedPatient.name}
+        {/* History column — always in the flow, no portal needed */}
+        <aside className={`nait-history${sidebarOpen ? '' : ' nait-history--collapsed'}`}>
+
+          {/* History header */}
+          <div className="nait-history-head">
+            <div className="nait-history-head-left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="14" height="14">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span>History</span>
+            </div>
+            <button
+              className="nait-history-new-btn"
+              onClick={startNewChat}
+              title="New chat"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="11" height="11">
+                <path d="M12 5v14M5 12h14" strokeLinecap="round"/>
+              </svg>
+              New
+            </button>
           </div>
-        )}
 
-        <ul className="nait-thread-list">
-          {visibleThreads.length === 0 && (
-            <li className="nait-thread-empty">
-              {selectedPatient
-                ? `No conversations for ${selectedPatient.name} yet`
-                : 'No conversations yet'}
-            </li>
+          {/* Patient context row */}
+          {selectedPatient && (
+            <div className="nait-history-patient">
+              <div className="nait-history-patient-avatar">
+                {selectedPatient.name.charAt(0).toUpperCase()}
+              </div>
+              <div className="nait-history-patient-info">
+                <span className="nait-history-patient-name">{selectedPatient.name}</span>
+                <span className="nait-history-patient-meta">
+                  {visibleThreads.length} session{visibleThreads.length !== 1 ? 's' : ''}
+                </span>
+              </div>
+            </div>
           )}
-          {visibleThreads.map((t) => {
-            const patient = patients.find((p) => p.id === t.patient_id);
-            return (
-              <li
-                key={t.id}
-                className={`nait-thread-item ${t.id === activeThreadId ? 'active' : ''}`}
-                onClick={() => loadThread(t.id)}
-              >
-                <span className="nait-thread-icon">💬</span>
-                <div className="nait-thread-info">
-                  <span className="nait-thread-label">
-                    {t.title || `Chat #${t.id}`}
-                  </span>
-                  {patient && (
-                    <span className="nait-thread-patient">{patient.name}</span>
-                  )}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      </aside>
 
-      {sidebarOpen && (
-        <div className="nait-overlay" onClick={() => setSidebarOpen(false)} />
-      )}
+          {/* Search */}
+          <div className="nait-history-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="13" height="13">
+              <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35" strokeLinecap="round"/>
+            </svg>
+            <input
+              placeholder="Search…"
+              value={sidebarSearch}
+              onChange={(e) => setSidebarSearch(e.target.value)}
+            />
+            {sidebarSearch && (
+              <button onClick={() => setSidebarSearch('')}>✕</button>
+            )}
+          </div>
 
-      {/* ── Main chat area ───────────────────────────────────────────── */}
-      <main className="nait-main">
+          {/* Thread list */}
+          <div className="nait-history-list">
+            {filteredThreads.length === 0 ? (
+              <div className="nait-history-empty">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" width="40" height="40">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <p>
+                  {sidebarSearch
+                    ? 'No matches'
+                    : selectedPatient
+                    ? `No sessions yet`
+                    : 'Select a patient'}
+                </p>
+              </div>
+            ) : (
+              filteredThreads.map((t) => {
+                const patient = patients.find((p) => p.id === t.patient_id);
+                const isActive = t.id === activeThreadId;
+                return (
+                  <button
+                    key={t.id}
+                    className={`nait-thread-btn${isActive ? ' nait-thread-btn--active' : ''}`}
+                    onClick={() => loadThread(t.id)}
+                  >
+                    <div className={`nait-thread-btn-icon${isActive ? ' nait-thread-btn-icon--active' : ''}`}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="12" height="12">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                    <div className="nait-thread-btn-body">
+                      <span className="nait-thread-btn-title">
+                        {t.title || `Session #${t.id}`}
+                      </span>
+                      {patient && !selectedPatient && (
+                        <span className="nait-thread-btn-patient">{patient.name}</span>
+                      )}
+                    </div>
+                    {t.created_at && (
+                      <span className="nait-thread-btn-date">
+                        {formatThreadDate(t.created_at)}
+                      </span>
+                    )}
+                  </button>
+                );
+              })
+            )}
+          </div>
+
+        </aside>
+
+        {/* ── Main chat area ─────────────────────────────────────────── */}
+        <main className="nait-main">
         <div className="nait-chat-window">
 
           {/* Welcome state */}
           {messages.length === 0 && !loading && !pendingClarification && (
             <div className="nait-welcome">
-              <div className="nait-welcome-icon">🧠</div>
               <h2>Hello, I'm NirbaanAI</h2>
               {selectedPatient ? (
                 <p>
@@ -513,7 +582,12 @@ export default function NirbaanAITherapistChat({ onBack }) {
               }`}
             >
               {(msg.role === 'assistant') && (
-                <div className="nait-avatar">🌸</div>
+                <div className="nait-avatar">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="18" height="18">
+                    <circle cx="12" cy="8" r="3.5" strokeLinecap="round"/>
+                    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
               )}
               <div
                 className={`nait-bubble ${
@@ -539,7 +613,12 @@ export default function NirbaanAITherapistChat({ onBack }) {
           {/* Loading indicator */}
           {loading && (
             <div className="nait-bubble-row assistant">
-              <div className="nait-avatar">🌸</div>
+              <div className="nait-avatar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="18" height="18">
+                  <circle cx="12" cy="8" r="3.5" strokeLinecap="round"/>
+                  <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
               <div className="nait-bubble assistant nait-typing">
                 <span /><span /><span />
               </div>
@@ -549,7 +628,12 @@ export default function NirbaanAITherapistChat({ onBack }) {
           {/* ── Human-in-the-loop clarification card ── */}
           {pendingClarification && !loading && (
             <div className="nait-bubble-row assistant nait-clarification-row">
-              <div className="nait-avatar">🌸</div>
+              <div className="nait-avatar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="18" height="18">
+                  <circle cx="12" cy="8" r="3.5" strokeLinecap="round"/>
+                  <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
               <ClarificationCard
                 question={pendingClarification.question}
                 loading={clarificationLoading}
@@ -561,7 +645,12 @@ export default function NirbaanAITherapistChat({ onBack }) {
 
           {clarificationLoading && (
             <div className="nait-bubble-row assistant">
-              <div className="nait-avatar">🌸</div>
+              <div className="nait-avatar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="18" height="18">
+                  <circle cx="12" cy="8" r="3.5" strokeLinecap="round"/>
+                  <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
               <div className="nait-bubble assistant nait-typing">
                 <span /><span /><span />
               </div>
@@ -605,6 +694,8 @@ export default function NirbaanAITherapistChat({ onBack }) {
           </div>
         </div>
       </main>
+
+      </div>{/* end nait-body */}
     </div>
   );
 }

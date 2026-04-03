@@ -302,21 +302,7 @@ export default function TherapistChatPage() {
   const memberIds = new Set(members.map((m) => m.patient_id));
   const nonMembers = allPatients.filter((p) => !memberIds.has(p.id));
 
-  // Palette of distinct colors for each non-me sender
-  const PEER_COLORS = [
-    { bg: 'rgba(55, 48, 100, 0.82)',  border: 'rgba(99, 102, 241, 0.35)' },
-    { bg: 'rgba(120, 60, 0, 0.82)',   border: 'rgba(251, 191, 36, 0.35)' },
-    { bg: 'rgba(10, 70, 130, 0.82)',  border: 'rgba(59, 130, 246, 0.35)' },
-    { bg: 'rgba(110, 20, 60, 0.82)',  border: 'rgba(236, 72, 153, 0.35)' },
-    { bg: 'rgba(0, 90, 80, 0.82)',    border: 'rgba(20, 184, 166, 0.35)' },
-    { bg: 'rgba(80, 40, 120, 0.82)',  border: 'rgba(168, 85, 247, 0.35)' },
-    { bg: 'rgba(120, 90, 10, 0.80)',  border: 'rgba(234, 179, 8, 0.35)'  },
-    { bg: 'rgba(20, 80, 100, 0.82)',  border: 'rgba(34, 211, 238, 0.35)' },
-  ];
-
-  const hashId = (id) =>
-    String(id).split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
-
+  // Two-color chat: me (therapist) = dark green, everyone else = dark slate
   const getSenderStyle = (msg) => {
     const isMe = msg.sender_role === 'therapist' && Number(msg.sender_id) === Number(myUserId);
     if (isMe) return {
@@ -326,11 +312,10 @@ export default function TherapistChatPage() {
       borderBottomRightRadius: '3px',
       boxShadow: '0 2px 12px rgba(52,168,83,0.12)',
     };
-    const c = PEER_COLORS[hashId(msg.sender_id) % PEER_COLORS.length];
     return {
-      background: c.bg,
-      border: `1px solid ${c.border}`,
-      color: '#e8eaf6',
+      background: 'rgba(28, 50, 44, 0.88)',
+      border: '1px solid rgba(125, 212, 188, 0.18)',
+      color: '#dceee8',
       borderBottomLeftRadius: '3px',
       boxShadow: '0 2px 10px rgba(0,0,0,0.15)',
     };
@@ -353,7 +338,11 @@ export default function TherapistChatPage() {
           ← Back
         </button>
         <div className="tcp-header-title">
-          <span className="tcp-header-icon">💬</span>
+          <span className="tcp-header-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" width="20" height="20">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </span>
           <span className="tcp-header-text">
             {sidebarTab === 'ep' ? 'EP Direct Chat' : sidebarTab === 'epgroup' ? 'HH Group Chat' : 'Group Chat'}
           </span>
@@ -510,7 +499,6 @@ export default function TherapistChatPage() {
 
               {!messagesLoading && messages.length === 0 && (
                 <div className="tcp-empty-msg">
-                  <span style={{ fontSize: '2.5rem', opacity: 0.4 }}>💬</span>
                   <p>No messages yet. Say something!</p>
                 </div>
               )}
@@ -582,7 +570,6 @@ export default function TherapistChatPage() {
           </div>
           ) : (
           <div className="tcp-no-group">
-            <span className="tcp-no-group-icon">💬</span>
             <h2>Select a group to chat</h2>
             <p>Create a group and add your patients to start chatting in real time.</p>
           </div>
@@ -656,7 +643,6 @@ export default function TherapistChatPage() {
           </div>
           ) : (
           <div className="tcp-no-group">
-            <span className="tcp-no-group-icon">🤝</span>
             <h2>Select a contact to chat</h2>
             <p>Click an emergency personnel contact from the list to start a direct conversation.</p>
           </div>
@@ -665,7 +651,7 @@ export default function TherapistChatPage() {
           /* ── EP Group view ── */
           <div className="tcp-main">
             <div className="tcp-epg-header-bar">
-              <span className="tcp-epg-icon">👥</span>
+
               <span className="tcp-epg-title">Human Helper Group</span>
               <span
                 className="tcp-ws-indicator"
@@ -683,7 +669,6 @@ export default function TherapistChatPage() {
               )}
               {!epGroupMessagesLoading && epGroupMessages.length === 0 && (
                 <div className="tcp-empty-msg">
-                  <span style={{ fontSize: '2.5rem', opacity: 0.4 }}>👥</span>
                   <p>No messages yet. The AI agent will post alerts here when a patient needs a visit.</p>
                 </div>
               )}
@@ -699,7 +684,7 @@ export default function TherapistChatPage() {
                   <div key={msg.id || idx} className={`tcp-row ${isMe ? 'tcp-row-me' : ''}`}>
                     {!isMe && (
                       <div className="tcp-avatar tcp-avatar-patient" style={isAI ? { background: 'linear-gradient(135deg,#6d28d9,#4c1d95)' } : {}}>
-                        {isAI ? '🤖' : (msg.sender_name || '?').charAt(0).toUpperCase()}
+                        {isAI ? 'AI' : (msg.sender_name || '?').charAt(0).toUpperCase()}
                       </div>
                     )}
                     <div className="tcp-bubble-wrap">
@@ -707,7 +692,7 @@ export default function TherapistChatPage() {
                       <div className="tcp-bubble" style={bubbleStyle}>
                         {msg.patient_name && (
                           <div className="tcp-epg-patient-ref">
-                            👤 Patient: <strong>{msg.patient_name}</strong>
+                            Patient: <strong>{msg.patient_name}</strong>
                           </div>
                         )}
                         {msg.content}
