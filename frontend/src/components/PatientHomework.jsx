@@ -79,7 +79,6 @@ const PatientHomework = () => {
       <div className="ph-shell">
         <div className="ph-topbar">
           <div className="ph-brand">
-            <div className="ph-brandDot" />
             <div>
               <h1 className="ph-titleMain">My Homework</h1>
               <p className="ph-subtitleMain">Track and complete your therapy assignments</p>

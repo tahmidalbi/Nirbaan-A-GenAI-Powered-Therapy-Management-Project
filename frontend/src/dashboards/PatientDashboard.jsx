@@ -1,28 +1,33 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuthStore } from '../store/authStore';
-import { getMyTherapySessions } from '../api/sessions.api';
 import PatientHomework from '../components/PatientHomework';
 import PatientResourceLibrary from '../components/PatientResourceLibrary';
 import IncomingCallModal from '../components/IncomingCallModal';
 import './PatientDashboard.css';
 
+const BACK_MAP = {
+  sessions:    null,
+  homework:    'sessions',
+  resources:   null,
+  mindfulness: null,
+};
+
+const VIEW_LABELS = {
+  sessions:    'Sessions',
+  homework:    'Homework',
+  resources:   'Resources',
+  mindfulness: 'Mindfulness',
+};
+
 const PatientDashboard = () => {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
   const user = useAuthStore((state) => state.user);
-  const [activeSection, setActiveSection] = useState(null);
+  const [view, setView] = useState(null);
   const wsRef = useRef(null);
   const reconnectRef = useRef(null);
-
-  // Therapy sessions state (session transcripts from therapist)
-  const [sessions, setSessions] = useState([]);
-  const [sessionsLoading, setSessionsLoading] = useState(false);
-  const [sessionsError, setSessionsError] = useState('');
-  const [expandedSession, setExpandedSession] = useState(null);
-
-  // Incoming call state
-  const [incomingCall, setIncomingCall] = useState(null); // { callerId, callerName, sessionId }
+  const [incomingCall, setIncomingCall] = useState(null);
 
   const handleAcceptCall = useCallback(() => {
     if (!incomingCall) return;
@@ -30,24 +35,15 @@ const PatientDashboard = () => {
     navigate(`/video-call/${incomingCall.sessionId}`);
   }, [incomingCall, navigate]);
 
-  const handleDeclineCall = useCallback(() => {
-    setIncomingCall(null);
-  }, []);
+  const handleDeclineCall = useCallback(() => setIncomingCall(null), []);
 
-  // Persistent WebSocket for incoming call notifications — auto-reconnects
   useEffect(() => {
     if (!user?.id) return;
-
     const connect = () => {
       const ws = new WebSocket(
         `ws://127.0.0.1:8000/api/therapy-sessions/ws/call/${user.id}?user_type=patient`
       );
-
-      ws.onopen = () => {
-        console.log('[CallNotify] Connected');
-        clearTimeout(reconnectRef.current);
-      };
-
+      ws.onopen = () => clearTimeout(reconnectRef.current);
       ws.onmessage = (event) => {
         const msg = JSON.parse(event.data);
         if (msg.type === 'incoming_call') {
@@ -58,19 +54,11 @@ const PatientDashboard = () => {
           });
         }
       };
-
-      ws.onclose = () => {
-        console.log('[CallNotify] Disconnected — reconnecting in 5s');
-        reconnectRef.current = setTimeout(connect, 5000);
-      };
-
+      ws.onclose = () => { reconnectRef.current = setTimeout(connect, 5000); };
       ws.onerror = () => ws.close();
-
       wsRef.current = ws;
     };
-
     connect();
-
     return () => {
       clearTimeout(reconnectRef.current);
       wsRef.current?.close();
@@ -78,37 +66,13 @@ const PatientDashboard = () => {
     };
   }, [user?.id]);
 
-  // Fetch therapy session transcripts when section is opened
-  useEffect(() => {
-    if (activeSection === 'sessions' && sessions.length === 0) {
-      setSessionsLoading(true);
-      setSessionsError('');
-      getMyTherapySessions()
-        .then((data) => setSessions(data))
-        .catch((err) => setSessionsError(typeof err === 'string' ? err : 'Failed to load sessions'))
-        .finally(() => setSessionsLoading(false));
-    }
-  }, [activeSection]);
-
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
-
-  const handleOCDToolsClick = () => {
-    navigate('/patient/dashboard/tools/ocd');
-  };
-
-  const handleProgressClick = () => {
-    navigate('/patient/dashboard/progress');
-  };
-
-  const handleNirbaanAIClick = () => {
-    navigate('/patient/nirbaanai');
-  };
+  const goTo = (v) => setView(v);
+  const handleBack = () => setView(BACK_MAP[view] ?? null);
+  const handleLogout = () => { logout(); navigate('/'); };
+  const showBack = view !== null && BACK_MAP[view] !== undefined;
 
   return (
-    <div className="patient-dashboard-container">
+    <div className="pd-root">
       {incomingCall && (
         <IncomingCallModal
           callerName={incomingCall.callerName}
@@ -116,161 +80,188 @@ const PatientDashboard = () => {
           onDecline={handleDeclineCall}
         />
       )}
-      {/* Vintage background */}
-      <div className="dashboard-background">
-        <div className="geometric-pattern"></div>
-        <div className="art-deco-line art-deco-line-top"></div>
-        <div className="art-deco-line art-deco-line-bottom"></div>
+
+      <div className="pd-bg">
+        <div className="pd-bg-grid" />
+        <div className="pd-bg-orb pd-bg-orb--1" />
+        <div className="pd-bg-orb pd-bg-orb--2" />
       </div>
 
-      {/* Header with Navigation */}
-      <header className="dashboard-header">
-        <div className="header-content">
-          <h1 className="logo">Nirbaan</h1>
-          <nav className="nav-menu">
-            <button
-              className={`nav-btn ${activeSection === 'live_sessions' ? 'active' : ''}`}
-              onClick={() => setActiveSection('live_sessions')}
-            >
-              Live Sessions
-            </button>
-            <button
-              className={`nav-btn ${activeSection === 'sessions' ? 'active' : ''}`}
-              onClick={() => setActiveSection('sessions')}
-            >
-              Sessions
-            </button>
-            <button
-              className="nav-btn"
-              onClick={handleProgressClick}
-            >
-              Progress
-            </button>
-            <button
-              className={`nav-btn ${activeSection === 'homework' ? 'active' : ''}`}
-              onClick={() => setActiveSection('homework')}
-            >
-              Homework
-            </button>
-            <button
-              className={`nav-btn ${activeSection === 'resources' ? 'active' : ''}`}
-              onClick={() => setActiveSection('resources')}
-            >
-              Resources
-            </button>
-            <button
-              className="nav-btn"
-              onClick={handleOCDToolsClick}
-            >
-              Tools
-            </button>
-            <button
-              className={`nav-btn ${activeSection === 'mindfulness' ? 'active' : ''}`}
-              onClick={() => setActiveSection('mindfulness')}
-            >
-              Mindfulness
-            </button>
-            <button
-              className="nav-btn"
-              onClick={() => navigate('/patient/chat')}
-            >
-              Chat
-            </button>
-            <button
-              className="nav-btn nav-btn-ai"
-              onClick={handleNirbaanAIClick}
-            >
-              NirbaanAI
-            </button>
-          </nav>
-          <button onClick={handleLogout} className="logout-btn">Logout</button>
+      <header className="pd-header">
+        <div className="pd-header-inner">
+          <div className="pd-brand">
+            <span className="pd-brand-logo">Nirbaan</span>
+            {view && (
+              <div className="pd-brand-breadcrumb">
+                <span className="pd-brand-sep">&rsaquo;</span>
+                <span>{VIEW_LABELS[view] || view}</span>
+              </div>
+            )}
+          </div>
+          <div className="pd-header-actions">
+            {showBack && (
+              <button className="pd-back-btn" onClick={handleBack}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="15 18 9 12 15 6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Back
+              </button>
+            )}
+            <button className="pd-logout-btn" onClick={handleLogout}>Logout</button>
+          </div>
         </div>
       </header>
 
-      {/* Video Call Button - Only on landing page */}
-      {!activeSection && (
-        <button className="video-call-btn" title="Start Video Call">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
-          </svg>
-        </button>
-      )}
+      <main className="pd-main">
 
-      {/* Main Content */}
-      <main className="dashboard-main">
-        {activeSection === 'live_sessions' && (
-          <div className="empty-section">
-            {/* Live Sessions section - video call sessions */}
+        {view === null && (
+          <div className="pd-home">
+            <div className="pd-welcome">
+              <p className="pd-welcome-greeting">Welcome back</p>
+              <h2 className="pd-welcome-name">{user?.name || 'Patient'}</h2>
+              <p className="pd-welcome-sub">Your wellness journey continues</p>
+            </div>
+
+            <div className="pd-tiles-grid pd-tiles-grid--home">
+
+              <button className="pd-tile" onClick={() => goTo('sessions')}>
+                <span className="pd-tile-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <line x1="16" y1="2" x2="16" y2="6" strokeLinecap="round" strokeLinejoin="round" />
+                    <line x1="8" y1="2" x2="8" y2="6" strokeLinecap="round" strokeLinejoin="round" />
+                    <line x1="3" y1="10" x2="21" y2="10" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+                <span className="pd-tile-label">Sessions</span>
+                <span className="pd-tile-sub">Progress &amp; homework</span>
+              </button>
+
+              <button className="pd-tile" onClick={() => goTo('resources')}>
+                <span className="pd-tile-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+                <span className="pd-tile-label">Resources</span>
+                <span className="pd-tile-sub">Therapist-curated materials</span>
+              </button>
+
+              <button className="pd-tile" onClick={() => navigate('/patient/dashboard/tools/ocd')}>
+                <span className="pd-tile-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+                <span className="pd-tile-label">Tools</span>
+                <span className="pd-tile-sub">OCD &amp; therapeutic exercises</span>
+              </button>
+
+              <button className="pd-tile" onClick={() => goTo('mindfulness')}>
+                <span className="pd-tile-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M8 14s1.5 2 4 2 4-2 4-2" strokeLinecap="round" strokeLinejoin="round" />
+                    <line x1="9" y1="9" x2="9.01" y2="9" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" />
+                    <line x1="15" y1="9" x2="15.01" y2="9" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" />
+                  </svg>
+                </span>
+                <span className="pd-tile-label">Mindfulness</span>
+                <span className="pd-tile-sub">Relaxation &amp; meditation</span>
+              </button>
+
+              <button className="pd-tile" onClick={() => navigate('/patient/chat')}>
+                <span className="pd-tile-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+                <span className="pd-tile-label">Chat</span>
+                <span className="pd-tile-sub">Message your therapist</span>
+              </button>
+
+              <button className="pd-tile pd-tile--ai" onClick={() => navigate('/patient/nirbaanai')}>
+                <span className="pd-tile-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M12 2a6 6 0 0 1 6 6c0 4-6 12-6 12S6 12 6 8a6 6 0 0 1 6-6z" strokeLinecap="round" strokeLinejoin="round" />
+                    <circle cx="12" cy="8" r="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M8 21h8M9 18l1.5-3h3L15 18" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+                <span className="pd-tile-label">Nirbaan AI</span>
+                <span className="pd-tile-sub">AI-powered wellness support</span>
+              </button>
+
+            </div>
           </div>
         )}
 
-        {activeSection === 'sessions' && (
-          <div className="pd-sessions-panel">
-            <h2 className="pd-sessions-title">My Therapy Sessions</h2>
+        {view === 'sessions' && (
+          <div className="pd-submenu">
+            <h2 className="pd-submenu-title">My Sessions</h2>
+            <p className="pd-submenu-sub">Track your progress and complete assignments</p>
+            <div className="pd-tiles-grid pd-tiles-grid--sub">
 
-            {sessionsLoading && (
-              <div className="pd-sessions-loading">
-                <div className="spinner"></div>
-                <p>Loading sessions...</p>
-              </div>
-            )}
+              <button className="pd-tile pd-tile--large" onClick={() => navigate('/patient/dashboard/progress')}>
+                <span className="pd-tile-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <line x1="18" y1="20" x2="18" y2="10" strokeLinecap="round" strokeLinejoin="round" />
+                    <line x1="12" y1="20" x2="12" y2="4" strokeLinecap="round" strokeLinejoin="round" />
+                    <line x1="6" y1="20" x2="6" y2="14" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+                <span className="pd-tile-label">Progress</span>
+                <span className="pd-tile-sub">View your treatment progress</span>
+              </button>
 
-            {sessionsError && (
-              <div className="pd-sessions-error">{sessionsError}</div>
-            )}
+              <button className="pd-tile pd-tile--large" onClick={() => goTo('homework')}>
+                <span className="pd-tile-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" strokeLinecap="round" strokeLinejoin="round" />
+                    <polyline points="14 2 14 8 20 8" strokeLinecap="round" strokeLinejoin="round" />
+                    <line x1="16" y1="13" x2="8" y2="13" strokeLinecap="round" strokeLinejoin="round" />
+                    <line x1="16" y1="17" x2="8" y2="17" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+                <span className="pd-tile-label">Homework</span>
+                <span className="pd-tile-sub">Assignments from your therapist</span>
+              </button>
 
-            {!sessionsLoading && !sessionsError && sessions.length === 0 && (
-              <div className="pd-sessions-empty">
-                <p>No sessions have been added yet. Your therapist will log sessions here after each appointment.</p>
-              </div>
-            )}
-
-            {!sessionsLoading && sessions.map((s) => (
-              <div key={s.id} className="pd-session-card">
-                <button
-                  className="pd-session-header"
-                  onClick={() => setExpandedSession(expandedSession === s.id ? null : s.id)}
-                >
-                  <div className="pd-session-meta">
-                    <span className="pd-session-badge">Session {s.session_number}</span>
-                    <span className="pd-session-title-text">{s.title}</span>
-                    <span className="pd-session-date">
-                      {new Date(s.session_date).toLocaleDateString('en-US', {
-                        year: 'numeric', month: 'long', day: 'numeric',
-                      })}
-                    </span>
-                  </div>
-                  <span className="pd-session-chevron">{expandedSession === s.id ? '▲' : '▼'}</span>
-                </button>
-
-                {expandedSession === s.id && (
-                  <div className="pd-session-body">
-                    <h4 className="pd-section-label">Session Transcript</h4>
-                    <pre className="pd-session-transcript">{s.transcript}</pre>
-                  </div>
-                )}
-              </div>
-            ))}
+            </div>
           </div>
         )}
 
-        {activeSection === 'homework' && (
-          <div className="section-content">
+        {view === 'homework' && (
+          <div className="pd-content-panel">
             <PatientHomework />
           </div>
         )}
 
-        {activeSection === 'resources' && (
-          <div className="pd-resources-panel">
+        {view === 'resources' && (
+          <div className="pd-content-panel">
             <PatientResourceLibrary />
           </div>
         )}
 
-        {activeSection === 'mindfulness' && (
-          <div className="empty-section">
-            {/* Empty Mindfulness section */}
+        {view === 'mindfulness' && (
+          <div className="pd-content-panel">
+            <div className="pd-coming-soon">
+              <span className="pd-coming-soon-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" width="64" height="64">
+                  <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M8 14s1.5 2 4 2 4-2 4-2" strokeLinecap="round" strokeLinejoin="round" />
+                  <line x1="9" y1="9" x2="9.01" y2="9" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" />
+                  <line x1="15" y1="9" x2="15.01" y2="9" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" />
+                </svg>
+              </span>
+              <h3>Mindfulness</h3>
+              <p>Guided meditation and relaxation exercises coming soon.</p>
+              <span className="pd-coming-soon-badge">Coming Soon</span>
+            </div>
           </div>
         )}
+
       </main>
     </div>
   );

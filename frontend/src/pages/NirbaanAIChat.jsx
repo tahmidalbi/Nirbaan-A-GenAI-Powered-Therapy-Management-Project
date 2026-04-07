@@ -135,7 +135,6 @@ export default function NirbaanAIChat() {
               className={`nai-thread-item ${t.id === activeThreadId ? 'active' : ''}`}
               onClick={() => loadThread(t.id)}
             >
-              <span className="nai-thread-icon">💬</span>
               <span className="nai-thread-label">
                 {t.title || `Chat #${t.id}`}
               </span>
@@ -152,7 +151,6 @@ export default function NirbaanAIChat() {
         <div className="nai-chat-window">
           {messages.length === 0 && !loading && (
             <div className="nai-welcome">
-              <div className="nai-welcome-icon">🌿</div>
               <h2>Hello, I'm NirbaanAI</h2>
               <p>Your personal psychoeducation companion.<br />Ask me anything about OCD, anxiety, or your therapy journey.</p>
             </div>
@@ -164,12 +162,12 @@ export default function NirbaanAIChat() {
               className={`nai-bubble-row ${msg.role === 'user' ? 'user' : 'assistant'}`}
             >
               {msg.role === 'assistant' && (
-                <div className="nai-avatar">{msg.is_escalation ? '🚨' : '🌸'}</div>
+                <div className="nai-avatar">AI</div>
               )}
               <div className={`nai-bubble ${msg.role}${msg.is_escalation ? ' escalation' : ''}`}>
                 {msg.is_escalation && (
                   <div className="nai-escalation-banner">
-                    🚨 Human helpers have been alerted
+                    Human helpers have been alerted
                   </div>
                 )}
                 {msg.role === 'assistant' ? (
@@ -191,7 +189,7 @@ export default function NirbaanAIChat() {
 
           {loading && (
             <div className="nai-bubble-row assistant">
-              <div className="nai-avatar">🌸</div>
+              <div className="nai-avatar">AI</div>
               <div className="nai-bubble assistant nai-typing">
                 <span></span><span></span><span></span>
               </div>

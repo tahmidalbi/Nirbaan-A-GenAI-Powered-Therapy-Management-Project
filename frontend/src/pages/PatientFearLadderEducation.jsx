@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { getMyEducation, generateEducation } from '../api/fear-ladder-education.api';
 import ReactMarkdown from 'react-markdown';
+import '../dashboards/PatientDashboard.css';
 import './PatientFearLadderEducation.css';
 
 const PatientFearLadderEducation = () => {
@@ -100,20 +101,29 @@ const PatientFearLadderEducation = () => {
 
   return (
     <div className="fear-ladder-education-container">
-      {/* Vintage background */}
-      <div className="dashboard-background">
-        <div className="geometric-pattern"></div>
-        <div className="art-deco-line art-deco-line-top"></div>
-        <div className="art-deco-line art-deco-line-bottom"></div>
+      <div className="pd-bg">
+        <div className="pd-bg-grid" />
+        <div className="pd-bg-orb pd-bg-orb--1" />
+        <div className="pd-bg-orb pd-bg-orb--2" />
       </div>
 
-      {/* Header */}
-      <header className="dashboard-header">
-        <div className="header-content">
-          <h1 className="logo">Fear Ladder Education</h1>
-          <div className="header-actions">
-            <button onClick={handleBack} className="back-btn">← Back</button>
-            <button onClick={handleLogout} className="logout-btn">Logout</button>
+      <header className="pd-header">
+        <div className="pd-header-inner">
+          <div className="pd-brand">
+            <span className="pd-brand-logo">Nirbaan</span>
+            <div className="pd-brand-breadcrumb">
+              <span className="pd-brand-sep">&rsaquo;</span>
+              <span>Fear Ladder Education</span>
+            </div>
+          </div>
+          <div className="pd-header-actions">
+            <button className="pd-back-btn" onClick={handleBack}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="15 18 9 12 15 6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Back
+            </button>
+            <button className="pd-logout-btn" onClick={handleLogout}>Logout</button>
           </div>
         </div>
       </header>

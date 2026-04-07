@@ -245,7 +245,6 @@ export default function PatientChatPage() {
           ← Back
         </button>
         <div className="pcp-header-title">
-          <span className="pcp-header-icon">💬</span>
           <span className="pcp-header-text">
             {activeTab === 'groups' ? 'Group Chat' : 'My Helpers'}
           </span>
@@ -275,13 +274,13 @@ export default function PatientChatPage() {
           className={`pcp-tab-btn ${activeTab === 'groups' ? 'active' : ''}`}
           onClick={() => setActiveTab('groups')}
         >
-          👥 Group Chat
+          Group Chat
         </button>
         <button
           className={`pcp-tab-btn ${activeTab === 'helpers' ? 'active' : ''}`}
           onClick={() => setActiveTab('helpers')}
         >
-          🤝 My Helpers
+          My Helpers
           {epSessions.length > 0 && (
             <span className="pcp-tab-badge">{epSessions.length}</span>
           )}
@@ -340,7 +339,6 @@ export default function PatientChatPage() {
 
               {!messagesLoading && messages.length === 0 && (
                 <div className="pcp-empty-msg">
-                  <span style={{ fontSize: '2.5rem', opacity: 0.4 }}>💬</span>
                   <p>No messages yet. Be the first to say something!</p>
                 </div>
               )}
@@ -416,7 +414,6 @@ export default function PatientChatPage() {
           </div>
         ) : (
           <div className="pcp-no-group">
-            <span className="pcp-no-group-icon">💬</span>
             <h2>Select a group to chat</h2>
             <p>Your therapist has added you to group chats where you can connect with others.</p>
           </div>
@@ -467,7 +464,6 @@ export default function PatientChatPage() {
                   )}
                   {!epMessagesLoading && epMessages.length === 0 && (
                     <div className="pcp-empty-msg">
-                      <span style={{ fontSize: '2.5rem', opacity: 0.4 }}>🤝</span>
                       <p>{selectedEpSession.ep_name} has started a chat with you. Say hello!</p>
                     </div>
                   )}
@@ -539,7 +535,6 @@ export default function PatientChatPage() {
               </div>
             ) : (
               <div className="pcp-no-group">
-                <span className="pcp-no-group-icon">🤝</span>
                 <h2>Select a helper to chat</h2>
                 <p>Your human helpers will appear here when they start a conversation with you.</p>
               </div>

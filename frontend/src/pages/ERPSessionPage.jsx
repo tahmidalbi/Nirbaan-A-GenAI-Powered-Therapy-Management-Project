@@ -30,6 +30,7 @@ import {
   CartesianGrid,
   Tooltip,
 } from 'recharts';
+import '../dashboards/PatientDashboard.css';
 import './ERPSessionPage.css';
 
 const TOGGLE_ERP       = 'erp';
@@ -434,23 +435,36 @@ const ERPSessionPage = () => {
     );
   }
 
+  const handleLogout = () => { logout(); navigate('/'); };
+
   return (
-    <div className="session-container">
-      {/* background */}
-      <div className="session-bg">
-        <div className="session-bg-pattern" />
+    <div className="session-root">
+      {/* Background */}
+      <div className="pd-bg">
+        <div className="pd-bg-grid" />
+        <div className="pd-bg-orb pd-bg-orb--1" />
+        <div className="pd-bg-orb pd-bg-orb--2" />
       </div>
 
-      {/* header */}
-      <header className="session-header">
-        <div className="session-header-inner">
-          <button className="session-ghost-btn" onClick={() => navigate('/patient/dashboard/erp/dive-in')}>
-            ← Back
-          </button>
-          <h1 className="session-logo">ERP Session</h1>
-          <button className="session-ghost-btn" onClick={() => { logout(); navigate('/'); }}>
-            Logout
-          </button>
+      {/* Header */}
+      <header className="pd-header">
+        <div className="pd-header-inner">
+          <div className="pd-brand">
+            <span className="pd-brand-logo">Nirbaan</span>
+            <div className="pd-brand-breadcrumb">
+              <span className="pd-brand-sep">&rsaquo;</span>
+              <span>ERP Session</span>
+            </div>
+          </div>
+          <div className="pd-header-actions">
+            <button className="pd-back-btn" onClick={() => navigate('/patient/dashboard/erp/dive-in')}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="15 18 9 12 15 6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Back
+            </button>
+            <button className="pd-logout-btn" onClick={handleLogout}>Logout</button>
+          </div>
         </div>
       </header>
 
@@ -717,7 +731,7 @@ const ERPSessionPage = () => {
         <section className="session-panel session-panel-right">
           <div className="sc-coach-panel">
             <div className="sc-coach-header">
-              <span className="sc-coach-title">🤖 ERP Coach</span>
+              <span className="sc-coach-title">ERP Coach</span>
               {transcriptLoading && <span className="sc-coach-loading-dot" />}
             </div>
 

@@ -2,8 +2,8 @@
 .fear-ladder-hub-container {
   position: relative;
   min-height: 100vh;
-  background: linear-gradient(135deg, #E8F3EE, #D4E9E0);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(160deg, #1a3832 0%, #22453d 45%, #1c3d35 100%);
+  font-family: 'Georgia', serif;
 }
 
 /* Background Decorations */

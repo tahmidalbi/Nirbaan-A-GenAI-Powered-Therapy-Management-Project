@@ -1,7 +1,12 @@
+/* ══════════════════════════════════════════════════════════════════════
+   PatientHomework — Dark Teal Theme (matches PatientDashboard)
+   ══════════════════════════════════════════════════════════════════════ */
+
 .ph-page {
-  padding: 24px;
-  background: #f0fdf4;
+  padding: 28px 28px 36px;
+  background: transparent;
   min-height: 100%;
+  font-family: 'Georgia', 'Garamond', serif;
 }
 
 .ph-shell {
@@ -9,11 +14,12 @@
   margin: 0 auto;
 }
 
+/* ── Top bar ──────────────────────────────────────────────────────────── */
 .ph-topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .ph-brand {
@@ -22,152 +28,182 @@
   gap: 12px;
 }
 
-.ph-brandDot {
-  width: 12px;
-  height: 12px;
-  background: #22c55e;
-  border-radius: 50%;
-}
-
 .ph-titleMain {
-  font-size: 24px;
-  font-weight: 600;
-  color: #1e293b;
+  font-family: 'Garamond', 'Georgia', serif;
+  font-size: 1.8rem;
+  font-weight: 300;
+  color: #ffffff;
+  letter-spacing: 0.08em;
   margin: 0;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
 .ph-subtitleMain {
-  font-size: 14px;
-  color: #64748b;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.45);
   margin: 4px 0 0 0;
+  font-style: italic;
+  letter-spacing: 0.02em;
 }
 
 .ph-refreshBtn {
-  padding: 8px 16px;
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  padding: 8px 18px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
-  color: #475569;
+  font-family: 'Georgia', serif;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.04em;
+  transition: all 0.2s ease;
 }
 
 .ph-refreshBtn:hover {
-  background: #f1f5f9;
+  background: rgba(255, 255, 255, 0.13);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
 }
 
 .ph-refreshBtn:disabled {
-  opacity: 0.6;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
+/* ── Error banner ─────────────────────────────────────────────────────── */
 .ph-errorBanner {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #dc2626;
+  background: rgba(200, 60, 60, 0.2);
+  border: 1px solid rgba(220, 80, 80, 0.4);
+  color: #ffaaaa;
   padding: 12px 16px;
   border-radius: 8px;
   margin-bottom: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 0.9rem;
 }
 
 .ph-errorBanner button {
   background: none;
   border: none;
-  color: #dc2626;
+  color: #ffaaaa;
   cursor: pointer;
-  font-weight: 500;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+  transition: opacity 0.2s;
 }
 
+.ph-errorBanner button:hover {
+  opacity: 1;
+}
+
+/* ── Loading / Empty states ───────────────────────────────────────────── */
 .ph-stateMain {
   text-align: center;
   padding: 60px 20px;
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.45);
+  font-style: italic;
 }
 
 .ph-spinnerMain {
   width: 32px;
   height: 32px;
-  border: 3px solid #dcfce7;
-  border-top: 3px solid #22c55e;
+  border: 3px solid rgba(125, 212, 188, 0.15);
+  border-top: 3px solid #7dd4bc;
   border-radius: 50%;
   margin: 0 auto 16px;
-  animation: spin 1s linear infinite;
+  animation: ph-spin 0.9s linear infinite;
 }
 
-@keyframes spin {
+@keyframes ph-spin {
   to { transform: rotate(360deg); }
 }
 
 .ph-emptyMain {
   text-align: center;
-  padding: 60px 20px;
-  background: white;
+  padding: 50px 20px;
+  background: rgba(255, 255, 255, 0.04);
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(125, 212, 188, 0.1);
 }
 
 .ph-emptyIconMain {
-  font-size: 48px;
-  margin-bottom: 16px;
+  font-size: 40px;
+  margin-bottom: 14px;
+  opacity: 0.5;
 }
 
 .ph-emptyMain h3 {
-  font-size: 18px;
-  color: #1e293b;
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.75);
   margin: 0 0 8px 0;
+  letter-spacing: 0.03em;
 }
 
 .ph-emptyMain p {
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.4);
   margin: 0;
+  font-size: 0.9rem;
+  font-style: italic;
 }
 
+/* ── Weeks list ───────────────────────────────────────────────────────── */
 .ph-weeksList {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .ph-weekCard {
-  background: white;
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(125, 212, 188, 0.12);
   overflow: hidden;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.2s;
+}
+
+.ph-weekCard:hover {
+  border-color: rgba(125, 212, 188, 0.22);
 }
 
 .ph-weekHeader {
   width: 100%;
-  padding: 16px 20px;
-  background: white;
+  padding: 16px 22px;
+  background: transparent;
   border: none;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
   text-align: left;
+  transition: background 0.15s;
 }
 
 .ph-weekHeader:hover {
-  background: #f8fafc;
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .ph-weekHeader.expanded {
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid rgba(125, 212, 188, 0.1);
 }
 
 .ph-weekInfo h3 {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1e293b;
+  font-family: 'Garamond', 'Georgia', serif;
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: #ffffff;
   margin: 0 0 4px 0;
+  letter-spacing: 0.04em;
 }
 
 .ph-weekCount {
-  font-size: 13px;
-  color: #64748b;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.45);
+  font-style: italic;
 }
 
 .ph-weekRight {
@@ -178,22 +214,22 @@
 
 .ph-progressBar {
   width: 100px;
-  height: 6px;
-  background: #e2e8f0;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 3px;
   overflow: hidden;
 }
 
 .ph-progressFill {
   height: 100%;
-  background: #22c55e;
+  background: linear-gradient(90deg, #5ab89a, #7dd4bc);
   border-radius: 3px;
   transition: width 0.3s ease;
 }
 
 .ph-chevron {
-  font-size: 12px;
-  color: #94a3b8;
+  font-size: 0.7rem;
+  color: rgba(125, 212, 188, 0.5);
   transition: transform 0.2s ease;
 }
 
@@ -201,6 +237,7 @@
   transform: rotate(180deg);
 }
 
+/* ── Week content ─────────────────────────────────────────────────────── */
 .ph-weekContent {
   padding: 16px 20px;
   display: flex;
@@ -208,21 +245,23 @@
   gap: 12px;
 }
 
+/* ── Homework cards ───────────────────────────────────────────────────── */
 .ph-homeworkCard {
-  padding: 16px;
-  background: #f8fafc;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.04);
   border-radius: 10px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: border-color 0.2s;
 }
 
 .ph-homeworkCard.completed {
-  background: #f0fdf4;
-  border-color: #bbf7d0;
+  background: rgba(90, 184, 154, 0.07);
+  border-color: rgba(90, 184, 154, 0.2);
 }
 
 .ph-homeworkCard.skipped {
-  background: #fefce8;
-  border-color: #fef08a;
+  background: rgba(200, 160, 60, 0.06);
+  border-color: rgba(200, 160, 60, 0.18);
 }
 
 .ph-homeworkHeader {
@@ -235,96 +274,125 @@
 .ph-statusBadge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
+  gap: 5px;
+  padding: 4px 11px;
   border-radius: 20px;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .ph-statusIcon {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .ph-statusActive {
-  background: #dbeafe;
-  color: #2563eb;
+  background: rgba(90, 130, 220, 0.18);
+  color: #a8c4ff;
+  border: 1px solid rgba(90, 130, 220, 0.3);
 }
 
 .ph-statusCompleted {
-  background: #dcfce7;
-  color: #16a34a;
+  background: rgba(90, 184, 154, 0.18);
+  color: #7dd4bc;
+  border: 1px solid rgba(90, 184, 154, 0.3);
 }
 
 .ph-statusSkipped {
-  background: #fef9c3;
-  color: #ca8a04;
+  background: rgba(200, 160, 60, 0.15);
+  color: #e8c97a;
+  border: 1px solid rgba(200, 160, 60, 0.3);
 }
 
 .ph-frequency {
-  font-size: 12px;
-  color: #64748b;
-  background: #f1f5f9;
-  padding: 4px 10px;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 3px 10px;
   border-radius: 4px;
+  letter-spacing: 0.03em;
 }
 
+/* ── Homework body ────────────────────────────────────────────────────── */
 .ph-homeworkBody {
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .ph-taskTitle {
-  font-size: 15px;
-  font-weight: 500;
-  color: #1e293b;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #ffffff;
   margin: 0 0 8px 0;
-}
-
-.ph-taskRationale {
-  font-size: 14px;
-  color: #64748b;
-  margin: 0;
+  letter-spacing: 0.02em;
   line-height: 1.5;
 }
 
+.ph-taskRationale {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0;
+  line-height: 1.65;
+  font-style: italic;
+}
+
+/* ── Mark complete button ─────────────────────────────────────────────── */
 .ph-markCompleteBtn {
   width: 100%;
   padding: 10px;
-  background: #22c55e;
-  border: none;
+  background: rgba(90, 184, 154, 0.15);
+  border: 1px solid rgba(90, 184, 154, 0.35);
   border-radius: 8px;
-  color: white;
-  font-size: 14px;
-  font-weight: 500;
+  color: #7dd4bc;
+  font-family: 'Georgia', serif;
+  font-size: 0.88rem;
+  letter-spacing: 0.05em;
   cursor: pointer;
-  margin-top: 8px;
+  margin-top: 6px;
+  transition: all 0.2s ease;
 }
 
 .ph-markCompleteBtn:hover {
-  background: #16a34a;
+  background: rgba(90, 184, 154, 0.25);
+  border-color: rgba(90, 184, 154, 0.55);
+  color: #a8e8d4;
 }
 
+/* ── Complete form ────────────────────────────────────────────────────── */
 .ph-completeForm {
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid #e2e8f0;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .ph-completeForm textarea {
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #e2e8f0;
+  padding: 10px 13px;
+  border: 1px solid rgba(125, 212, 188, 0.2);
   border-radius: 8px;
-  font-size: 14px;
+  font-family: 'Georgia', serif;
+  font-size: 0.9rem;
+  color: #e8f5e9;
+  background: rgba(255, 255, 255, 0.06);
   resize: vertical;
-  min-height: 60px;
+  min-height: 64px;
   margin-bottom: 12px;
   box-sizing: border-box;
+  line-height: 1.6;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.ph-completeForm textarea::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+  font-style: italic;
 }
 
 .ph-completeForm textarea:focus {
   outline: none;
-  border-color: #22c55e;
+  border-color: rgba(90, 184, 154, 0.5);
+  background: rgba(255, 255, 255, 0.09);
+  box-shadow: 0 0 0 3px rgba(90, 184, 154, 0.1);
 }
 
 .ph-completeActions {
@@ -335,53 +403,64 @@
 .ph-completeBtn {
   flex: 1;
   padding: 10px;
-  background: #22c55e;
-  border: none;
+  background: rgba(90, 184, 154, 0.2);
+  border: 1px solid rgba(90, 184, 154, 0.4);
   border-radius: 8px;
-  color: white;
-  font-size: 14px;
-  font-weight: 500;
+  color: #7dd4bc;
+  font-family: 'Georgia', serif;
+  font-size: 0.88rem;
+  letter-spacing: 0.04em;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .ph-completeBtn:hover {
-  background: #16a34a;
+  background: rgba(90, 184, 154, 0.32);
+  border-color: rgba(90, 184, 154, 0.6);
+  color: #a8e8d4;
 }
 
 .ph-completeBtn:disabled {
-  background: #94a3b8;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 .ph-cancelCompleteBtn {
-  padding: 10px 16px;
-  background: white;
-  border: 1px solid #e2e8f0;
+  padding: 10px 18px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 8px;
-  color: #64748b;
-  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'Georgia', serif;
+  font-size: 0.88rem;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .ph-cancelCompleteBtn:hover {
-  background: #f8fafc;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
 }
 
+/* ── Completion info ──────────────────────────────────────────────────── */
 .ph-completedInfo {
-  font-size: 13px;
-  color: #16a34a;
+  font-size: 0.82rem;
+  color: rgba(125, 212, 188, 0.65);
   margin-top: 8px;
+  font-style: italic;
 }
 
 .ph-patientNotes {
   margin-top: 12px;
-  padding: 10px;
-  background: white;
+  padding: 10px 13px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 6px;
-  font-size: 13px;
-  color: #475569;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.6;
 }
 
 .ph-patientNotes strong {
-  color: #1e293b;
+  color: rgba(255, 255, 255, 0.85);
 }

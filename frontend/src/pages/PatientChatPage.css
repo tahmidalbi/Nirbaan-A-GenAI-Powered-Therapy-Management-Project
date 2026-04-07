@@ -14,9 +14,9 @@
   overflow: hidden;
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
   background:
-    radial-gradient(ellipse 65% 50% at 85% 5%, rgba(52, 168, 83, 0.12) 0%, transparent 65%),
-    radial-gradient(ellipse 45% 40% at 8% 95%, rgba(27, 94, 32, 0.28) 0%, transparent 60%),
-    linear-gradient(155deg, #0b2e18 0%, #0f3d22 40%, #122e1c 75%, #0d2615 100%);
+    radial-gradient(ellipse 65% 50% at 85% 5%, rgba(125, 212, 188, 0.07) 0%, transparent 65%),
+    radial-gradient(ellipse 45% 40% at 8% 95%, rgba(26, 56, 50, 0.45) 0%, transparent 60%),
+    linear-gradient(160deg, #1a3832 0%, #22453d 45%, #1c3d35 100%);
   color: #e8f5e9;
 }
 
@@ -25,7 +25,7 @@
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  background-image: radial-gradient(circle, rgba(255,255,255,0.032) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(255,255,255,0.022) 1px, transparent 1px);
   background-size: 28px 28px;
 }
 
@@ -37,17 +37,17 @@
   align-items: center;
   height: 56px;
   padding: 0 1.5rem;
-  background: rgba(8, 28, 14, 0.85);
+  background: rgba(15, 32, 28, 0.92);
   backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(52, 168, 83, 0.18);
+  border-bottom: 1px solid rgba(125, 212, 188, 0.15);
   flex-shrink: 0;
   gap: 1rem;
 }
 
 .pcp-back-btn {
-  background: rgba(52, 168, 83, 0.12);
-  border: 1px solid rgba(52, 168, 83, 0.28);
-  color: #a5d6a7;
+  background: rgba(125, 212, 188, 0.1);
+  border: 1px solid rgba(125, 212, 188, 0.25);
+  color: #a8e8d4;
   padding: 0.38rem 1rem;
   border-radius: 6px;
   cursor: pointer;
@@ -58,7 +58,7 @@
 }
 
 .pcp-back-btn:hover {
-  background: rgba(52, 168, 83, 0.24);
+  background: rgba(125, 212, 188, 0.2);
   color: #e8f5e9;
 }
 
@@ -79,7 +79,7 @@
 }
 
 .pcp-header-group {
-  color: rgba(165, 214, 167, 0.55);
+  color: rgba(168, 232, 212, 0.5);
   font-size: 0.9rem;
 }
 
@@ -113,14 +113,14 @@
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  background: rgba(6, 20, 10, 0.68);
-  border-right: 1px solid rgba(52, 168, 83, 0.14);
+  background: rgba(10, 24, 20, 0.65);
+  border-right: 1px solid rgba(125, 212, 188, 0.12);
   backdrop-filter: blur(8px);
 }
 
 .pcp-sidebar-top {
   padding: 1rem;
-  border-bottom: 1px solid rgba(52, 168, 83, 0.12);
+  border-bottom: 1px solid rgba(125, 212, 188, 0.1);
   flex-shrink: 0;
 }
 
@@ -130,12 +130,12 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(165, 214, 167, 0.5);
+  color: rgba(168, 232, 212, 0.5);
 }
 
 .pcp-sidebar-empty {
   padding: 1.25rem;
-  color: rgba(165, 214, 167, 0.35);
+  color: rgba(168, 232, 212, 0.5);
   font-size: 0.82rem;
   text-align: center;
   line-height: 1.65;
@@ -150,7 +150,7 @@
 }
 
 .pcp-group-list::-webkit-scrollbar { width: 3px; }
-.pcp-group-list::-webkit-scrollbar-thumb { background: rgba(52, 168, 83, 0.18); border-radius: 4px; }
+.pcp-group-list::-webkit-scrollbar-thumb { background: rgba(125, 212, 188, 0.18); border-radius: 4px; }
 
 .pcp-group-item {
   display: flex;
@@ -163,22 +163,22 @@
   transition: background 0.15s;
 }
 
-.pcp-group-item:hover { background: rgba(52, 168, 83, 0.1); }
+.pcp-group-item:hover { background: rgba(125, 212, 188, 0.08); }
 
 .pcp-group-item.active {
-  background: rgba(52, 168, 83, 0.2);
-  border: 1px solid rgba(52, 168, 83, 0.28);
+  background: rgba(125, 212, 188, 0.15);
+  border: 1px solid rgba(125, 212, 188, 0.25);
 }
 
 .pcp-group-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: rgba(52, 168, 83, 0.4);
+  background: rgba(125, 212, 188, 0.38);
   flex-shrink: 0;
 }
 
-.pcp-group-item.active .pcp-group-dot { background: #4ade80; }
+.pcp-group-item.active .pcp-group-dot { background: #7dd4bc; }
 
 .pcp-group-info { flex: 1; min-width: 0; }
 
@@ -194,7 +194,7 @@
 
 .pcp-group-meta {
   display: block;
-  color: rgba(165, 214, 167, 0.38);
+  color: rgba(168, 232, 212, 0.45);
   font-size: 0.72rem;
   margin-top: 1px;
 }
@@ -221,13 +221,13 @@
 
 .pcp-messages::-webkit-scrollbar { width: 4px; }
 .pcp-messages::-webkit-scrollbar-track { background: transparent; }
-.pcp-messages::-webkit-scrollbar-thumb { background: rgba(52, 168, 83, 0.18); border-radius: 6px; }
+.pcp-messages::-webkit-scrollbar-thumb { background: rgba(125, 212, 188, 0.15); border-radius: 6px; }
 
 .pcp-loading-msg {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: rgba(165, 214, 167, 0.45);
+  color: rgba(168, 232, 212, 0.45);
   font-size: 0.85rem;
   padding: 0.75rem 0;
 }
@@ -235,7 +235,7 @@
 .pcp-dots { display: flex; gap: 3px; align-items: center; }
 .pcp-dots span {
   width: 5px; height: 5px; border-radius: 50%;
-  background: rgba(52, 168, 83, 0.5);
+  background: rgba(125, 212, 188, 0.5);
   animation: pcpBounce 1.2s ease-in-out infinite;
 }
 .pcp-dots span:nth-child(2) { animation-delay: 0.2s; }
@@ -248,7 +248,7 @@
 .pcp-empty-msg {
   margin: auto;
   text-align: center;
-  color: rgba(165, 214, 167, 0.38);
+  color: rgba(168, 232, 212, 0.55);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -267,11 +267,11 @@
 .pcp-system-line {
   flex: 1;
   height: 1px;
-  background: rgba(52, 168, 83, 0.1);
+  background: rgba(125, 212, 188, 0.1);
 }
 
 .pcp-system-text {
-  color: rgba(165, 214, 167, 0.35);
+  color: rgba(168, 232, 212, 0.38);
   font-size: 0.72rem;
   white-space: nowrap;
   font-style: italic;
@@ -350,7 +350,7 @@
 
 .pcp-sender-name {
   font-size: 0.72rem;
-  color: rgba(165, 214, 167, 0.5);
+  color: rgba(168, 232, 212, 0.55);
   font-weight: 500;
 }
 
@@ -389,8 +389,8 @@
   align-items: flex-end;
   gap: 0.75rem;
   padding: 0.9rem 1.25rem;
-  background: rgba(6, 20, 10, 0.6);
-  border-top: 1px solid rgba(52, 168, 83, 0.14);
+  background: rgba(10, 24, 20, 0.65);
+  border-top: 1px solid rgba(125, 212, 188, 0.12);
   backdrop-filter: blur(8px);
   flex-shrink: 0;
 }
@@ -399,8 +399,8 @@
   flex: 1;
   padding: 0.7rem 1rem;
   border-radius: 10px;
-  border: 1px solid rgba(52, 168, 83, 0.22);
-  background: rgba(52, 168, 83, 0.07);
+  border: 1px solid rgba(125, 212, 188, 0.2);
+  background: rgba(10, 24, 20, 0.5);
   color: #e8f5e9;
   font-size: 0.92rem;
   resize: none;
@@ -411,11 +411,11 @@
   transition: border-color 0.2s, background 0.2s;
 }
 
-.pcp-input::placeholder { color: rgba(165, 214, 167, 0.35); }
+.pcp-input::placeholder { color: rgba(168, 232, 212, 0.35); }
 
 .pcp-input:focus {
-  border-color: rgba(52, 168, 83, 0.45);
-  background: rgba(52, 168, 83, 0.11);
+  border-color: rgba(125, 212, 188, 0.42);
+  background: rgba(10, 24, 20, 0.65);
 }
 
 .pcp-send-btn {
@@ -423,7 +423,7 @@
   height: 42px;
   border-radius: 10px;
   border: none;
-  background: linear-gradient(135deg, #22783c, #186832);
+  background: linear-gradient(135deg, #2d7a66, #3a9176);
   color: #e8f5e9;
   cursor: pointer;
   display: flex;
@@ -431,11 +431,11 @@
   justify-content: center;
   flex-shrink: 0;
   transition: background 0.2s, transform 0.1s, opacity 0.2s;
-  box-shadow: 0 2px 8px rgba(52, 168, 83, 0.22);
+  box-shadow: 0 2px 8px rgba(125, 212, 188, 0.15);
 }
 
 .pcp-send-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #2a9450, #1e8c40);
+  background: linear-gradient(135deg, #3a9176, #4aac8a);
   transform: translateY(-1px);
 }
 
@@ -450,7 +450,7 @@
   justify-content: center;
   gap: 0.75rem;
   text-align: center;
-  color: rgba(165, 214, 167, 0.38);
+  color: rgba(168, 232, 212, 0.55);
 }
 
 .pcp-no-group-icon { font-size: 3.5rem; opacity: 0.32; display: block; }
@@ -458,7 +458,7 @@
 .pcp-no-group h2 {
   margin: 0;
   font-size: 1.25rem;
-  color: rgba(232, 245, 233, 0.52);
+  color: rgba(232, 245, 233, 0.72);
   font-weight: 600;
 }
 
@@ -474,8 +474,8 @@
   display: flex;
   gap: 0.25rem;
   padding: 0.5rem 1rem;
-  background: rgba(8, 14, 26, 0.6);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(10, 24, 20, 0.55);
+  border-bottom: 1px solid rgba(125, 212, 188, 0.1);
   flex-shrink: 0;
 }
 
@@ -487,20 +487,20 @@
   border-radius: 6px;
   border: 1px solid transparent;
   background: transparent;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(200, 240, 228, 0.55);
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 .pcp-tab-btn:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.8);
+  background: rgba(125, 212, 188, 0.06);
+  color: rgba(200, 240, 228, 0.85);
 }
 .pcp-tab-btn.active {
-  background: rgba(52, 168, 83, 0.12);
-  border-color: rgba(52, 168, 83, 0.35);
-  color: #4ade80;
+  background: rgba(125, 212, 188, 0.12);
+  border-color: rgba(125, 212, 188, 0.3);
+  color: #7dd4bc;
 }
 
 .pcp-tab-badge {

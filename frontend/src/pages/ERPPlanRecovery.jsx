@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { listERPItems, createERPItem, updateERPItem, deleteERPItem } from '../api/erp.api';
+import '../dashboards/PatientDashboard.css';
 import './ERPPlanRecovery.css';
 
 /* ─── helpers ─── */
@@ -136,22 +137,33 @@ const ERPPlanRecovery = () => {
 
   /* ─── render ─── */
   return (
-    <div className="erp-plan-container">
+    <div className="erp-plan-root">
       {/* Background */}
-      <div className="erp-bg">
-        <div className="erp-bg-pattern" />
-        <div className="erp-deco erp-deco-top" />
-        <div className="erp-deco erp-deco-bottom" />
+      <div className="pd-bg">
+        <div className="pd-bg-grid" />
+        <div className="pd-bg-orb pd-bg-orb--1" />
+        <div className="pd-bg-orb pd-bg-orb--2" />
       </div>
 
       {/* Header */}
-      <header className="erp-plan-header">
-        <div className="erp-plan-header-inner">
-          <button className="erp-btn-ghost" onClick={() => navigate('/patient/dashboard/erp')}>
-            ← Back
-          </button>
-          <h1 className="erp-plan-logo">Plan Your Recovery</h1>
-          <button className="erp-btn-ghost" onClick={handleLogout}>Logout</button>
+      <header className="pd-header">
+        <div className="pd-header-inner">
+          <div className="pd-brand">
+            <span className="pd-brand-logo">Nirbaan</span>
+            <div className="pd-brand-breadcrumb">
+              <span className="pd-brand-sep">&rsaquo;</span>
+              <span>Plan Your Recovery</span>
+            </div>
+          </div>
+          <div className="pd-header-actions">
+            <button className="pd-back-btn" onClick={() => navigate('/patient/dashboard/erp')}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="15 18 9 12 15 6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Back
+            </button>
+            <button className="pd-logout-btn" onClick={handleLogout}>Logout</button>
+          </div>
         </div>
       </header>
 
@@ -177,14 +189,7 @@ const ERPPlanRecovery = () => {
             )}
 
             {items.map((item) => (
-              <div
-                key={item.id}
-                className="erp-item-card"
-                onClick={() => openEditForm(item)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && openEditForm(item)}
-              >
+              <div key={item.id} className="erp-item-card">
                 <div className="erp-item-card-main">
                   <h3 className="erp-item-obsession">{item.obsession}</h3>
 
@@ -207,20 +212,18 @@ const ERPPlanRecovery = () => {
                   )}
                 </div>
 
-                <div className="erp-item-actions" onClick={(e) => e.stopPropagation()}>
+                <div className="erp-item-actions">
                   <button
-                    className="erp-btn-icon erp-btn-edit"
-                    title="Edit"
+                    className="erp-btn-edit"
                     onClick={() => openEditForm(item)}
                   >
-                    ✏️
+                    Edit
                   </button>
                   <button
-                    className="erp-btn-icon erp-btn-delete"
-                    title="Delete"
+                    className="erp-btn-remove"
                     onClick={() => handleDelete(item.id)}
                   >
-                    🗑️
+                    Remove
                   </button>
                 </div>
               </div>

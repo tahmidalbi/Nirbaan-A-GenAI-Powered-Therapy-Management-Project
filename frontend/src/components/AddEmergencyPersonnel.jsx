@@ -208,7 +208,7 @@ const AddEmergencyPersonnel = ({ onPersonnelAdded }) => {
           <div className="form-actions">
             <button 
               type="button" 
-              className="btn-cancel" 
+              className="cancel-btn" 
               onClick={() => setShowForm(false)}
               disabled={loading}
             >
@@ -216,7 +216,7 @@ const AddEmergencyPersonnel = ({ onPersonnelAdded }) => {
             </button>
             <button 
               type="submit" 
-              className="btn-submit"
+              className="submit-btn"
               disabled={loading}
             >
               {loading ? 'Adding...' : 'Add Personnel'}

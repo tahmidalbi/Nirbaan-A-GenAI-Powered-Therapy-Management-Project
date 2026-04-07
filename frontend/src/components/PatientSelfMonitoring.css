@@ -7,6 +7,10 @@
 }
 
 /* Embedded Mode */
+.condition-dashboard-container {
+  background: transparent;
+}
+
 .condition-dashboard-container.embedded {
   background: transparent;
   min-height: auto;
@@ -15,6 +19,7 @@
 .condition-dashboard-container.embedded .dashboard-main {
   padding: 0;
   margin: 0;
+  background: transparent;
 }
 
 .condition-dashboard-container.embedded .monitoring-container {
@@ -345,21 +350,17 @@
   padding: 3rem;
 }
 
-.empty-icon {
-  font-size: 4rem;
-  margin-bottom: 1rem;
-  opacity: 0.5;
-}
-
 .empty-state h3 {
   color: #e8f5e9;
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
   font-family: 'Georgia', serif;
+  font-weight: 400;
+  letter-spacing: 0.04em;
 }
 
 .empty-state p {
-  color: #a8dccf;
+  color: rgba(200, 240, 228, 0.75);
   font-size: 1rem;
 }
 

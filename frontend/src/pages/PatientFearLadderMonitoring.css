@@ -1,6 +1,6 @@
 .monitoring-page-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #E8F3EE 0%, #D4E9E0 100%);
+  background: linear-gradient(160deg, #1a3832 0%, #22453d 45%, #1c3d35 100%);
   position: relative;
   overflow-x: hidden;
 }
@@ -127,21 +127,22 @@
   z-index: 5;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 3rem 2rem;
-  min-height: calc(100vh - 140px);
+  padding: 90px 2rem 3rem;
+  min-height: calc(100vh - 70px);
 }
 
-.monitoring-content-wrapper {
-  background: #ffffff;
+.monitoring-page-container .monitoring-content-wrapper {
+  background: rgba(15, 32, 28, 0.55) !important;
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  border: 2px solid #e0e0e0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(125, 212, 188, 0.15);
+  backdrop-filter: blur(10px);
   padding: 2rem;
   position: relative;
   overflow: hidden;
 }
 
-.monitoring-content-wrapper::before {
+.monitoring-page-container .monitoring-content-wrapper::before {
   content: '';
   position: absolute;
   top: 0;
@@ -192,7 +193,7 @@
     padding: 1.5rem 1rem;
   }
 
-  .monitoring-content-wrapper {
+  .monitoring-page-container .monitoring-content-wrapper {
     padding: 1.2rem;
   }
 }

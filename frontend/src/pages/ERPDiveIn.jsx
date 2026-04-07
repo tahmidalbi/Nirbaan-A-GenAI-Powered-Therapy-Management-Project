@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { listERPItems } from '../api/erp.api';
+import '../dashboards/PatientDashboard.css';
 import './ERPDiveIn.css';
 
 const ERPDiveIn = () => {
@@ -19,25 +20,36 @@ const ERPDiveIn = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  const handleLogout = () => { logout(); navigate('/'); };
+
   return (
-    <div className="divein-container">
-      {/* background */}
-      <div className="divein-bg">
-        <div className="divein-bg-pattern" />
-        <div className="divein-deco divein-deco-top" />
-        <div className="divein-deco divein-deco-bottom" />
+    <div className="divein-root">
+      {/* Background */}
+      <div className="pd-bg">
+        <div className="pd-bg-grid" />
+        <div className="pd-bg-orb pd-bg-orb--1" />
+        <div className="pd-bg-orb pd-bg-orb--2" />
       </div>
 
-      {/* header */}
-      <header className="divein-header">
-        <div className="divein-header-inner">
-          <button className="divein-ghost-btn" onClick={() => navigate('/patient/dashboard/erp')}>
-            ← Back
-          </button>
-          <h1 className="divein-logo">Dive In</h1>
-          <button className="divein-ghost-btn" onClick={() => { logout(); navigate('/'); }}>
-            Logout
-          </button>
+      {/* Header */}
+      <header className="pd-header">
+        <div className="pd-header-inner">
+          <div className="pd-brand">
+            <span className="pd-brand-logo">Nirbaan</span>
+            <div className="pd-brand-breadcrumb">
+              <span className="pd-brand-sep">&rsaquo;</span>
+              <span>Dive In</span>
+            </div>
+          </div>
+          <div className="pd-header-actions">
+            <button className="pd-back-btn" onClick={() => navigate('/patient/dashboard/erp')}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="15 18 9 12 15 6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Back
+            </button>
+            <button className="pd-logout-btn" onClick={handleLogout}>Logout</button>
+          </div>
         </div>
       </header>
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { listItemSessions, getSessionDetail } from '../api/erp.api';
+import '../dashboards/PatientDashboard.css';
 import './ERPAIReport.css';
 
 const fmt = (iso) => {
@@ -55,25 +56,36 @@ const ERPAIReport = () => {
 
   const endedWithReport = sessions.filter((s) => s.status === 'ended');
 
+  const handleLogout = () => { logout(); navigate('/'); };
+
   return (
-    <div className="ai-report-container">
+    <div className="air-root">
       {/* Background */}
-      <div className="ai-report-bg">
-        <div className="ai-report-bg-pattern" />
-        <div className="ai-report-deco ai-report-deco-top" />
-        <div className="ai-report-deco ai-report-deco-bottom" />
+      <div className="pd-bg">
+        <div className="pd-bg-grid" />
+        <div className="pd-bg-orb pd-bg-orb--1" />
+        <div className="pd-bg-orb pd-bg-orb--2" />
       </div>
 
       {/* Header */}
-      <header className="ai-report-header">
-        <div className="ai-report-header-inner">
-          <button className="ai-report-ghost-btn" onClick={() => navigate('/patient/dashboard/erp/dive-in')}>
-            ← Back
-          </button>
-          <h1 className="ai-report-logo">Session Reports</h1>
-          <button className="ai-report-ghost-btn" onClick={() => { logout(); navigate('/'); }}>
-            Logout
-          </button>
+      <header className="pd-header">
+        <div className="pd-header-inner">
+          <div className="pd-brand">
+            <span className="pd-brand-logo">Nirbaan</span>
+            <div className="pd-brand-breadcrumb">
+              <span className="pd-brand-sep">&rsaquo;</span>
+              <span>Session Reports</span>
+            </div>
+          </div>
+          <div className="pd-header-actions">
+            <button className="pd-back-btn" onClick={() => navigate('/patient/dashboard/erp/dive-in')}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="15 18 9 12 15 6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Back
+            </button>
+            <button className="pd-logout-btn" onClick={handleLogout}>Logout</button>
+          </div>
         </div>
       </header>
 
@@ -90,7 +102,7 @@ const ERPAIReport = () => {
           <div className="air-loading">Loading sessions…</div>
         ) : sessions.length === 0 ? (
           <div className="air-empty-state">
-            <div className="air-empty-icon">📋</div>
+            <div className="air-empty-icon"></div>
             <p>No sessions found for this obsession yet.</p>
             <button
               className="ai-report-ghost-btn"
@@ -116,7 +128,7 @@ const ERPAIReport = () => {
                     <span className="air-si-duration">{fmtTime(s.accumulated_seconds)}</span>
                   </div>
                   {s.patient_feedback_json && (
-                    <span className="air-si-report-badge">✓ Report</span>
+                    <span className="air-si-report-badge">Report</span>
                   )}
                 </button>
               ))}
@@ -126,7 +138,7 @@ const ERPAIReport = () => {
             <section className="air-detail-panel">
               {!selectedId && (
                 <div className="air-detail-placeholder">
-                  <span className="air-detail-placeholder-icon">📊</span>
+                  <span className="air-detail-placeholder-icon"></span>
                   <p>Select a session to view its report.</p>
                 </div>
               )}
@@ -176,11 +188,11 @@ const ERPAIReport = () => {
                   {/* Patient feedback */}
                   {detail.patient_feedback && (
                     <div className="air-feedback">
-                      <h3 className="air-feedback-title">✨ Your Session Feedback</h3>
+                      <h3 className="air-feedback-title">Your Session Feedback</h3>
 
                       {detail.patient_feedback.wins?.length > 0 && (
                         <div className="air-feedback-block">
-                          <span className="air-fb-label">🏆 Wins From This Session</span>
+                          <span className="air-fb-label">Wins From This Session</span>
                           <ul className="air-fb-list">
                             {detail.patient_feedback.wins.map((w, i) => <li key={i}>{w}</li>)}
                           </ul>
@@ -189,7 +201,7 @@ const ERPAIReport = () => {
 
                       {detail.patient_feedback.reflection?.length > 0 && (
                         <div className="air-feedback-block">
-                          <span className="air-fb-label">💭 Reflections</span>
+                          <span className="air-fb-label">Reflections</span>
                           <ul className="air-fb-list">
                             {detail.patient_feedback.reflection.map((r, i) => <li key={i}>{r}</li>)}
                           </ul>
@@ -198,21 +210,21 @@ const ERPAIReport = () => {
 
                       {detail.patient_feedback.skill_to_practice && (
                         <div className="air-feedback-block">
-                          <span className="air-fb-label">🎯 Skill to Practice</span>
+                          <span className="air-fb-label">Skill to Practice</span>
                           <p className="air-fb-text">{detail.patient_feedback.skill_to_practice}</p>
                         </div>
                       )}
 
                       {detail.patient_feedback.one_micro_goal_next_time && (
                         <div className="air-feedback-block">
-                          <span className="air-fb-label">🚀 Next Session Goal</span>
+                          <span className="air-fb-label">Next Session Goal</span>
                           <p className="air-fb-text">{detail.patient_feedback.one_micro_goal_next_time}</p>
                         </div>
                       )}
 
                       {detail.patient_feedback.reminder && (
                         <div className="air-feedback-reminder">
-                          💡 {detail.patient_feedback.reminder}
+                          {detail.patient_feedback.reminder}
                         </div>
                       )}
                     </div>
@@ -221,7 +233,7 @@ const ERPAIReport = () => {
                   {/* SUDS mini-stats */}
                   {detail.suds_readings?.length > 0 && (
                     <div className="air-suds-stats">
-                      <span className="air-fb-label">📈 SUDS Summary</span>
+                      <span className="air-fb-label">SUDS Summary</span>
                       <div className="air-suds-pills">
                         <span className="air-suds-pill air-suds-pill--first">
                           Start: {detail.suds_readings[0].suds_value}

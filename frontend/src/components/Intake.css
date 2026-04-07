@@ -1,52 +1,39 @@
+/* Intake.css - Dark teal theme */
+
 .intake-container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #A8D5BA 0%, #7FB89A 100%);
-  padding: 2rem;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: 4rem;
+  background: transparent;
+  padding: 0;
+  min-height: unset;
+  display: block;
 }
 
 .intake-card {
   max-width: 800px;
   width: 100%;
-  background: rgba(245, 241, 232, 0.98);
-  border-radius: 8px;
+  background: rgba(15, 32, 28, 0.72);
+  border-radius: 12px;
   padding: 3rem;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  border: 3px solid rgba(127, 184, 154, 0.3);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(125, 212, 188, 0.15);
+  backdrop-filter: blur(12px);
+  margin: 0 auto;
   position: relative;
-}
-
-.intake-card::before {
-  content: '';
-  position: absolute;
-  top: -3px;
-  left: -3px;
-  right: -3px;
-  bottom: -3px;
-  background: linear-gradient(45deg, #A8D5BA, #7FB89A, #A8D5BA);
-  border-radius: 8px;
-  z-index: -1;
-  opacity: 0.5;
 }
 
 .intake-title {
   font-family: 'Georgia', serif;
-  font-size: 2.5rem;
-  color: #2C5F4F;
+  font-size: 2rem;
+  color: #ffffff;
   text-align: center;
   margin-bottom: 0.5rem;
-  font-weight: 700;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-  letter-spacing: 1px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
 }
 
 .intake-subtitle {
   text-align: center;
-  color: #5A6C7D;
-  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.95rem;
   margin-bottom: 2rem;
   font-style: italic;
   font-family: 'Georgia', serif;
@@ -66,15 +53,15 @@
 
 .form-group label {
   font-family: 'Georgia', serif;
-  font-size: 1.1rem;
-  color: #2C5F4F;
-  font-weight: 600;
-  letter-spacing: 0.5px;
+  font-size: 0.95rem;
+  color: #a8e8d4;
+  font-weight: 400;
+  letter-spacing: 0.04em;
 }
 
 .field-hint {
-  font-size: 0.9rem;
-  color: #7FB89A;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.4);
   font-style: italic;
   margin-top: -0.3rem;
 }
@@ -82,20 +69,26 @@
 .vintage-input,
 .vintage-textarea {
   padding: 0.75rem 1rem;
-  border: 2px solid #A8D5BA;
-  border-radius: 4px;
-  background: #FFFFFF;
+  border: 1px solid rgba(125, 212, 188, 0.2);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
   font-family: 'Georgia', serif;
   font-size: 1rem;
-  color: #2C3E50;
+  color: #e8f5e9;
   transition: all 0.3s ease;
+}
+
+.vintage-input::placeholder,
+.vintage-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .vintage-input:focus,
 .vintage-textarea:focus {
   outline: none;
-  border-color: #7FB89A;
-  box-shadow: 0 0 0 3px rgba(168, 213, 186, 0.2);
+  border-color: rgba(125, 212, 188, 0.5);
+  box-shadow: 0 0 0 3px rgba(90, 184, 154, 0.12);
+  background: rgba(255, 255, 255, 0.09);
 }
 
 .vintage-textarea {
@@ -113,33 +106,32 @@
   align-items: center;
   gap: 0.75rem;
   font-family: 'Georgia', serif;
-  font-size: 1.1rem;
-  color: #2C5F4F;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.85);
   cursor: pointer;
 }
 
 .checkbox-label input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   cursor: pointer;
-  accent-color: #7FB89A;
+  accent-color: #7dd4bc;
 }
 
 .nested-field {
   margin-left: 2rem;
-  padding-left: 1rem;
-  border-left: 3px solid #A8D5BA;
-  background: rgba(168, 213, 186, 0.05);
+  border-left: 2px solid rgba(125, 212, 188, 0.3);
+  background: rgba(125, 212, 188, 0.04);
   padding: 1rem;
-  border-radius: 4px;
+  border-radius: 0 6px 6px 0;
 }
 
 /* Issues Section */
 .issue-item {
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.05);
   padding: 1rem;
-  border-radius: 6px;
-  border: 2px solid #A8D5BA;
+  border-radius: 8px;
+  border: 1px solid rgba(125, 212, 188, 0.12);
   margin-bottom: 1rem;
 }
 
@@ -168,16 +160,16 @@
 
 .severity-label {
   font-family: 'Georgia', serif;
-  color: #2C5F4F;
-  font-size: 0.95rem;
+  color: #a8e8d4;
+  font-size: 0.9rem;
   min-width: 70px;
 }
 
 .severity-slider {
   flex: 1;
-  height: 8px;
-  border-radius: 4px;
-  background: linear-gradient(90deg, #A8D5BA 0%, #7FB89A 100%);
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.12);
   outline: none;
   -webkit-appearance: none;
   appearance: none;
@@ -186,77 +178,75 @@
 .severity-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  background: #2C5F4F;
+  background: #7dd4bc;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .severity-slider::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  background: #2C5F4F;
+  background: #7dd4bc;
   cursor: pointer;
   border: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .severity-value {
   font-family: 'Georgia', serif;
   font-weight: 600;
-  color: #2C5F4F;
+  color: #7dd4bc;
   min-width: 30px;
   text-align: center;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
 }
 
 .remove-issue-btn {
   position: absolute;
   top: -0.5rem;
   right: -0.5rem;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background: #e74c3c;
+  background: rgba(231, 76, 60, 0.7);
   color: white;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .remove-issue-btn:hover {
-  background: #c0392b;
+  background: rgba(192, 57, 43, 0.9);
   transform: scale(1.1);
 }
 
 .add-issue-btn {
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #A8D5BA, #7FB89A);
-  color: white;
-  border: none;
+  padding: 0.65rem 1.4rem;
+  background: rgba(90, 184, 154, 0.15);
+  color: #7dd4bc;
+  border: 1px solid rgba(125, 212, 188, 0.3);
   border-radius: 6px;
   font-family: 'Georgia', serif;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 0.95rem;
+  font-weight: 400;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.04em;
   margin-top: 0.5rem;
 }
 
 .add-issue-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background: rgba(90, 184, 154, 0.25);
+  border-color: rgba(125, 212, 188, 0.5);
+  transform: translateY(-1px);
 }
 
 /* Form Actions */
@@ -269,90 +259,91 @@
 
 .submit-btn,
 .edit-btn {
-  padding: 1rem 3rem;
-  background: linear-gradient(135deg, #2C5F4F, #1a4035);
-  color: white;
-  border: none;
+  padding: 0.85rem 2.5rem;
+  background: rgba(90, 184, 154, 0.2);
+  color: #a8e8d4;
+  border: 1px solid rgba(125, 212, 188, 0.35);
   border-radius: 6px;
   font-family: 'Georgia', serif;
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 400;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  letter-spacing: 1px;
+  letter-spacing: 0.06em;
 }
 
 .submit-btn:hover,
 .edit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  background: rgba(90, 184, 154, 0.32);
+  border-color: rgba(125, 212, 188, 0.6);
+  transform: translateY(-1px);
 }
 
 .submit-btn:disabled {
-  opacity: 0.6;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
 .cancel-btn {
-  padding: 1rem 2rem;
+  padding: 0.85rem 2rem;
   background: transparent;
-  color: #2C5F4F;
-  border: 2px solid #7FB89A;
+  color: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 6px;
   font-family: 'Georgia', serif;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .cancel-btn:hover {
-  background: rgba(127, 184, 154, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 /* View Mode */
 .intake-view {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .intake-section {
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.05);
   padding: 1.5rem;
-  border-radius: 6px;
-  border-left: 4px solid #7FB89A;
+  border-radius: 8px;
+  border-left: 3px solid rgba(125, 212, 188, 0.4);
 }
 
 .intake-section h3 {
   font-family: 'Georgia', serif;
-  color: #2C5F4F;
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.5px;
+  color: #a8e8d4;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
 }
 
 .intake-text {
   font-family: 'Georgia', serif;
-  color: #2C3E50;
+  color: rgba(255, 255, 255, 0.8);
   line-height: 1.8;
-  font-size: 1rem;
+  font-size: 0.95rem;
   white-space: pre-wrap;
 }
 
 .intake-details {
   margin-top: 1rem;
   padding: 1rem;
-  background: rgba(168, 213, 186, 0.1);
-  border-radius: 4px;
-  border: 1px solid #A8D5BA;
+  background: rgba(125, 212, 188, 0.06);
+  border-radius: 6px;
+  border: 1px solid rgba(125, 212, 188, 0.12);
 }
 
 .intake-details p {
   font-family: 'Georgia', serif;
-  color: #2C3E50;
+  color: rgba(255, 255, 255, 0.75);
   line-height: 1.8;
   white-space: pre-wrap;
 }
@@ -367,71 +358,62 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  background: white;
-  border-radius: 4px;
-  border: 1px solid #A8D5BA;
+  padding: 0.9rem 1.1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  border: 1px solid rgba(125, 212, 188, 0.1);
 }
 
 .issue-name {
   font-family: 'Georgia', serif;
-  color: #2C3E50;
-  font-size: 1.05rem;
-  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1rem;
+  font-weight: 400;
 }
 
 .severity-badge {
-  padding: 0.4rem 1rem;
-  background: linear-gradient(135deg, #7FB89A, #A8D5BA);
-  color: white;
+  padding: 0.3rem 0.9rem;
+  background: rgba(90, 184, 154, 0.2);
+  color: #7dd4bc;
+  border: 1px solid rgba(125, 212, 188, 0.3);
   border-radius: 20px;
   font-family: 'Georgia', serif;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
 }
 
 /* Messages */
 .error-message {
-  padding: 1rem;
-  background: #fee;
-  border: 2px solid #e74c3c;
+  padding: 0.9rem 1rem;
+  background: rgba(231, 76, 60, 0.12);
+  border: 1px solid rgba(231, 76, 60, 0.4);
   border-radius: 6px;
-  color: #c0392b;
+  color: #ff9b8a;
   font-family: 'Georgia', serif;
   margin-bottom: 1rem;
 }
 
 .success-message {
-  padding: 1rem;
-  background: #e8f8f0;
-  border: 2px solid #7FB89A;
+  padding: 0.9rem 1rem;
+  background: rgba(90, 184, 154, 0.12);
+  border: 1px solid rgba(125, 212, 188, 0.35);
   border-radius: 6px;
-  color: #2C5F4F;
+  color: #a8e8d4;
   font-family: 'Georgia', serif;
   margin-bottom: 1rem;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .intake-container {
-    padding: 1rem;
-  }
-
   .intake-card {
     padding: 1.5rem;
   }
 
   .intake-title {
-    font-size: 2rem;
+    font-size: 1.6rem;
   }
 
   .form-actions {
     flex-direction: column;
-  }
-
-  .submit-btn,
-  .edit-btn,
-  .cancel-btn {
-    width: 100%;
   }
 }

@@ -360,7 +360,6 @@ const PatientSelfMonitoring = ({ isEmbedded = false }) => {
           {!selectedDay && days.length > 0 && (
             <div className="no-days-message">
               <div className="empty-state">
-                <div className="empty-icon">👈</div>
                 <h3>Select a Day</h3>
                 <p>Choose a day from the list to view or add entries</p>
               </div>

@@ -1,30 +1,18 @@
 /* ===== ERP Session Page ===== */
-.session-container {
+.session-root {
   width: 100%;
   min-height: 100vh;
-  background: linear-gradient(135deg, #5a8a7c 0%, #6b9b8d 50%, #7dae9f 100%);
+  background: linear-gradient(160deg, #1a3832 0%, #22453d 45%, #1c3d35 100%);
   font-family: 'Georgia', serif;
   position: relative;
   overflow: hidden;
 }
 
-/* background */
+/* background (legacy — hidden; pd-bg handles it) */
 .session-bg {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
+  display: none;
 }
-.session-bg-pattern {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-image:
-    repeating-linear-gradient(0deg, transparent, transparent 80px,
-      rgba(255,255,255,0.025) 80px, rgba(255,255,255,0.025) 81px),
-    repeating-linear-gradient(90deg, transparent, transparent 80px,
-      rgba(255,255,255,0.025) 80px, rgba(255,255,255,0.025) 81px);
-}
+.session-bg-pattern { display: none; }
 
 /* loader */
 .session-loader {
@@ -35,59 +23,27 @@
   align-items: center;
   justify-content: center;
   gap: 1.5rem;
-  background: linear-gradient(135deg, #5a8a7c 0%, #6b9b8d 100%);
-  color: rgba(255,255,255,0.85);
+  background: linear-gradient(160deg, #1a3832 0%, #22453d 45%, #1c3d35 100%);
+  color: rgba(200, 240, 228, 0.85);
   font-family: 'Georgia', serif;
   font-size: 1.1rem;
 }
 .session-loader-error { color: #ffb0b0; }
 .session-loader button {
-  background: rgba(255,255,255,0.15);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.3);
+  background: rgba(125, 212, 188, 0.15);
+  color: #a8e8d4;
+  border: 1px solid rgba(125, 212, 188, 0.3);
   padding: 0.5rem 1.2rem;
   border-radius: 6px;
   cursor: pointer;
   font-family: 'Georgia', serif;
 }
 
-/* header */
-.session-header {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  background: rgba(100, 145, 132, 0.98);
-  backdrop-filter: blur(25px);
-  box-shadow: 0 4px 25px rgba(0,0,0,0.25);
-  z-index: 1000;
-  padding: 1rem 0;
-  border-bottom: 2px solid rgba(255,255,255,0.18);
-}
-.session-header-inner {
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.session-logo {
-  font-size: 1.4rem;
-  color: #fff;
-  letter-spacing: 0.06em;
-  margin: 0;
-}
-.session-ghost-btn {
-  background: rgba(255,255,255,0.15);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.3);
-  padding: 0.4rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: 'Georgia', serif;
-  font-size: 0.85rem;
-  transition: background 0.2s;
-}
-.session-ghost-btn:hover { background: rgba(255,255,255,0.25); }
+/* header (replaced by pd-*, kept empty) */
+.session-header,
+.session-header-inner,
+.session-logo,
+.session-ghost-btn { display: none; }
 
 /* ─── Main 3-column layout ── */
 .session-main {
@@ -96,8 +52,8 @@
   display: grid;
   grid-template-columns: 380px 1fr 280px;
   gap: 1rem;
-  height: calc(100vh - 68px);
-  margin-top: 68px;
+  height: calc(100vh - 72px);
+  margin-top: 72px;
   padding: 1rem;
   box-sizing: border-box;
   overflow: hidden;
@@ -105,9 +61,9 @@
 
 /* panels */
 .session-panel {
-  background: rgba(255,255,255,0.1);
+  background: rgba(15, 32, 28, 0.58);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(125, 212, 188, 0.18);
   border-radius: 16px;
   overflow: hidden;
   display: flex;
@@ -121,7 +77,7 @@
 /* ─── labels ── */
 .session-label {
   display: block;
-  color: rgba(255,255,255,0.6);
+  color: rgba(125, 212, 188, 0.75);
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.09em;
@@ -148,9 +104,9 @@
 }
 .session-toggle-btn {
   flex: 1;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.18);
-  color: rgba(255,255,255,0.65);
+  background: rgba(15, 32, 28, 0.45);
+  border: 1px solid rgba(125, 212, 188, 0.18);
+  color: rgba(200, 240, 228, 0.65);
   border-radius: 8px;
   padding: 0.5rem 0.5rem;
   cursor: pointer;
@@ -160,14 +116,14 @@
   text-align: center;
 }
 .session-toggle-btn.active {
-  background: rgba(255,255,255,0.9);
-  color: #3d7a6d;
+  background: rgba(125, 212, 188, 0.22);
+  color: #a8e8d4;
   font-weight: bold;
-  border-color: rgba(255,255,255,0.9);
+  border-color: rgba(125, 212, 188, 0.45);
 }
 .session-toggle-btn:not(.active):hover {
-  background: rgba(255,255,255,0.15);
-  color: rgba(255,255,255,0.9);
+  background: rgba(125, 212, 188, 0.1);
+  color: rgba(200, 240, 228, 0.9);
 }
 
 /* ─── ERP view ── */
@@ -190,12 +146,12 @@
 }
 
 .session-obsession-text {
-  color: #fff;
+  color: #e8f5e9;
   font-size: 0.97rem;
   line-height: 1.55;
   margin: 0;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(15, 32, 28, 0.45);
+  border: 1px solid rgba(125, 212, 188, 0.15);
   border-radius: 8px;
   padding: 0.75rem;
 }
@@ -208,17 +164,17 @@
   gap: 0.25rem;
 }
 .session-compulsions-list li {
-  color: rgba(255,255,255,0.82);
+  color: rgba(200, 240, 228, 0.82);
   font-size: 0.88rem;
 }
 
 .session-note-textarea {
   flex: 1;
   min-height: 130px;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(10, 24, 20, 0.45);
+  border: 1px solid rgba(125, 212, 188, 0.2);
   border-radius: 10px;
-  color: #fff;
+  color: #e8f5e9;
   font-family: 'Georgia', serif;
   font-size: 0.92rem;
   padding: 0.75rem;
@@ -227,11 +183,11 @@
   box-sizing: border-box;
   width: 100%;
 }
-.session-note-textarea::placeholder { color: rgba(255,255,255,0.38); }
+.session-note-textarea::placeholder { color: rgba(125, 212, 188, 0.35); }
 .session-note-textarea:focus {
   outline: none;
-  border-color: rgba(255,255,255,0.5);
-  background: rgba(255,255,255,0.15);
+  border-color: rgba(125, 212, 188, 0.5);
+  background: rgba(10, 24, 20, 0.6);
 }
 
 /* ─── Imaginal Exposures view ── */
@@ -251,9 +207,9 @@
   flex-shrink: 0;
 }
 .session-add-card-btn {
-  background: rgba(255,255,255,0.88);
-  color: #3d7a6d;
-  border: none;
+  background: rgba(125, 212, 188, 0.2);
+  color: #a8e8d4;
+  border: 1px solid rgba(125, 212, 188, 0.35);
   width: 34px;
   height: 34px;
   border-radius: 50%;
@@ -267,7 +223,7 @@
   transition: background 0.2s, transform 0.15s;
   flex-shrink: 0;
 }
-.session-add-card-btn:hover { background: #fff; transform: scale(1.1); }
+.session-add-card-btn:hover { background: rgba(125, 212, 188, 0.35); transform: scale(1.1); }
 .session-add-card-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .session-cards-loading,
@@ -286,8 +242,8 @@
 }
 
 .session-imaginal-card {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(15, 32, 28, 0.45);
+  border: 1px solid rgba(125, 212, 188, 0.18);
   border-radius: 12px;
   padding: 0.8rem;
   display: flex;
@@ -323,10 +279,10 @@
 }
 
 .session-card-textarea {
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(10, 24, 20, 0.45);
+  border: 1px solid rgba(125, 212, 188, 0.15);
   border-radius: 8px;
-  color: #fff;
+  color: #e8f5e9;
   font-family: 'Georgia', serif;
   font-size: 0.88rem;
   padding: 0.6rem;
@@ -336,11 +292,11 @@
   width: 100%;
   transition: border-color 0.2s, background 0.2s;
 }
-.session-card-textarea::placeholder { color: rgba(255,255,255,0.35); }
+.session-card-textarea::placeholder { color: rgba(125, 212, 188, 0.3); }
 .session-card-textarea:focus {
   outline: none;
-  border-color: rgba(255,255,255,0.45);
-  background: rgba(255,255,255,0.13);
+  border-color: rgba(125, 212, 188, 0.45);
+  background: rgba(10, 24, 20, 0.62);
 }
 
 /* ── AI-approved audio tapes ── */
@@ -435,7 +391,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 1.25rem 1rem 0.75rem;
-  border-bottom: 1px solid rgba(255,255,255,0.12);
+  border-bottom: 1px solid rgba(125, 212, 188, 0.15);
 }
 .sc-timer-display {
   font-family: 'Courier New', monospace;
@@ -466,7 +422,7 @@
   justify-content: center;
   flex-wrap: wrap;
   padding: 0.9rem 1rem;
-  border-bottom: 1px solid rgba(255,255,255,0.12);
+  border-bottom: 1px solid rgba(125, 212, 188, 0.15);
 }
 .sc-btn {
   padding: 0.45rem 1.1rem;
@@ -492,7 +448,7 @@
   flex-direction: column;
   gap: 0.5rem;
   padding: 0.9rem 1rem;
-  border-bottom: 1px solid rgba(255,255,255,0.12);
+  border-bottom: 1px solid rgba(125, 212, 188, 0.15);
 }
 .sc-suds-label {
   font-size: 0.78rem;
@@ -590,17 +546,17 @@
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-  background: rgba(255,255,255,0.06);
+  background: rgba(10, 24, 20, 0.35);
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(125, 212, 188, 0.15);
 }
 .sc-coach-header {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0.85rem 1.1rem;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  background: rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(125, 212, 188, 0.12);
+  background: rgba(10, 24, 20, 0.3);
   flex-shrink: 0;
 }
 .sc-coach-title {
@@ -804,15 +760,15 @@
   gap: 0.5rem;
   align-items: flex-end;
   padding: 0.7rem 0.9rem;
-  border-top: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid rgba(125, 212, 188, 0.12);
   flex-shrink: 0;
 }
 .sc-chat-input {
   flex: 1;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(10, 24, 20, 0.45);
+  border: 1px solid rgba(125, 212, 188, 0.2);
   border-radius: 8px;
-  color: #fff;
+  color: #e8f5e9;
   font-family: 'Georgia', serif;
   font-size: 0.87rem;
   padding: 0.55rem 0.75rem;
@@ -820,8 +776,8 @@
   outline: none;
   line-height: 1.4;
 }
-.sc-chat-input::placeholder { color: rgba(255,255,255,0.35); }
-.sc-chat-input:focus { border-color: rgba(125,232,200,0.5); background: rgba(255,255,255,0.13); }
+.sc-chat-input::placeholder { color: rgba(125, 212, 188, 0.35); }
+.sc-chat-input:focus { border-color: rgba(125, 212, 188, 0.5); background: rgba(10, 24, 20, 0.6); }
 .sc-chat-send-btn {
   background: rgba(125,232,200,0.3);
   border: 1px solid rgba(125,232,200,0.5);
