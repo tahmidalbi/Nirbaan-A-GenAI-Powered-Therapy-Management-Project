@@ -4,6 +4,7 @@ import {
   updateSessionHomeworks,
   approveSessionHomeworks
 } from '../api/homework.api';
+import { sendLiveSessionTranscriptToTherapySession } from '../api/sessions.api';
 import './ActiveSessions.css';
 
 const ActiveSessions = () => {
@@ -14,6 +15,7 @@ const ActiveSessions = () => {
   const [editHomeworks, setEditHomeworks] = useState([]);
   const [savingSession, setSavingSession] = useState(null);
   const [expandedTranscript, setExpandedTranscript] = useState(null);
+  const [sendingSession, setSendingSession] = useState(null);
 
   useEffect(() => {
     fetchSessions();
@@ -83,6 +85,23 @@ const ActiveSessions = () => {
       setError(typeof err === 'string' ? err : 'Failed to approve homeworks');
     } finally {
       setSavingSession(null);
+    }
+  };
+
+  const handleSendToActiveSession = async (session) => {
+    if (session.transcripts.length === 0) {
+      setError('No transcript available for this session.');
+      return;
+    }
+    try {
+      setSendingSession(session.session_id);
+      await sendLiveSessionTranscriptToTherapySession(session.session_id);
+      // Refresh so the button becomes permanently disabled from server state
+      await fetchSessions();
+    } catch (err) {
+      setError(typeof err === 'string' ? err : 'Failed to send transcript');
+    } finally {
+      setSendingSession(null);
     }
   };
 
@@ -280,6 +299,21 @@ const ActiveSessions = () => {
                             onClick={() => handleEditClick(session)}
                           >
                             Edit Homeworks
+                          </button>
+                          <button
+                            className="as-sendSessionBtn"
+                            onClick={() => handleSendToActiveSession(session)}
+                            disabled={
+                              sendingSession === session.session_id ||
+                              session.sent_to_active_session ||
+                              session.transcripts.length === 0
+                            }
+                          >
+                            {sendingSession === session.session_id
+                              ? 'Sending...'
+                              : session.sent_to_active_session
+                                ? 'Already Sent'
+                                : 'Send in Active Session'}
                           </button>
                           <button
                             className="as-approveBtn"

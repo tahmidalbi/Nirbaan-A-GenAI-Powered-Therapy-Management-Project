@@ -46,11 +46,11 @@ Analyse the conversation and return a JSON object with EXACTLY these keys:
 }
 
 Rules:
+- this is very sensitive topic as we are working with real OCD patients, so only return correnct information about the homework, only give the homework that the therapist actually discussed with the patient during the session, do not make up homework that was not discussed, if no specific homework was given, return an empty list for "homeworks". and if you are confused about some homewoks then leave it out, do not make up homeworks. only deliver that is said in the transcript, do not make up any information that is not explicitly mentioned in the transcript.
 - detected_topics: list of psychological themes/topics discussed (e.g. "anxiety", "family conflict", "exposure hierarchy").
 - therapist_interventions: list of clinical techniques the therapist used (e.g. "Socratic questioning", "psychoeducation", "cognitive restructuring").
 - patient_emotions: list of emotions the patient expressed during the session with intensity level and context.
-- homeworks: list of therapeutic homework assignments for the patient based on the session content. Include practical exercises, journaling tasks, exposure exercises, or behavioral experiments that would help the patient progress. If no specific homework was discussed, suggest appropriate assignments based on the topics and therapeutic approach used.
-- Be specific but concise.
+- homeworks: list of therapeutic homework assignments for the patient based on the session content. the session may Include practical exercises, journaling tasks, exposure exercises, or behavioral experiments. this is very sensitive topic as we are working with real OCD patients, so only return correnct information about the homework, only give the homework that the therapist actually discussed with the patient during the session, do not make up homework that was not discussed, if no specific homework was given, return an empty list for "homeworks". and if you are confused about some homewoks then leave it out, do not make up homeworks. only deliver that is said in the transcript, do not make up any information that is not explicitly mentioned in the transcript. 
 - Return ONLY valid JSON, no markdown, no extra text.
 """
 

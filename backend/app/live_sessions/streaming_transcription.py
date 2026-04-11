@@ -30,7 +30,7 @@ from starlette.websockets import WebSocketState
 
 from app.database.session import SessionLocal
 from app.live_sessions.models import LiveSession, LiveSessionTranscript
-from app.live_sessions.transcription_service import transcription_service
+from app.live_sessions.transcription_service import transcription_service, THERAPY_WHISPER_PROMPT
 
 logger = logging.getLogger(__name__)
 
@@ -105,6 +105,7 @@ async def _transcribe_and_save(
             transcription_service.transcribe_audio,
             open(tmp.name, "rb"),
             language,
+            THERAPY_WHISPER_PROMPT,
         )
     finally:
         try:

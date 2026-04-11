@@ -163,7 +163,11 @@ const VideoCall = ({
 
       rec.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
       rec.onstop = async () => {
-        if (chunks.length > 0) {
+        // Skip if mic was muted — avoid sending silence to Whisper (causes hallucinations)
+        const audioTrack = localStreamRef.current?.getAudioTracks()[0];
+        const micIsActive = audioTrack ? audioTrack.enabled : true;
+
+        if (chunks.length > 0 && micIsActive) {
           const blob = new Blob(chunks, { type: mimeType });
           try {
             const result = await transcribeAudio(blob, {

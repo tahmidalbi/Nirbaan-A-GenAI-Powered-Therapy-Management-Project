@@ -310,9 +310,32 @@
   background: rgba(125, 212, 188, 0.1);
 }
 
-.as-approveBtn {
+.as-sendSessionBtn {
   padding: 10px 20px;
-  background: rgba(125, 212, 188, 0.15);
+  background: rgba(100, 160, 255, 0.12);
+  border: 1px solid rgba(100, 160, 255, 0.35);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #a0c4ff;
+  flex: 1;
+  font-family: 'Garamond', 'Georgia', serif;
+  transition: background 0.18s;
+}
+
+.as-sendSessionBtn:hover {
+  background: rgba(100, 160, 255, 0.22);
+}
+
+.as-sendSessionBtn:disabled {
+  background: rgba(100, 160, 255, 0.05);
+  color: rgba(160, 196, 255, 0.35);
+  border-color: rgba(100, 160, 255, 0.1);
+  cursor: not-allowed;
+}
+
+.as-approveBtn {
   border: 1px solid rgba(125, 212, 188, 0.4);
   border-radius: 8px;
   cursor: pointer;

@@ -94,7 +94,8 @@ async def get_active_sessions_with_homeworks(
             transcripts=transcript_responses,
             analysis_summary=analysis_summary,
             homeworks=ai_homeworks,
-            approved_count=approved_count
+            approved_count=approved_count,
+            sent_to_active_session=session.sent_to_active_session,
         ))
 
     return result
