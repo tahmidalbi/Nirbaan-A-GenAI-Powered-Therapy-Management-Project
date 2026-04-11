@@ -46,7 +46,6 @@ HALLUCINATION_PATTERNS = [
     "bye bye",
     "goodbye",
     "thank you",
-    "you",
     "...",
     "silence",
     "music",
@@ -88,7 +87,7 @@ async def _transcribe_and_save(
     language: str | None,
 ) -> dict | None:
     """Run Whisper on *audio_bytes*, save to DB, return JSON-ready payload."""
-    if not audio_bytes or len(audio_bytes) < 500:
+    if not audio_bytes or len(audio_bytes) < 5000:
         # Too small – likely silence / empty frame
         return None
 
@@ -101,12 +100,28 @@ async def _transcribe_and_save(
         tmp.write(audio_bytes)
         tmp.close()
 
-        result = await asyncio.to_thread(
-            transcription_service.transcribe_audio,
-            open(tmp.name, "rb"),
-            language,
-            THERAPY_WHISPER_PROMPT,
-        )
+        # Get last 3 transcripts for context
+        db = SessionLocal()
+        try:
+            last_entries = db.query(LiveSessionTranscript)\
+                .filter(LiveSessionTranscript.session_id == session_id)\
+                .order_by(LiveSessionTranscript.timestamp.desc())\
+                .limit(3).all()
+
+            previous_context = " ".join([e.text for e in reversed(last_entries)])
+        finally:
+            db.close()
+
+        # Combine with domain prompt
+        combined_prompt = f"{previous_context} {THERAPY_WHISPER_PROMPT}"
+
+        with open(tmp.name, "rb") as audio_file:
+            result = await asyncio.to_thread(
+                transcription_service.transcribe_audio,
+                audio_file,
+                language,
+                combined_prompt,
+            )
     finally:
         try:
             os.unlink(tmp.name)
@@ -116,7 +131,24 @@ async def _transcribe_and_save(
     if not result.get("success") or not result.get("text", "").strip():
         return None
 
-    text = result["text"].strip()
+    raw_text = result["text"].strip()
+
+    # Simple correction layer
+    correction_prompt = f"Fix transcription errors but keep meaning:\n{raw_text}"
+
+    try:
+        correction = await asyncio.to_thread(
+            transcription_service.client.chat.completions.create,
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You correct speech-to-text errors."},
+                {"role": "user", "content": correction_prompt}
+            ]
+        )
+        text = correction.choices[0].message.content.strip()
+    except Exception as e:
+        logger.error(f"[Transcription] Correction failed: {e}")
+        text = raw_text  # fallback to raw Whisper output
 
     # Filter out hallucinations
     if is_hallucination(text):
@@ -173,12 +205,20 @@ async def ws_transcription(websocket: WebSocket, session_id: int):
     logger.info(f"[Transcription WS] {user_type}#{user_id} connected to session {session_id}")
 
     try:
+        audio_buffer = b""
         while True:
             msg = await websocket.receive()
 
             # Handle binary audio data (complete WebM blobs from frontend)
             if "bytes" in msg and msg["bytes"]:
-                audio_bytes = msg["bytes"]
+                audio_buffer += msg["bytes"]
+
+                # Only process when enough audio collected
+                if len(audio_buffer) < 50000:   # ~5–10 sec depending on bitrate
+                    continue
+
+                audio_bytes = audio_buffer
+                audio_buffer = b""
                 logger.info(f"[Transcription WS] Received audio chunk: {len(audio_bytes)} bytes")
 
                 # Process audio in background to not block receiving

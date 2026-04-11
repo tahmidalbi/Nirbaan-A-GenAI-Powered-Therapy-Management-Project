@@ -60,6 +60,7 @@ class TranscriptionService:
             kwargs = {
                 "model": self.model,
                 "file": audio_file,
+                "temperature": 0,   # more deterministic
             }
             
             if language:
