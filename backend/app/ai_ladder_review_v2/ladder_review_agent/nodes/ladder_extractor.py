@@ -22,7 +22,7 @@ def ladder_extractor_node(state: LadderReviewState) -> LadderReviewState:
         return state
 
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    model = os.getenv("LLM_MODEL", "gpt-5.2")
+    model = os.getenv("LLM_MODEL", "gpt-5.3")
 
     prompt = build_ladder_extractor_prompt(ladder_raw)
 

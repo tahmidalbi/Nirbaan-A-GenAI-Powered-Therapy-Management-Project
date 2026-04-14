@@ -44,8 +44,8 @@ def verifier_node(state: Dict[str, Any]) -> Dict[str, Any]:
     history_text = _format_history(chat_history)
 
     llm = ChatOpenAI(
-        model="gpt-5.2",
-        temperature=0,
+        model="gpt-5.3-chat-latest",
+      
     ).with_structured_output(VerifierOutput)
 
     prompt = f"""

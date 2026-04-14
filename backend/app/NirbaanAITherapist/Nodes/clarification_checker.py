@@ -64,8 +64,8 @@ def clarification_checker_node(state: NirbaanAITherapistState) -> Dict[str, Any]
 
 def _get_llm() -> ChatOpenAI:
     return ChatOpenAI(
-        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.2"),
-        temperature=0,
+        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.3-chat-latest"),
+        
     )
 
 

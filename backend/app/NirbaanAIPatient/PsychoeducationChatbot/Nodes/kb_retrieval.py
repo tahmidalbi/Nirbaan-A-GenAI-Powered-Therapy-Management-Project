@@ -78,7 +78,7 @@ class PsychoeducationKBService:
 
 def kb_retrieval_node(state: PsychoeducationState) -> Dict[str, Any]:
     """
-    Retrieve therapist KB chunks using the retrieval query prepared by context_selector.py.
+    Retrieve therapist KB chunks using the retrieval query set by db_picker.
 
     Inputs expected in state:
     - therapist_id

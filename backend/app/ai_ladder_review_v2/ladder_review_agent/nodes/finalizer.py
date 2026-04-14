@@ -103,7 +103,7 @@ def finalizer_node(db: Session, state: LadderReviewState) -> LadderReviewState:
         created_suggestions += 1
 
     review.status = AILadderReviewStatus.completed
-    review.model_name = review.model_name or "gpt-5.2"
+    review.model_name = review.model_name or "gpt-5.3"
     review.error_message = None
 
     db.commit()

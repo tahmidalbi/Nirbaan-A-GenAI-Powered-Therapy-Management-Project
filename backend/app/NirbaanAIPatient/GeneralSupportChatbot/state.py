@@ -52,6 +52,11 @@ class GeneralSupportState(TypedDict, total=False):
     db_last_therapy_session: Optional[Dict[str, Any]]
 
     # ------------------------------------------------------------------
+    # Session summarizer output
+    # ------------------------------------------------------------------
+    session_context_summary: str
+
+    # ------------------------------------------------------------------
     # Retrieval query state
     # ------------------------------------------------------------------
     retrieval_query: str

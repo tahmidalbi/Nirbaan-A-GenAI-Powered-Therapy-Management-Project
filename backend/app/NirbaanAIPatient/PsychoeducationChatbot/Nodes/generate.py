@@ -27,14 +27,12 @@ def generate_node(state: PsychoeducationState) -> Dict[str, Any]:
     Inputs expected in state:
     - user_message
     - recent_chat_history
-    - selected_obsession_compulsion_pairs
-    - selected_progress_snippets
-    - selected_db_context_summary
+    - db_obsession_compulsion_pairs
+    - db_latest_weekly_progress
+    - session_context_summary
     - kb_chunks
-    - kb_context_summary
     - web_used
     - web_results
-    - web_context_summary
 
     Outputs:
     - final_response
@@ -43,13 +41,12 @@ def generate_node(state: PsychoeducationState) -> Dict[str, Any]:
     """
     user_message = (state.get("user_message") or "").strip()
     recent_chat_history = state.get("recent_chat_history") or []
-    selected_pairs = state.get("selected_obsession_compulsion_pairs") or []
-    selected_progress_snippets = state.get("selected_progress_snippets") or []
-    selected_db_context_summary = (state.get("selected_db_context_summary") or "").strip()
+    db_pairs = state.get("db_obsession_compulsion_pairs") or []
+    db_latest_progress = state.get("db_latest_weekly_progress")
     kb_chunks = state.get("kb_chunks") or []
     web_used = bool(state.get("web_used", False))
     web_results = state.get("web_results") or []
-    selected_last_therapy_session = state.get("selected_last_therapy_session")
+    session_context_summary = (state.get("session_context_summary") or "").strip()
 
     if not user_message:
         return {
@@ -76,12 +73,11 @@ def generate_node(state: PsychoeducationState) -> Dict[str, Any]:
     prompt = _build_prompt(
         user_message=user_message,
         recent_chat_history=recent_chat_history,
-        selected_pairs=selected_pairs,
-        selected_progress_snippets=selected_progress_snippets,
-        selected_db_context_summary=selected_db_context_summary,
+        db_pairs=db_pairs,
+        db_latest_progress=db_latest_progress,
         kb_chunks=kb_chunks,
         web_results=web_results if has_web else [],
-        selected_last_therapy_session=selected_last_therapy_session,
+        session_context_summary=session_context_summary,
     )
 
     result: GenerateOutput = structured_llm.invoke(prompt)
@@ -105,8 +101,8 @@ def generate_node(state: PsychoeducationState) -> Dict[str, Any]:
 
 def _get_llm() -> ChatOpenAI:
     return ChatOpenAI(
-        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.2"),
-        temperature=0.2,
+        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.3-chat-latest"),
+        
     )
 
 
@@ -114,31 +110,19 @@ def _build_prompt(
     *,
     user_message: str,
     recent_chat_history: List[Dict[str, str]],
-    selected_pairs: List[Dict[str, Any]],
-    selected_progress_snippets: List[str],
-    selected_db_context_summary: str,
+    db_pairs: List[Dict[str, Any]],
+    db_latest_progress: Any,
     kb_chunks: List[Dict[str, Any]],
     web_results: List[Dict[str, Any]],
-    selected_last_therapy_session: Dict[str, Any] | None,
+    session_context_summary: str,
 ) -> str:
     recent_history_text = _format_recent_chat_history(recent_chat_history)
-    db_context_text = _format_selected_db_context(
-        selected_pairs=selected_pairs,
-        selected_progress_snippets=selected_progress_snippets,
-        selected_db_context_summary=selected_db_context_summary,
+    patient_context_text = _format_patient_context(
+        db_pairs=db_pairs,
+        db_latest_progress=db_latest_progress,
     )
     kb_text = _format_kb_chunks(kb_chunks)
     web_text = _format_web_results(web_results)
-
-    if selected_last_therapy_session:
-        session_text = (
-            f"Session {selected_last_therapy_session.get('session_number', '?')}"
-            f" — {selected_last_therapy_session.get('title', '')}"
-            f" ({selected_last_therapy_session.get('session_date', '')})"
-            f"\n{selected_last_therapy_session.get('transcript', '')}"
-        ).strip()
-    else:
-        session_text = "Not included."
 
     return f"""
 You are an OCD psychoeducation assistant for a therapy platform.
@@ -148,7 +132,7 @@ Answer the patient's question clearly and helpfully using the provided grounded 
 
 Priority of evidence:
 1. Therapist knowledge-base evidence is the highest priority.
-2. Selected patient DB context may be used for personalization if relevant.
+2. Patient context may be used for personalization if relevant.
 3. Web evidence is fallback only and should be used only if therapist KB evidence does not fully cover the point.
 
 Rules:
@@ -158,7 +142,7 @@ Rules:
 4. Keep the response psychoeducational, clear, and supportive.
 5. Do not mention internal retrieval, nodes, databases, or tools.
 6. Do not provide inappropriate reassurance.
-7. If patient-specific context was selected, use it prominently and naturally — reference the patient's actual listed obsessions and compulsions rather than speaking generically. If the patient asks about a topic that matches their known OCD profile, tie the psychoeducation directly to their specific situation.
+7. If patient context is provided, use it to personalize naturally — reference the patient's actual listed obsessions and compulsions rather than speaking generically when their message clearly relates to their OCD profile.
 8. If therapist KB and web evidence overlap, prefer therapist KB framing.
 9. Do not cite raw URLs.
 10. final_grounding_summary should briefly summarize what grounded the answer.
@@ -170,11 +154,11 @@ Patient current message:
 Recent chat history:
 {recent_history_text}
 
-Selected patient DB context (personalize your response using this):
-{db_context_text}
+Patient context (obsessions, compulsions, recent progress — use to personalize when relevant):
+{patient_context_text}
 
-Last therapy session:
-{session_text}
+Last therapy session context (relevant excerpt summary — use when relevant):
+{session_context_summary if session_context_summary else "Not available."}
 
 Therapist KB evidence:
 {kb_text}
@@ -202,36 +186,32 @@ def _format_recent_chat_history(recent_chat_history: List[Dict[str, str]]) -> st
     return "\n".join(lines) if lines else "No recent chat history."
 
 
-def _format_selected_db_context(
+def _format_patient_context(
     *,
-    selected_pairs: List[Dict[str, Any]],
-    selected_progress_snippets: List[str],
-    selected_db_context_summary: str,
+    db_pairs: List[Dict[str, Any]],
+    db_latest_progress: Any,
 ) -> str:
     parts: List[str] = []
 
-    if selected_pairs:
+    if db_pairs:
         pair_lines: List[str] = []
-        for pair in selected_pairs:
-            erp_item_id = pair.get("erp_item_id")
+        for pair in db_pairs:
             obsession = (pair.get("obsession") or "").strip()
             compulsions = pair.get("compulsions") or []
             comp_text = ", ".join(str(c).strip() for c in compulsions if c and str(c).strip())
-
-            line = f"- erp_item_id: {erp_item_id} | obsession: {obsession or 'N/A'}"
+            line = f"- Obsession: {obsession or 'N/A'}"
             if comp_text:
-                line += f" | compulsions: {comp_text}"
+                line += f" | Compulsions: {comp_text}"
             pair_lines.append(line)
+        parts.append("Obsession-compulsion pairs:\n" + "\n".join(pair_lines))
 
-        parts.append("Selected obsession-compulsion pairs:\n" + "\n".join(pair_lines))
+    if db_latest_progress:
+        week = db_latest_progress.get("week_number")
+        detail = (db_latest_progress.get("detailed_progress") or "").strip()
+        if detail:
+            parts.append(f"Latest weekly progress (week {week}):\n{detail}")
 
-    if selected_progress_snippets:
-        parts.append("Selected latest progress report:\n" + "\n".join(f"- {x}" for x in selected_progress_snippets))
-
-    if selected_db_context_summary:
-        parts.append(f"Why this DB context was selected:\n- {selected_db_context_summary}")
-
-    return "\n\n".join(parts).strip() if parts else "No selected patient DB context."
+    return "\n\n".join(parts).strip() if parts else "No patient context available."
 
 
 def _format_kb_chunks(kb_chunks: List[Dict[str, Any]]) -> str:

@@ -45,7 +45,7 @@ def symptom_finder_node(state: LadderReviewState) -> LadderReviewState:
     batch_text = (batch.get("text") or "").strip()
 
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    model = os.getenv("LLM_MODEL", "gpt-5.2")
+    model = os.getenv("LLM_MODEL", "gpt-5.3")
 
     prompt = build_symptom_finder_prompt(
         taxonomy_context_text=taxonomy_ctx,
