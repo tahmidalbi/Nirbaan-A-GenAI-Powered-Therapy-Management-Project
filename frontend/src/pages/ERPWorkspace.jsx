@@ -89,6 +89,27 @@ const ERPWorkspace = () => {
               Start your exposure exercises and track your progress session by session.
             </p>
           </button>
+
+          {/* Education */}
+          <button
+            className="pd-tile erp-tile erp-tile--education"
+            onClick={() => navigate('/patient/dashboard/erp/education')}
+          >
+            <div className="pd-tile-icon">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="8" y="10" width="32" height="28" rx="3" stroke="currentColor" strokeWidth="2.5" fill="none"/>
+                <line x1="16" y1="19" x2="32" y2="19" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="16" y1="25" x2="32" y2="25" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="16" y1="31" x2="24" y2="31" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                <circle cx="24" cy="7" r="3" stroke="currentColor" strokeWidth="2" fill="none"/>
+                <line x1="24" y1="10" x2="24" y2="13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <h2 className="pd-tile-label">Learn About ERP</h2>
+            <p className="erp-tile-desc">
+              Understand what Exposure &amp; Response Prevention is, how it works, and what to expect.
+            </p>
+          </button>
         </div>
       </main>
     </div>

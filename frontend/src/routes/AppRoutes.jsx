@@ -33,6 +33,7 @@ import ERPPlanRecovery from '../pages/ERPPlanRecovery';
 import ERPDiveIn from '../pages/ERPDiveIn';
 import ERPSessionPage from '../pages/ERPSessionPage';
 import ERPAIReport from '../pages/ERPAIReport';
+import PatientERPEducation from '../pages/PatientERPEducation';
 import TherapistERPPatientList from '../pages/TherapistERPPatientList';
 import TherapistERPObsessionList from '../pages/TherapistERPObsessionList';
 import TherapistERPObsessionView from '../pages/TherapistERPObsessionView';
@@ -173,6 +174,16 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['patient']}>
             <ERPPlanRecovery />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - ERP Education */}
+      <Route
+        path="/patient/dashboard/erp/education"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <PatientERPEducation />
           </ProtectedRoute>
         }
       />

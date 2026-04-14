@@ -90,7 +90,7 @@ def generate_session_analysis(session_id: int, db: Session) -> Optional[LiveSess
 
     transcript_text = _build_transcript_text(transcripts)
 
-    llm_model = os.getenv("LLM_MODEL", "gpt-5.2")
+    llm_model = os.getenv("LLM_MODEL", "gpt-5.3-chat-latest")
     client = OpenAI(api_key=api_key)
 
     try:
@@ -100,7 +100,6 @@ def generate_session_analysis(session_id: int, db: Session) -> Optional[LiveSess
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": f"Session transcript:\n\n{transcript_text}"},
             ],
-            temperature=0.3,
             response_format={"type": "json_object"},
         )
 

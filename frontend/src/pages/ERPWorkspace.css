@@ -37,6 +37,14 @@
   padding: 0 2rem;
 }
 
+/* Education tile — centered below the top two */
+.erp-tile--education {
+  grid-column: 1 / -1;
+  max-width: 380px;
+  margin: 0 auto;
+  width: 100%;
+}
+
 /* tile overrides — base styles from pd-tile in PatientDashboard.css */
 .erp-tile {
   flex-direction: column;

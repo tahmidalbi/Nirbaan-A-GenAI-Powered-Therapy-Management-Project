@@ -15,10 +15,10 @@ SchemaT = TypeVar("SchemaT", bound=BaseModel)
 
 class LLMClient:
     """
-    Thin LangChain-based client for GPT-5.2 usage in ERPCoach.
+    Thin LangChain-based client for GPT-5.3 usage in ERPCoach.
 
     Design goals:
-      - One place to control model + temperature
+      - One place to control model
       - One place to enforce structured outputs
       - Built-in retry + optional repair pass
     """
@@ -27,7 +27,6 @@ class LLMClient:
         self,
         *,
         model: Optional[str] = None,
-        temperature: float = 0.2,
         timeout: int = 30,
         max_retries: int = 0,
     ) -> None:
@@ -40,14 +39,13 @@ class LLMClient:
             api_key    = groq_key
             base_url   = "https://api.groq.com/openai/v1"
         else:
-            self.model = model or os.getenv("LLM_MODEL", "gpt-5.2")
+            self.model = model or os.getenv("LLM_MODEL", "gpt-5.3-chat-latest")
             api_key    = os.getenv("OPENAI_API_KEY")
             base_url   = None
 
         # ChatOpenAI reads OPENAI_API_KEY from env too, but we set explicitly if present.
         kwargs: Dict[str, Any] = {
             "model": self.model,
-            "temperature": temperature,
             "timeout": timeout,
             "max_retries": max_retries,  # we handle retries ourselves
         }

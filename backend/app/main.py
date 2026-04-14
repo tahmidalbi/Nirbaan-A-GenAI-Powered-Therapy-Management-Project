@@ -15,6 +15,7 @@ from app.self_monitoring.router import router as self_monitoring_router
 from app.fear_ladder.router import router as fear_ladder_router
 from app.education.fear_ladder.router import router as education_fear_ladder_router
 from app.education.ocd_core.router import router as education_ocd_core_router
+from app.education.erp.router import router as education_erp_router
 
 # sysproj: live video sessions + patient homework
 from app.live_sessions.router import router as live_sessions_router
@@ -105,6 +106,7 @@ def create_app() -> FastAPI:
     app.include_router(fear_ladder_router)
     app.include_router(education_fear_ladder_router)
     app.include_router(education_ocd_core_router)
+    app.include_router(education_erp_router)
 
     # sysproj routers: live video sessions + homework
     app.include_router(live_sessions_router)

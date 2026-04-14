@@ -1,0 +1,311 @@
+/* ERP Education Container */
+.erp-education-container {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(160deg, #1a3832 0%, #22453d 45%, #1c3d35 100%);
+  font-family: 'Georgia', serif;
+}
+
+/* Main */
+.erp-edu-main {
+  position: relative;
+  z-index: 5;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 90px 2rem 3rem;
+}
+
+.erp-edu-content {
+  background: rgba(15, 32, 28, 0.55);
+  border-radius: 12px;
+  padding: 3rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(125, 212, 188, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+.erp-edu-content h2 {
+  color: #ffffff;
+  font-size: 2.1rem;
+  margin-bottom: 2.5rem;
+  text-align: center;
+  font-family: 'Georgia', serif;
+  border-bottom: 2px solid rgba(125, 212, 188, 0.3);
+  padding-bottom: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+}
+
+/* Section blocks */
+.erp-edu-block {
+  margin-bottom: 2.5rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-left: 4px solid rgba(125, 212, 188, 0.5);
+  border-radius: 8px;
+}
+
+.erp-edu-block h3 {
+  color: #a8e8d4;
+  font-size: 1.35rem;
+  margin-bottom: 1.1rem;
+  font-family: 'Georgia', serif;
+  font-weight: 400;
+}
+
+.erp-edu-section-content p,
+.erp-edu-section-content li {
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.8;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.erp-edu-section-content ul,
+.erp-edu-section-content ol {
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.9;
+  padding-left: 2rem;
+}
+
+.erp-edu-section-content li {
+  margin-bottom: 0.6rem;
+}
+
+.erp-edu-section-content strong {
+  color: #a8e8d4;
+  font-weight: 600;
+}
+
+/* Key points */
+.key-points {
+  margin-top: 1.5rem;
+  padding: 1.2rem 1.5rem;
+  background: rgba(125, 212, 188, 0.06);
+  border-radius: 8px;
+  border: 1px solid rgba(125, 212, 188, 0.15);
+}
+
+.key-points h4 {
+  color: #a8e8d4;
+  margin-bottom: 0.8rem;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: sans-serif;
+  font-weight: 600;
+}
+
+.key-points ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.key-points li {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.97rem;
+  line-height: 1.7;
+  padding-left: 1.3rem;
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.key-points li::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  color: #a8e8d4;
+  font-size: 1.1rem;
+}
+
+/* Sources */
+.erp-edu-sources-section {
+  margin-top: 2.5rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  border: 1px solid rgba(125, 212, 188, 0.12);
+}
+
+.erp-edu-sources-section h3 {
+  color: #a8e8d4;
+  font-size: 1.2rem;
+  margin-bottom: 1.2rem;
+  font-family: 'Georgia', serif;
+  font-weight: 400;
+}
+
+.erp-edu-sources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.erp-edu-source-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  font-size: 0.95rem;
+}
+
+.erp-edu-source-type {
+  background: rgba(125, 212, 188, 0.12);
+  color: #a8e8d4;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: sans-serif;
+  letter-spacing: 0.05em;
+}
+
+.erp-edu-source-title {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.erp-edu-source-link {
+  color: #a8e8d4;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.erp-edu-source-link:hover {
+  color: #c8f0e2;
+  text-decoration: underline;
+}
+
+/* Action buttons */
+.erp-edu-actions {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 2px solid rgba(125, 212, 188, 0.2);
+}
+
+.erp-edu-generate-btn {
+  padding: 0.9rem 2.4rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-family: sans-serif;
+}
+
+.erp-edu-generate-btn.primary {
+  background: linear-gradient(135deg, #6B9B8D, #5A8A7D);
+  color: white;
+}
+
+.erp-edu-generate-btn.primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5A8A7D, #4A7A6D);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+.erp-edu-generate-btn.secondary {
+  background: transparent;
+  color: #7dd4bc;
+  border: 1px solid rgba(125, 212, 188, 0.4);
+}
+
+.erp-edu-generate-btn.secondary:hover:not(:disabled) {
+  background: rgba(90, 184, 154, 0.2);
+  color: #a8e8d4;
+  transform: translateY(-2px);
+}
+
+.erp-edu-generate-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Error */
+.erp-edu-error-banner {
+  background: rgba(220, 53, 69, 0.12);
+  color: #f5a0a8;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  border-left: 4px solid rgba(220, 53, 69, 0.6);
+  font-size: 0.97rem;
+  font-family: sans-serif;
+}
+
+/* Loading */
+.erp-edu-loading-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: sans-serif;
+}
+
+.erp-edu-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(125, 212, 188, 0.2);
+  border-top-color: #6B9B8D;
+  border-radius: 50%;
+  animation: erp-edu-spin 1s linear infinite;
+  margin: 0 auto 1.5rem;
+}
+
+@keyframes erp-edu-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Empty state */
+.erp-edu-empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: sans-serif;
+}
+
+.erp-edu-empty-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.erp-edu-empty-state h3 {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.4rem;
+  margin-bottom: 0.8rem;
+  font-weight: 400;
+}
+
+.erp-edu-empty-state p {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Disclaimer */
+.erp-edu-disclaimer {
+  margin-top: 2.5rem;
+  padding: 1.5rem;
+  background: rgba(255, 200, 60, 0.06);
+  border-left: 4px solid rgba(255, 200, 60, 0.35);
+  border-radius: 8px;
+}
+
+.erp-edu-disclaimer p {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+  font-family: sans-serif;
+}
+
+.erp-edu-disclaimer strong {
+  color: rgba(255, 200, 60, 0.85);
+}
