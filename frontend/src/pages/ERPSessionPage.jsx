@@ -32,6 +32,7 @@ import {
 } from 'recharts';
 import '../dashboards/PatientDashboard.css';
 import './ERPSessionPage.css';
+import { useRealtimeVoice } from "../hooks/useRealtimeVoice";
 
 const TOGGLE_ERP       = 'erp';
 const TOGGLE_IMAGINAL  = 'imaginal';
@@ -77,6 +78,24 @@ const ERPSessionPage = () => {
 
   // ── Coach chat ─────────────────────────────────────────────────────────────
   const [chatMessages, setChatMessages]         = useState([]);
+  const [isVoiceMode, setIsVoiceMode]           = useState(false);
+  const { startVoice, stopVoice } = useRealtimeVoice(
+    session?.id,
+    (coachText) => {
+      setChatMessages(prev => [
+        ...prev,
+        { id: Date.now(), role: 'coach', content: coachText, created_at: new Date().toISOString() },
+      ]);
+    },
+    (userText) => {
+      setChatMessages(prev => [
+        ...prev,
+        { id: Date.now(), role: 'patient', content: userText, created_at: new Date().toISOString() },
+      ]);
+    }
+  );
+  const handleStartVoice = () => { setIsVoiceMode(true);  startVoice(); };
+  const handleStopVoice  = () => { setIsVoiceMode(false); stopVoice();  };
   const [chatInput, setChatInput]               = useState('');
   const [chatSending, setChatSending]           = useState(false);
   const [transcriptLoading, setTranscriptLoading] = useState(false);
@@ -842,13 +861,29 @@ const ERPSessionPage = () => {
                   rows={2}
                   disabled={chatSending}
                 />
-                <button
-                  className="sc-chat-send-btn"
-                  onClick={handleCoachSend}
-                  disabled={chatSending || !chatInput.trim()}
-                >
-                  {chatSending ? '…' : '↑'}
-                </button>
+                {/* 🎤 / ⏹ Voice mode button */}
+                {!isVoiceMode ? (
+                  <button
+                    title="Start voice mode"
+                    onClick={handleStartVoice}
+                  >🎤</button>
+                ) : (
+                  <button
+                    title="Exit voice mode"
+                    onClick={handleStopVoice}
+                    style={{ animation: 'pulse 1.2s infinite' }}
+                  >⏹</button>
+                )}
+
+{/* Existing send button */}
+<button
+  className="sc-chat-send-btn"
+  onClick={handleCoachSend}
+  disabled={chatSending || !chatInput.trim()}
+>
+  {chatSending ? '…' : '↑'}
+</button>
+
               </div>
             )}
             {session?.status === 'paused' && !debriefMode && (

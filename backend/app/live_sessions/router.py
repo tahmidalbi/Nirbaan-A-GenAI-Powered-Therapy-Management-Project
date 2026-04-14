@@ -15,8 +15,10 @@ from app.schemas.therapy_session import (
 from app.live_sessions.models import LiveSession, LiveSessionTranscript, LiveSessionAnalysis
 from app.therapists.models import Therapist
 from app.patients.models import Patient
-from app.live_sessions.transcription_service import transcription_service
+from app.therapy_sessions.models import TherapySession
+from app.live_sessions.transcription_service import transcription_service, THERAPY_WHISPER_PROMPT
 from app.live_sessions.analysis_service import generate_session_analysis
+from app.live_sessions.streaming_transcription import is_hallucination
 from app.live_sessions.call_manager import call_manager
 
 router = APIRouter(prefix="/sessions", tags=["Therapy Sessions"])
@@ -198,7 +200,8 @@ async def transcribe_audio(
         result = transcription_service.transcribe_audio_bytes(
             audio_bytes=audio_bytes,
             filename=audio.filename or "audio.webm",
-            language=language
+            language=language,
+            prompt=THERAPY_WHISPER_PROMPT
         )
         
         if not result.get("success"):
@@ -207,8 +210,12 @@ async def transcribe_audio(
                 detail=f"Transcription failed: {result.get('error', 'Unknown error')}"
             )
         
-        transcribed_text = result.get("text", "")
-        
+        transcribed_text = result.get("text", "").strip()
+
+        # Filter Whisper hallucinations (common on silence/muted mic)
+        if is_hallucination(transcribed_text):
+            return {"success": True, "text": "", "transcript_id": None}
+
         # Optionally save to session
         transcript_entry = None
         if session_id and speaker and transcribed_text:
@@ -313,3 +320,71 @@ async def trigger_session_analysis(
     if not analysis:
         raise HTTPException(status_code=500, detail="Failed to generate analysis")
     return analysis
+
+
+@router.post("/{session_id}/send-to-active-session")
+async def send_transcript_to_active_session(
+    session_id: int,
+    db: Session = Depends(get_db),
+):
+    """
+    Format the live session transcript and create a TherapySession record.
+    Can only be done once per live session.
+    """
+    session = db.query(LiveSession).filter(LiveSession.id == session_id).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    if session.sent_to_active_session:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Transcript has already been sent to active session"
+        )
+
+    if not session.transcripts:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No transcripts available for this session"
+        )
+
+    # Format transcripts into readable text
+    sorted_transcripts = sorted(session.transcripts, key=lambda t: t.timestamp)
+    lines = []
+    for t in sorted_transcripts:
+        ts = t.timestamp.strftime("%H:%M:%S")
+        speaker = t.speaker.capitalize()
+        lines.append(f"[{ts}] {speaker}: {t.text}")
+    transcript_text = "\n".join(lines)
+
+    session_date = (session.ended_at or session.started_at).strftime("%Y-%m-%d")
+    ended_display = (session.ended_at or session.started_at).strftime("%B %d, %Y")
+    title = f"Video Call Session \u2014 {ended_display}"
+
+    # Count existing sessions for this patient to get session number
+    existing_count = (
+        db.query(TherapySession)
+        .filter(TherapySession.patient_id == session.patient_id)
+        .count()
+    )
+
+    new_therapy_session = TherapySession(
+        patient_id=session.patient_id,
+        therapist_id=session.therapist_id,
+        session_date=session_date,
+        session_number=existing_count + 1,
+        title=title,
+        transcript=transcript_text,
+        therapist_notes="",
+    )
+    db.add(new_therapy_session)
+
+    # Mark live session as sent
+    session.sent_to_active_session = True
+    db.commit()
+    db.refresh(new_therapy_session)
+
+    return {
+        "success": True,
+        "therapy_session_id": new_therapy_session.id,
+        "title": title,
+    }

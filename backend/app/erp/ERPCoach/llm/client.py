@@ -31,8 +31,18 @@ class LLMClient:
         timeout: int = 30,
         max_retries: int = 0,
     ) -> None:
-        self.model = model or os.getenv("LLM_MODEL", "gpt-5.2")
-        api_key = os.getenv("OPENAI_API_KEY")
+        # Use GROQ_API_KEY_2 + LLM_MODEL_2 if available, else fall back to OpenAI
+        groq_key  = os.getenv("GROQ_API_KEY_2")
+        groq_model = os.getenv("LLM_MODEL_2")
+
+        if groq_key and groq_model:
+            self.model = model or groq_model
+            api_key    = groq_key
+            base_url   = "https://api.groq.com/openai/v1"
+        else:
+            self.model = model or os.getenv("LLM_MODEL", "gpt-5.2")
+            api_key    = os.getenv("OPENAI_API_KEY")
+            base_url   = None
 
         # ChatOpenAI reads OPENAI_API_KEY from env too, but we set explicitly if present.
         kwargs: Dict[str, Any] = {
@@ -43,6 +53,8 @@ class LLMClient:
         }
         if api_key:
             kwargs["api_key"] = api_key
+        if base_url:
+            kwargs["openai_api_base"] = base_url
 
         self.llm = ChatOpenAI(**kwargs)
 

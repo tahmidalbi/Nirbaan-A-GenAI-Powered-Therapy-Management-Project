@@ -11,6 +11,15 @@ export const createTherapySession = async (data) => {
   }
 };
 
+export const sendLiveSessionTranscriptToTherapySession = async (sessionId) => {
+  try {
+    const response = await axiosInstance.post(`/sessions/${sessionId}/send-to-active-session`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.detail || 'Failed to send transcript to active session';
+  }
+};
+
 export const getPatientSessionsTherapist = async (patientId) => {
   try {
     const response = await axiosInstance.get(`/api/therapy-sessions/patient/${patientId}`);

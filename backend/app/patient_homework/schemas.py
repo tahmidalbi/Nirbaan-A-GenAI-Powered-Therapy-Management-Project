@@ -62,6 +62,7 @@ class SessionWithHomeworksResponse(BaseModel):
     analysis_summary: Optional[str]
     homeworks: List[HomeworkItemBase]
     approved_count: int
+    sent_to_active_session: bool = False
 
 
 class EditHomeworksRequest(BaseModel):

@@ -1,4 +1,4 @@
-from sqlalchemy import String, Integer, DateTime, ForeignKey, Text, Float, JSON
+from sqlalchemy import String, Integer, DateTime, ForeignKey, Text, Float, JSON, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 from app.database.base import Base
@@ -12,6 +12,7 @@ class LiveSession(Base):
     patient_id: Mapped[int] = mapped_column(Integer, ForeignKey("patients.id"), nullable=False)
     started_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
     ended_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    sent_to_active_session: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false", nullable=False)
 
     # Relationships
     transcripts: Mapped[list["LiveSessionTranscript"]] = relationship("LiveSessionTranscript", back_populates="session")

@@ -32,6 +32,7 @@ from app.chat.router import router as chat_router
 from app.chat.ep_router import ep_router
 from app.chat.ep_group_router import ep_group_router
 from app.chat.ep_patient_router import ep_patient_router
+from app.erp.voice.realtime import router as voice_router
 
 # Imaginal Script Generator
 from app.ERPScriptGenerator.graph import compile_graph
@@ -121,6 +122,7 @@ def create_app() -> FastAPI:
     app.include_router(ep_router)
     app.include_router(ep_group_router)
     app.include_router(ep_patient_router)
+    app.include_router(voice_router)
 
     # Imaginal Script Generator router
     app.include_router(imaginal_generator_router)

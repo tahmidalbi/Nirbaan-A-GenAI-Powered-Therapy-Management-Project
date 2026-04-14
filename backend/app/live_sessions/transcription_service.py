@@ -8,6 +8,18 @@ from openai import OpenAI
 
 logger = logging.getLogger(__name__)
 
+# Domain-specific prompt for Whisper — improves accuracy for therapy vocabulary.
+# Whisper uses this as prior context to bias towards these words/phrases.
+THERAPY_WHISPER_PROMPT = (
+    "OCD, ERP, exposure and response prevention, fear ladder, SUDS, anxiety, "
+    "obsession, compulsion, avoidance, ritual, homework homework, trigger, "
+    "intrusive thoughts, distress, habituation, therapist, patient, "
+    "cognitive behavioral therapy, rumination, reassurance seeking, "
+    "psychoeducation, neutralizing, checking, contamination, harm, "
+    "uncertainty, coping strategy, relaxation, mindfulness."
+)
+
+
 class TranscriptionService:
     """Service for transcribing audio using OpenAI Whisper API."""
     
@@ -48,6 +60,7 @@ class TranscriptionService:
             kwargs = {
                 "model": self.model,
                 "file": audio_file,
+                "temperature": 0,   # more deterministic
             }
             
             if language:
