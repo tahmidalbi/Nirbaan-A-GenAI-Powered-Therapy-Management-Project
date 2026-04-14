@@ -56,21 +56,21 @@ def generate_helper_message_node(state: Dict[str, Any]) -> Dict[str, Any]:
         progress_text = "No weekly progress report on record."
 
     llm = ChatOpenAI(
-        model="gpt-5-nano",
-        temperature=0.3,
+        model="gpt-5.3-chat-latest",
+        
     ).with_structured_output(HelperMessageOutput)
 
     prompt = f"""You are composing an urgent alert message for a group of human helpers (emergency personnel) 
 who assist therapy patients in real-world situations.
 
-A patient needs in-person human help. Write a clear, concise message that:
+A patient needs human support. Write a clear, concise message that asks a helper to reach out to the patient via chat. Include:
 1. States the patient's name and their situation
 2. Briefly summarizes why help is needed (based on the escalation reasoning)
 3. Includes relevant context from the recent conversation
 4. Highlights key ERP obsessions or compulsions that may be active right now
 5. Notes recent therapy progress so helpers understand the patient's current stage
 6. Notes the patient's address if available
-7. Asks one of the helpers to respond and mark that they're handling it
+7. Asks one of the helpers to respond in chat and mark that they're handling it
 
 Keep the message professional, compassionate, and actionable. Do not include any PHI beyond 
 what's needed for the helpers to respond effectively (they are authorized care team members).

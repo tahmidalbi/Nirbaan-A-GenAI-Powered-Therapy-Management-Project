@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Tuple, Optional
 from openai import OpenAI
 
 
-DEFAULT_MODEL = os.getenv("LLM_MODEL", "gpt-5.2")
+DEFAULT_MODEL = os.getenv("LLM_MODEL", "gpt-5.3")
 
 
 class IntakeSummarizerAgent:
@@ -84,7 +84,6 @@ class IntakeSummarizerAgent:
         # Ask for JSON. We'll parse and validate lightly.
         resp = self.client.chat.completions.create(
             model=self.model,
-            temperature=0.2,
             messages=[
                 {"role": "system", "content": system},
                 {"role": "user", "content": json.dumps(user, ensure_ascii=False)},

@@ -22,39 +22,52 @@ class SufficiencyCheckOutput(BaseModel):
         default="",
         description="The main missing concept that the next retrieval should try to find."
     )
+    refined_query: str = Field(
+        default="",
+        description="An improved retrieval query to use if retrieval is insufficient. Leave empty if retrieval is sufficient."
+    )
 
 
 def sufficiency_checker_node(state: PsychoeducationState) -> Dict[str, Any]:
     """
-    Judge whether the current selected DB context + retrieved KB chunks are enough
-    to answer the patient's question.
+    Judge whether the retrieved KB chunks are enough to answer the patient's question.
+    If insufficient, also produces a refined retrieval query for the next KB search.
 
     Inputs expected in state:
     - user_message
     - recent_chat_history
-    - selected_obsession_compulsion_pairs
-    - selected_progress_snippets
-    - selected_db_context_summary
+    - db_obsession_compulsion_pairs
     - kb_chunks
-    - kb_context_summary
+    - retrieval_query
+    - original_retrieval_query
+    - refined_query_history
+    - retry_count
 
     Outputs:
     - retrieval_sufficient
     - insufficiency_reason
     - missing_concept
+    - retrieval_query  (updated to refined query when insufficient)
+    - refined_query_history
+    - retry_count
     """
     user_message = (state.get("user_message") or "").strip()
     recent_chat_history = state.get("recent_chat_history") or []
-    selected_pairs = state.get("selected_obsession_compulsion_pairs") or []
-    selected_progress_snippets = state.get("selected_progress_snippets") or []
-    selected_db_context_summary = (state.get("selected_db_context_summary") or "").strip()
+    db_pairs = state.get("db_obsession_compulsion_pairs") or []
     kb_chunks = state.get("kb_chunks") or []
+    current_query = (state.get("retrieval_query") or "").strip()
+    original_query = (state.get("original_retrieval_query") or "").strip()
+    refined_query_history = list(state.get("refined_query_history") or [])
+    retry_count = int(state.get("retry_count", 0))
 
     if not user_message:
         return {
             "retrieval_sufficient": False,
             "insufficiency_reason": "No user message was provided.",
             "missing_concept": "patient question",
+            "retrieval_query": current_query,
+            "refined_query_history": refined_query_history,
+            "retry_count": retry_count + 1,
         }
 
     if not kb_chunks:
@@ -62,6 +75,9 @@ def sufficiency_checker_node(state: PsychoeducationState) -> Dict[str, Any]:
             "retrieval_sufficient": False,
             "insufficiency_reason": "No therapist knowledge-base chunks were retrieved.",
             "missing_concept": user_message,
+            "retrieval_query": current_query,
+            "refined_query_history": refined_query_history,
+            "retry_count": retry_count + 1,
         }
 
     llm = _get_llm()
@@ -70,25 +86,45 @@ def sufficiency_checker_node(state: PsychoeducationState) -> Dict[str, Any]:
     prompt = _build_prompt(
         user_message=user_message,
         recent_chat_history=recent_chat_history,
-        selected_pairs=selected_pairs,
-        selected_progress_snippets=selected_progress_snippets,
-        selected_db_context_summary=selected_db_context_summary,
+        db_pairs=db_pairs,
         kb_chunks=kb_chunks,
+        current_query=current_query,
+        original_query=original_query,
+        refined_query_history=refined_query_history,
     )
 
     result: SufficiencyCheckOutput = structured_llm.invoke(prompt)
 
+    if bool(result.retrieval_sufficient):
+        return {
+            "retrieval_sufficient": True,
+            "insufficiency_reason": "",
+            "missing_concept": "",
+            "retrieval_query": current_query,
+            "refined_query_history": refined_query_history,
+            "retry_count": retry_count,
+        }
+
+    # Insufficient: apply the refined query produced in this same LLM call
+    new_query = (result.refined_query or "").strip()
+    if not new_query:
+        new_query = current_query or original_query or user_message
+
+    updated_history = refined_query_history + [new_query]
+
     return {
-        "retrieval_sufficient": bool(result.retrieval_sufficient),
+        "retrieval_sufficient": False,
         "insufficiency_reason": (result.insufficiency_reason or "").strip(),
         "missing_concept": (result.missing_concept or "").strip(),
+        "retrieval_query": new_query,
+        "refined_query_history": updated_history,
+        "retry_count": retry_count + 1,
     }
 
 
 def _get_llm() -> ChatOpenAI:
     return ChatOpenAI(
-        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.2"),
-        temperature=0,
+        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.3-chat-latest"),
     )
 
 
@@ -96,27 +132,27 @@ def _build_prompt(
     *,
     user_message: str,
     recent_chat_history: List[Dict[str, str]],
-    selected_pairs: List[Dict[str, Any]],
-    selected_progress_snippets: List[str],
-    selected_db_context_summary: str,
+    db_pairs: List[Dict[str, Any]],
     kb_chunks: List[Dict[str, Any]],
+    current_query: str,
+    original_query: str,
+    refined_query_history: List[str],
 ) -> str:
     recent_history_text = _format_recent_chat_history(recent_chat_history)
-    selected_db_text = _format_selected_db_context(
-        selected_pairs=selected_pairs,
-        selected_progress_snippets=selected_progress_snippets,
-        selected_db_context_summary=selected_db_context_summary,
-    )
+    patient_context_text = _format_patient_context(db_pairs=db_pairs)
     kb_chunks_text = _format_kb_chunks(kb_chunks)
+    previous_queries_text = (
+        "\n".join(f"- {q}" for q in refined_query_history) if refined_query_history else "None"
+    )
 
     return f"""
 You are checking whether the currently retrieved evidence is sufficient for an OCD psychoeducation chatbot to answer a patient well.
 
 Your task is NOT to answer the patient.
-Your task is ONLY to judge whether the current evidence is enough.
+Your task is ONLY to judge whether the current evidence is enough, and if not, produce an improved retrieval query.
 
 Evidence available:
-1. Selected patient-specific database context
+1. Patient context (obsession-compulsion pairs)
 2. Retrieved therapist knowledge-base chunks
 
 Decision rules:
@@ -124,8 +160,10 @@ Decision rules:
 2. If the evidence is too generic, off-topic, incomplete, or misses an important concept, mark retrieval_sufficient=false.
 3. If insufficient, explain briefly what is missing.
 4. If insufficient, provide a short missing_concept phrase that will help improve the next retrieval query.
-5. Do not invent missing patient facts.
-6. Be strict. It is better to trigger another retrieval than to pretend weak evidence is enough.
+5. If insufficient, write a refined_query: an improved, semantically rich retrieval query focused on the missing concept. Use OCD/ERP terminology when helpful. Do not repeat a previous query.
+6. If sufficient, leave refined_query empty.
+7. Do not invent missing patient facts.
+8. Be strict. It is better to trigger another retrieval than to pretend weak evidence is enough.
 
 Patient current message:
 {user_message}
@@ -133,16 +171,26 @@ Patient current message:
 Recent chat history:
 {recent_history_text}
 
-Selected patient DB context:
-{selected_db_text}
+Patient context (obsession-compulsion pairs):
+{patient_context_text}
 
 Retrieved therapist KB chunks:
 {kb_chunks_text}
+
+Original retrieval query:
+{original_query or current_query}
+
+Current retrieval query:
+{current_query}
+
+Previous refined queries:
+{previous_queries_text}
 
 Return structured output with:
 - retrieval_sufficient
 - insufficiency_reason
 - missing_concept
+- refined_query (only when retrieval_sufficient=false)
 """.strip()
 
 
@@ -160,36 +208,21 @@ def _format_recent_chat_history(recent_chat_history: List[Dict[str, str]]) -> st
     return "\n".join(lines) if lines else "No recent chat history."
 
 
-def _format_selected_db_context(
-    *,
-    selected_pairs: List[Dict[str, Any]],
-    selected_progress_snippets: List[str],
-    selected_db_context_summary: str,
-) -> str:
-    parts: List[str] = []
+def _format_patient_context(*, db_pairs: List[Dict[str, Any]]) -> str:
+    if not db_pairs:
+        return "No patient context available."
 
-    if selected_pairs:
-        pair_lines: List[str] = []
-        for pair in selected_pairs:
-            erp_item_id = pair.get("erp_item_id")
-            obsession = (pair.get("obsession") or "").strip()
-            compulsions = pair.get("compulsions") or []
-            comp_text = ", ".join(str(c).strip() for c in compulsions if c and str(c).strip())
+    pair_lines: List[str] = []
+    for pair in db_pairs:
+        obsession = (pair.get("obsession") or "").strip()
+        compulsions = pair.get("compulsions") or []
+        comp_text = ", ".join(str(c).strip() for c in compulsions if c and str(c).strip())
+        line = f"- Obsession: {obsession or 'N/A'}"
+        if comp_text:
+            line += f" | Compulsions: {comp_text}"
+        pair_lines.append(line)
 
-            line = f"- erp_item_id: {erp_item_id} | obsession: {obsession or 'N/A'}"
-            if comp_text:
-                line += f" | compulsions: {comp_text}"
-            pair_lines.append(line)
-
-        parts.append("Selected obsession-compulsion pairs:\n" + "\n".join(pair_lines))
-
-    if selected_progress_snippets:
-        parts.append("Selected latest progress report:\n" + "\n".join(f"- {x}" for x in selected_progress_snippets))
-
-    if selected_db_context_summary:
-        parts.append(f"Why this DB context was selected:\n- {selected_db_context_summary}")
-
-    return "\n\n".join(parts).strip() if parts else "No selected patient DB context."
+    return "Obsession-compulsion pairs:\n" + "\n".join(pair_lines)
 
 
 def _format_kb_chunks(kb_chunks: List[Dict[str, Any]]) -> str:

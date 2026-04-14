@@ -25,6 +25,7 @@ def generate_node(state: GeneralSupportState) -> Dict[str, Any]:
     db_latest_progress = state.get("db_latest_weekly_progress")
     db_last_therapy_session = state.get("db_last_therapy_session")
     kb_context_summary = (state.get("kb_context_summary") or "").strip()
+    session_context_summary = (state.get("session_context_summary") or "").strip()
 
     used_sources = _collect_sources(state.get("kb_chunks") or [])
 
@@ -36,7 +37,7 @@ def generate_node(state: GeneralSupportState) -> Dict[str, Any]:
         recent_chat_history=recent_chat_history,
         db_pairs=db_pairs,
         db_latest_progress=db_latest_progress,
-        db_last_therapy_session=db_last_therapy_session,
+        session_context_summary=session_context_summary,
         kb_context_summary=kb_context_summary,
     )
 
@@ -55,8 +56,8 @@ def generate_node(state: GeneralSupportState) -> Dict[str, Any]:
 
 def _get_llm() -> ChatOpenAI:
     return ChatOpenAI(
-        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.2"),
-        temperature=0.4,
+        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.3-chat-latest"),
+        
     )
 
 
@@ -71,36 +72,36 @@ def _build_prompt(
     recent_chat_history: List[Dict[str, str]],
     db_pairs: List[Dict[str, Any]],
     db_latest_progress: Dict[str, Any] | None,
-    db_last_therapy_session: Dict[str, Any] | None,
+    session_context_summary: str,
     kb_context_summary: str,
 ) -> str:
     recent_history_text = _format_chat_history(recent_chat_history)
     patient_context_text = _format_patient_context(
         db_pairs=db_pairs,
         db_latest_progress=db_latest_progress,
-        db_last_therapy_session=db_last_therapy_session,
     )
 
     return f"""
 You are a supportive OCD therapy assistant helping a patient between therapy sessions.
 
-Your role is to provide therapist KB grounded support consistent with OCD treatment principles.
+Your role is to provide grounded, warm support consistent with OCD/ERP treatment principles, based on the therapist's knowledge base.
 
-Patient is already doing therapy under a therapist, so do not suggest to see a therapist or a crisis line. Just provide support consistent with what a therapist-assistant might say to help them cope in the moment, based on the therapist KB.
+The patient is already in therapy. Do not suggest they see a therapist or call a crisis line. Respond as a knowledgeable, caring coach who knows their situation.
 
 CRITICAL RULES:
 
-1. You must use the therapist KB guidance as the foundation for your response.
-2. DO NOT provide reassurance about feared outcomes.
-3. DO NOT guarantee safety or certainty.
-4. DO NOT help the patient neutralize intrusive thoughts.
-5. Encourage tolerance of uncertainty.
-6. Encourage response prevention rather than rituals.
-7. Validate emotional difficulty without validating OCD fears.
-8. No need to ask patient if they are feeling any self-harm urge, just provide support consistent with OCD treatment principles all grounded on therapist KB.
-9. Do not ask to do something for a certain time, like don't respond with timer based instructions.
-10. HARM OCD RULE: If the patient has harm-themed obsessions or is describing harm intrusive thoughts, treat these as ego-dystonic OCD intrusive thoughts — NOT as genuine intent or actual risk. Do NOT treat the patient as a safety risk, do NOT suggest crisis lines or emergency services, and do NOT ask if they want to hurt themselves or others. Harm OCD thoughts are unwanted and distressing to the patient precisely because they are against their values. Respond with OCD-consistent support.
-11. PERSONALIZATION: The patient's specific obsessions, compulsions, and progress are provided below. Always tailor your response to the patient's actual listed obsessions and compulsions rather than speaking generically. If the patient asks how to handle something and their OCD profile is relevant, reference their specific items naturally.
+1. Ground your response in the therapist KB guidance provided below. That is your primary source.
+2. If no therapist KB grounding is available, keep the response brief, empathetic, and based only on general OCD/ERP principles — do not fabricate clinical guidance.
+3. DO NOT provide reassurance about feared outcomes.
+4. DO NOT guarantee safety or certainty.
+5. DO NOT help the patient neutralize intrusive thoughts.
+6. Encourage tolerance of uncertainty.
+7. Encourage response prevention rather than rituals.
+8. Validate the emotional difficulty without validating the OCD fear itself.
+9. Do not ask about self-harm. Just provide OCD-consistent support grounded on the therapist KB.
+10. Do not give timer-based instructions (e.g., "do this for 10 minutes").
+11. HARM OCD RULE: If the patient has harm-themed obsessions or intrusive thoughts, treat these as ego-dystonic OCD — NOT genuine intent or risk. Do NOT suggest crisis lines or ask if they want to hurt themselves or others. Respond with OCD-consistent support.
+12. PERSONALIZATION: Patient-specific context is provided below (their obsessions, compulsions, progress, last session themes). Use it naturally when it is clearly relevant to their current message — for example, if their message relates directly to one of their listed obsessions or something covered in the last session, reference it by name rather than speaking generically. Do not force personalization when the message is general.
 
 Patient message:
 {user_message}
@@ -108,21 +109,19 @@ Patient message:
 Recent conversation:
 {recent_history_text}
 
-Patient context (use this to personalize every response):
+Patient context (obsessions, compulsions, recent progress — use to personalize when relevant):
 {patient_context_text}
 
-Therapist KB grounding:
+Last therapy session context (relevant excerpt summary — use to connect response to recent session themes):
+{session_context_summary or "Not available."}
+
+Therapist KB grounding (your primary foundation — prioritize this):
 {kb_context_summary or "No therapist KB grounding available."}
 
-Instructions:
-
-- Provide compassionate, calm support.
-- Help the patient tolerate uncertainty rather than eliminate it.
-- Encourage ERP-consistent responses when relevant.
-- Avoid sounding clinical or robotic.
-- Avoid sounding clinical or robotic.
-- Speak naturally like a supportive coach.
-- Keep the response supportive, grounded, and not overly long.
+Response style:
+- Compassionate, calm, and natural — like a supportive coach, not a clinical manual.
+- Speak directly to the patient in second person.
+- Keep it focused and not overly long.
 
 Write the final response to the patient.
 """.strip()
@@ -148,7 +147,6 @@ def _format_patient_context(
     *,
     db_pairs: List[Dict[str, Any]],
     db_latest_progress: Dict[str, Any] | None,
-    db_last_therapy_session: Dict[str, Any] | None,
 ) -> str:
     parts: List[str] = []
 
@@ -169,14 +167,5 @@ def _format_patient_context(
         detail = (db_latest_progress.get("detailed_progress") or "").strip()
         if detail:
             parts.append(f"Latest weekly progress (week {week}):\n{detail}")
-
-    if db_last_therapy_session:
-        session_text = (
-            f"Session {db_last_therapy_session.get('session_number', '?')}"
-            f" — {db_last_therapy_session.get('title', '')}"
-            f" ({db_last_therapy_session.get('session_date', '')})"
-            f"\n{db_last_therapy_session.get('transcript', '')}"
-        ).strip()
-        parts.append(f"Last therapy session:\n{session_text}")
 
     return "\n\n".join(parts).strip() if parts else "No patient context available."

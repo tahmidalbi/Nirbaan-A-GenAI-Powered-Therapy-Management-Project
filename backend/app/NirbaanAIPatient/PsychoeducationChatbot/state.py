@@ -59,13 +59,9 @@ class PsychoeducationState(TypedDict, total=False):
     db_last_therapy_session: Optional[Dict[str, Any]]
 
     # ------------------------------------------------------------------
-    # Selected DB context chosen by context_selector.py
+    # Session summarizer output
     # ------------------------------------------------------------------
-    needs_personalization: bool
-    selected_obsession_compulsion_pairs: List[ObsessionCompulsionPair]
-    selected_progress_snippets: List[str]
-    selected_db_context_summary: str
-    selected_last_therapy_session: Optional[Dict[str, Any]]
+    session_context_summary: str
 
     # ------------------------------------------------------------------
     # Retrieval query state

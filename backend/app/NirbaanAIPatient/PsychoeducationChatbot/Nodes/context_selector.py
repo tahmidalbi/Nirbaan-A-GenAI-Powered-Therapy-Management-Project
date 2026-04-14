@@ -24,7 +24,16 @@ class ContextSelectorOutput(BaseModel):
     )
     include_last_therapy_session: bool = Field(
         default=False,
-        description="Whether the last therapy session transcript should be included."
+        description="Whether the last therapy session is relevant to the patient's current message."
+    )
+    session_context_summary: str = Field(
+        default="",
+        description=(
+            "If include_last_therapy_session=True: a concise 150-200 word summary of the "
+            "parts of the therapy session transcript that are relevant to the patient's "
+            "current message. Written in third-person summary style. Empty string if "
+            "include_last_therapy_session=False."
+        )
     )
     selected_db_context_summary: str = Field(
         default="",
@@ -102,7 +111,12 @@ def context_selector_node(state: PsychoeducationState) -> Dict[str, Any]:
         latest_progress=latest_progress,
     )
 
-    selected_last_therapy_session = db_last_therapy_session if result.include_last_therapy_session else None
+    session_context_summary = ""
+    if result.include_last_therapy_session and db_last_therapy_session:
+        session_context_summary = (result.session_context_summary or "").strip()
+        selected_last_therapy_session = db_last_therapy_session
+    else:
+        selected_last_therapy_session = None
 
     actually_needs_personalization = bool(
         result.needs_personalization and (selected_pairs or selected_progress_snippets or selected_last_therapy_session)
@@ -123,6 +137,7 @@ def context_selector_node(state: PsychoeducationState) -> Dict[str, Any]:
         "selected_progress_snippets": selected_progress_snippets,
         "selected_db_context_summary": db_context_summary,
         "selected_last_therapy_session": selected_last_therapy_session,
+        "session_context_summary": session_context_summary,
         "retrieval_query": retrieval_query,
         "original_retrieval_query": retrieval_query,
     }
@@ -130,8 +145,8 @@ def context_selector_node(state: PsychoeducationState) -> Dict[str, Any]:
 
 def _get_llm() -> ChatOpenAI:
     return ChatOpenAI(
-        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.2"),
-        temperature=0,
+        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.3-chat-latest"),
+        
     )
 
 
@@ -163,6 +178,7 @@ Rules:
 6. If you set include_latest_progress_report=true, the full latest weekly progress report will be included later.
 7. Keep the selection minimal and relevant.
 8. Prefer fewer ERP items over too many items.
+9. If include_last_therapy_session=True, also write session_context_summary: a concise 150-200 word summary of only the parts of the transcript relevant to the patient's current message. Use third-person summary style (e.g., "The therapist discussed..."). If include_last_therapy_session=False, leave session_context_summary empty.
 
 Patient current message:
 {user_message}
@@ -184,6 +200,7 @@ Return structured output with:
 - selected_erp_item_ids
 - include_latest_progress_report
 - include_last_therapy_session
+- session_context_summary
 - selected_db_context_summary
 """.strip()
 
@@ -262,7 +279,7 @@ def _format_last_therapy_session(last_therapy_session: Optional[Dict[str, Any]])
         f"session_number: {session_number}",
         f"title: {title or 'N/A'}",
         f"session_date: {session_date}",
-        f"transcript: {transcript[:500]}{'...' if len(transcript) > 500 else ''}",
+        f"transcript:\n{transcript}",
     ]
     return "\n".join(lines)
 

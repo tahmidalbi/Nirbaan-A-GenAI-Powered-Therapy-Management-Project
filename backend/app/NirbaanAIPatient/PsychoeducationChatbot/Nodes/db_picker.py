@@ -12,16 +12,18 @@ from app.NirbaanAIPatient.PsychoeducationChatbot.state import PsychoeducationSta
 
 def db_picker_node(state: PsychoeducationState, db: Session) -> Dict[str, Any]:
     """
-    Load raw DB context candidates for the psychoeducation graph.
+    Load raw DB context for the psychoeducation graph.
 
     This node fetches:
     - all ERP obsession/compulsion pairs for the patient
     - the latest weekly progress report for the patient
+    - the last therapy session transcript
 
-    It does NOT decide relevance. That is the job of context_selector.py.
+    It also sets the initial retrieval query from the user message.
     """
 
     patient_id = state["patient_id"]
+    user_message = (state.get("user_message") or "").strip()
 
     obsession_compulsion_pairs = _load_erp_pairs(db=db, patient_id=patient_id)
     latest_weekly_progress = _load_latest_weekly_progress(db=db, patient_id=patient_id)
@@ -31,6 +33,8 @@ def db_picker_node(state: PsychoeducationState, db: Session) -> Dict[str, Any]:
         "db_obsession_compulsion_pairs": obsession_compulsion_pairs,
         "db_latest_weekly_progress": latest_weekly_progress,
         "db_last_therapy_session": last_therapy_session,
+        "retrieval_query": user_message,
+        "original_retrieval_query": user_message,
     }
 
 

@@ -24,7 +24,7 @@ def checker_node(state: LadderReviewState) -> LadderReviewState:
     extracted_json = json.dumps({"candidates": state.batch_candidates or []}, ensure_ascii=False)
 
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    model = os.getenv("LLM_MODEL", "gpt-5.2")
+    model = os.getenv("LLM_MODEL", "gpt-5.3")
 
     prompt = build_checker_prompt(
         batch_text=batch_text,

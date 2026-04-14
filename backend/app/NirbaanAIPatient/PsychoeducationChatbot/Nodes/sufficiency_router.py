@@ -14,12 +14,12 @@ def sufficiency_router(state: PsychoeducationState) -> str:
     """
     retrieval_sufficient = bool(state.get("retrieval_sufficient", False))
     retry_count = int(state.get("retry_count", 0))
-    max_retries = int(state.get("max_retries", 2))
+    max_retries = int(state.get("max_retries", 1))
 
     if retrieval_sufficient:
         return "generate"
 
-    if retry_count < max_retries:
+    if retry_count <= max_retries:
         return "refine_query"
 
     return "web_search"

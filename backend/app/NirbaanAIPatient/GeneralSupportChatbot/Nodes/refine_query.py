@@ -24,6 +24,7 @@ def refine_query_node(state: GeneralSupportState) -> Dict[str, Any]:
     recent_chat_history = state.get("recent_chat_history") or []
     db_pairs = state.get("db_obsession_compulsion_pairs") or []
     db_latest_progress = state.get("db_latest_weekly_progress")
+    session_context_summary = (state.get("session_context_summary") or "").strip()
 
     if not user_message:
         return {
@@ -39,6 +40,7 @@ def refine_query_node(state: GeneralSupportState) -> Dict[str, Any]:
         recent_chat_history=recent_chat_history,
         db_pairs=db_pairs,
         db_latest_progress=db_latest_progress,
+        session_context_summary=session_context_summary,
     )
 
     result: RefineQueryOutput = structured_llm.invoke(prompt)
@@ -55,8 +57,7 @@ def refine_query_node(state: GeneralSupportState) -> Dict[str, Any]:
 
 def _get_llm() -> ChatOpenAI:
     return ChatOpenAI(
-        model=("gpt-5.2"),
-        temperature=0,
+        model=("gpt-5.3-chat-latest")
     )
 
 
@@ -66,6 +67,7 @@ def _build_prompt(
     recent_chat_history: List[Dict[str, str]],
     db_pairs: List[Dict[str, Any]],
     db_latest_progress: Optional[Dict[str, Any]],
+    session_context_summary: str,
 ) -> str:
     recent_history_text = _format_recent_chat_history(recent_chat_history)
     db_context_text = _format_db_context(db_pairs=db_pairs, db_latest_progress=db_latest_progress)
@@ -90,10 +92,11 @@ Write a retrieval-friendly, keyword-rich query that will help find therapist gui
 Rules:
 1. Use clinical OCD / ERP terminology (e.g., "response prevention", "tolerance of uncertainty", "intrusive thoughts").
 2. If patient DB context is relevant to the message, incorporate it naturally into the retrieval query.
-3. Do not invent patient facts.
-4. Do not write a supportive response.
-5. Output a single retrieval query string.
-6. Maximize semantic richness for cosine similarity matching against clinical texts.
+3. If the session context summary is relevant, incorporate the key themes into the retrieval query.
+4. Do not invent patient facts.
+5. Do not write a supportive response.
+6. Output a single retrieval query string.
+7. Maximize semantic richness for cosine similarity matching against clinical texts.
 
 Patient current message:
 {user_message}
@@ -103,6 +106,9 @@ Recent chat history:
 
 Patient DB context:
 {db_context_text}
+
+Last therapy session context (relevant excerpt summary):
+{session_context_summary or "Not available."}
 
 Return structured output with:
 - retrieval_query
