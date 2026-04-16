@@ -99,16 +99,15 @@ const OCDTools = () => {
             <span className="pd-tile-sub">Therapist-approved scripts</span>
           </button>
 
-          <button className="pd-tile pd-tile--ai" onClick={() => console.log('Anti-Reassurance Chatbot clicked')}>
+          <button className="pd-tile pd-tile--ai" onClick={() => navigate('/patient/dashboard/tools/ocd/relapse-prevention')}>
             <span className="pd-tile-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round" />
-                <line x1="12" y1="8" x2="12" y2="12" strokeLinecap="round" strokeLinejoin="round" />
-                <line x1="12" y1="16" x2="12.01" y2="16" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" />
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" strokeLinecap="round" strokeLinejoin="round" />
+                <polyline points="9 12 11 14 15 10" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </span>
-            <span className="pd-tile-label">Anti-Reassurance Chatbot</span>
-            <span className="pd-tile-sub">Support without reassurance</span>
+            <span className="pd-tile-label">Relapse Prevention</span>
+            <span className="pd-tile-sub">Stay on track after setbacks</span>
           </button>
 
         </div>

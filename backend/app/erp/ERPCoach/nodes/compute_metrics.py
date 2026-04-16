@@ -32,7 +32,7 @@ def compute_metrics_node(state: Dict[str, Any]) -> Dict[str, Any]:
 
     # ── Thresholds ────────────────────────────────────────────────────────────
     # TODO: change reminder_seconds back to 300 (5 min) for production
-    reminder_seconds = int(state.get("rate_reminder_seconds", 120))  # 2 minutes
+    reminder_seconds = int(state.get("rate_reminder_seconds", 600))  # 10 minutes
     # Cooldown must be less than reminder_seconds so it doesn't block the next reminder.
     # Default: 60 s (half the reminder window) so the agent can't spam but reminders still fire.
     cooldown_seconds = int(state.get("checkin_cooldown_seconds", 60))
@@ -96,10 +96,15 @@ def compute_metrics_node(state: Dict[str, Any]) -> Dict[str, Any]:
         if last_spike_notified_suds is None:
             # Never notified before → allow first spike message
             spike_flag = True
-        elif suds_latest is not None and suds_latest > last_spike_notified_suds:
-            # SUDS climbed higher than the last notification level → new spike
+        elif suds_previous is not None and suds_previous <= last_spike_notified_suds - 15:
+            # SUDS dropped significantly below the last notified level before rising again.
+            # The patient's anxiety came down and has spiked fresh — treat as a new event.
             spike_flag = True
-        # else: same or lower SUDS than what we already notified → suppress
+        elif suds_latest is not None and suds_latest >= last_spike_notified_suds + 10:
+            # SUDS climbed at least 10 points above the last notification level → new spike
+            # A smaller rise (e.g. +1 or +2) does not warrant another message
+            spike_flag = True
+        # else: same or lower SUDS, or rise too small → suppress
 
     # ── Trend hint ────────────────────────────────────────────────────────────
     trend = "stable"

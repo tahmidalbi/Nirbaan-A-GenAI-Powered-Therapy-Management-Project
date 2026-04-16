@@ -35,7 +35,6 @@ function ClarificationCard({ question, loading, onSubmit, onCancel }) {
   return (
     <div className="nait-clarification-card">
       <div className="nait-clarification-header">
-        <span className="nait-clarification-icon">🔍</span>
         <span className="nait-clarification-label">Clarification needed</span>
       </div>
       <p className="nait-clarification-question">{question}</p>

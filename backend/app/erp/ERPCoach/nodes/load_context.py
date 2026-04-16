@@ -56,7 +56,7 @@ def load_context_node(state: Dict[str, Any]) -> Dict[str, Any]:
         now=now_utc(),
     )
 
-    exercise_text = safe_text_clip(bundle.exercise_text, max_chars=1200)
+    exercise_text = bundle.exercise_text
     last_therapy_session_text = storage.get_last_therapy_session(bundle.session.patient_id)
 
     last_patient_message_at = storage.get_last_patient_message_at(session_id)

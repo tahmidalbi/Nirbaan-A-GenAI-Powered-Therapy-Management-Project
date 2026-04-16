@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import List, Optional
 
 
-def _bullet_list(items: List[str], *, max_items: int = 12) -> str:
+def _bullet_list(items: List[str], *, max_items: int = 999) -> str:
     items = [x.strip() for x in (items or []) if x and x.strip()]
     items = items[:max_items]
     if not items:
@@ -92,13 +92,13 @@ Signals (use them, but variety guard above overrides):
 
 Exposure context:
 Obsessive fear / obsession:
-{_clip(obsession, 1200)}
+{obsession}
 
 Compulsions to prevent (never encourage these):
 {_bullet_list(compulsions)}
 
 Exercise note for this session:
-{_clip(exercise_text, 1200) if exercise_text else "(none)"}
+{exercise_text if exercise_text else "(none)"}
 
 Session stats (for your situational awareness; don't obsess over them):
 - Elapsed seconds: {elapsed_seconds:.0f}
@@ -110,7 +110,7 @@ Continuity (recent prior sessions for THIS obsession item):
 {_bullet_list(prior_summaries, max_items=3)}
 
 Last therapy session (from therapist records):
-{_clip(last_therapy_session_text, 1500) if last_therapy_session_text else "(none)"}
+{last_therapy_session_text if last_therapy_session_text else "(none)"}
 
 Recent chat transcript (most recent at bottom):
 {transcript_block or "(no prior messages)"}

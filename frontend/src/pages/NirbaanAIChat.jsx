@@ -152,7 +152,7 @@ export default function NirbaanAIChat() {
           {messages.length === 0 && !loading && (
             <div className="nai-welcome">
               <h2>Hello, I'm NirbaanAI</h2>
-              <p>Your personal psychoeducation companion.<br />Ask me anything about OCD, anxiety, or your therapy journey.</p>
+              <p>Your companion through every step of your therapeutic journey.<br />Ask me anything — about your condition, your exercises, or how you're feeling.</p>
             </div>
           )}
 

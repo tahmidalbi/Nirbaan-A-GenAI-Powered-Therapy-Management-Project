@@ -18,6 +18,7 @@ import PatientSelfMonitoring from '../components/PatientSelfMonitoring';
 import TherapistSelfMonitoringView from '../components/TherapistSelfMonitoringView';
 import PatientFearLadderHub from '../pages/PatientFearLadderHub';
 import PatientFearLadderEducation from '../pages/PatientFearLadderEducation';
+import PatientRelapsePreventionEducation from '../pages/PatientRelapsePreventionEducation';
 import PatientFearLadderPage from '../pages/PatientFearLadderPage';
 import PatientFearLadderMonitoring from '../pages/PatientFearLadderMonitoring';
 import TherapistFearLadderHub from '../pages/TherapistFearLadderHub';
@@ -124,6 +125,16 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['patient']}>
             <PatientFearLadderHub />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes - Patient Relapse Prevention Education */}
+      <Route
+        path="/patient/dashboard/tools/ocd/relapse-prevention"
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <PatientRelapsePreventionEducation />
           </ProtectedRoute>
         }
       />

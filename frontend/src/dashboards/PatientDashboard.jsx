@@ -117,9 +117,9 @@ const PatientDashboard = () => {
         {view === null && (
           <div className="pd-home">
             <div className="pd-welcome">
-              <p className="pd-welcome-greeting">Welcome back</p>
+              <p className="pd-welcome-greeting">Welcome</p>
               <h2 className="pd-welcome-name">{user?.name || 'Patient'}</h2>
-              <p className="pd-welcome-sub">Your wellness journey continues</p>
+              
             </div>
 
             <div className="pd-tiles-grid pd-tiles-grid--home">

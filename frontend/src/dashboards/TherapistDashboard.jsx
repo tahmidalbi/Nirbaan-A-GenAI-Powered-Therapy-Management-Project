@@ -258,9 +258,8 @@ const TherapistDashboard = () => {
         {!view && (
           <div className="td-home">
             <div className="td-welcome">
-              <p className="td-welcome-greeting">Welcome back,</p>
+              <p className="td-welcome-greeting">Welcome</p>
               <h1 className="td-welcome-name">{user?.name || 'Doctor'}</h1>
-              <p className="td-welcome-sub">Your therapeutic practice dashboard</p>
             </div>
 
             <div className="td-tiles-grid td-tiles-grid--home">

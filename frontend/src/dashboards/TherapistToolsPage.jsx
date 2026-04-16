@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import './ConditionDashboard.css';
 import './TherapistDashboard.css';
 
 const TherapistToolsPage = () => {
@@ -17,27 +16,38 @@ const TherapistToolsPage = () => {
   };
 
   return (
-    <div className="condition-dashboard-container">
-      {/* Vintage background */}
-      <div className="dashboard-background">
-        <div className="geometric-pattern"></div>
-        <div className="art-deco-line art-deco-line-top"></div>
-        <div className="art-deco-line art-deco-line-bottom"></div>
+    <div className="td-root">
+      {/* Decorative background */}
+      <div className="td-bg">
+        <div className="td-bg-grid" />
+        <div className="td-bg-orb td-bg-orb--1" />
+        <div className="td-bg-orb td-bg-orb--2" />
       </div>
 
       {/* Header */}
-      <header className="dashboard-header">
-        <div className="header-content">
-          <h1 className="logo">Therapist Tools</h1>
-          <div className="header-actions">
-            <button onClick={handleBack} className="back-btn">← Back</button>
-            <button onClick={handleLogout} className="logout-btn">Logout</button>
+      <header className="td-header">
+        <div className="td-header-inner">
+          <div className="td-brand">
+            <span className="td-brand-logo">Nirbaan</span>
+            <span className="td-brand-breadcrumb">
+              <span className="td-brand-sep">/</span>
+              Tools
+            </span>
+          </div>
+          <div className="td-header-actions">
+            <button onClick={handleBack} className="td-back-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M19 12H5M12 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Back
+            </button>
+            <button onClick={handleLogout} className="td-logout-btn">Logout</button>
           </div>
         </div>
       </header>
 
       {/* Main Content - Tools Grid */}
-      <main className="dashboard-main">
+      <main className="td-main">
         <div className="td-content-panel">
           <div className="td-panel-header">
             <h2>Clinical Tools</h2>

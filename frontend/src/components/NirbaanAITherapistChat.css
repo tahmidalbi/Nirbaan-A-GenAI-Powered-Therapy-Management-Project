@@ -656,15 +656,15 @@
 .nait-clarification-card {
   flex: 1;
   max-width: 72%;
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(80, 170, 150, 0.45);
+  background: rgba(15, 32, 28, 0.92);
+  border: 1px solid rgba(125, 212, 188, 0.28);
   border-left: 3px solid #2a8070;
   border-radius: 12px;
   border-bottom-left-radius: 3px;
   padding: 0.9rem 1.1rem 1rem;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(20px);
   animation: fadeUp 0.25s ease both;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
 }
 
 .nait-clarification-header {
@@ -679,12 +679,12 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #1e6e5e;
+  color: #7dd4bc;
 }
 
 .nait-clarification-question {
   font-size: 0.92rem;
-  color: #122820;
+  color: #c8e8e0;
   margin: 0 0 0.85rem;
   line-height: 1.6;
   font-weight: 500;
@@ -695,20 +695,21 @@
 .nait-clarification-input {
   width: 100%;
   box-sizing: border-box;
-  background: #f9fdf9;
-  border: 1px solid rgba(30, 95, 82, 0.35);
+  background: rgba(15, 32, 28, 0.88);
+  border: 1px solid rgba(125, 212, 188, 0.25);
   border-radius: 8px;
   padding: 0.55rem 0.8rem;
-  color: #122820;
+  color: #e8f5e9;
   font-size: 0.88rem;
   font-family: inherit;
   resize: vertical;
   outline: none;
-  transition: border-color 0.18s;
+  transition: border-color 0.2s;
   line-height: 1.5;
+  backdrop-filter: blur(14px);
 }
-.nait-clarification-input:focus { border-color: #2a8070; }
-.nait-clarification-input::placeholder { color: rgba(20, 55, 47, 0.45); }
+.nait-clarification-input:focus { border-color: rgba(125, 212, 188, 0.6); }
+.nait-clarification-input::placeholder { color: rgba(185, 225, 213, 0.45); }
 .nait-clarification-input:disabled { opacity: 0.5; }
 
 .nait-clarification-actions {
