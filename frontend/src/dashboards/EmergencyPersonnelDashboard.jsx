@@ -13,38 +13,68 @@ const EmergencyPersonnelDashboard = () => {
   };
 
   return (
-    <div className="patient-dashboard-container">
-      {/* Vintage background */}
-      <div className="dashboard-background">
-        <div className="geometric-pattern"></div>
-        <div className="art-deco-lines"></div>
+    <div className="pd-root">
+      <div className="pd-bg">
+        <div className="pd-bg-grid" />
+        <div className="pd-bg-orb pd-bg-orb--1" />
+        <div className="pd-bg-orb pd-bg-orb--2" />
       </div>
 
-      {/* Header with nav */}
-      <header className="dashboard-header">
-        <div className="header-content">
-          <div className="logo">
-            <span className="logo-text">Nirbaan</span>
+      <header className="pd-header">
+        <div className="pd-header-inner">
+          <div className="pd-brand">
+            <span className="pd-brand-logo">Nirbaan</span>
           </div>
-          <nav className="dashboard-nav">
-            <button
-              className="nav-btn"
-              onClick={() => navigate('/emergency/chat')}
-            >
-              Chat
-            </button>
-          </nav>
-          <button className="logout-btn" onClick={handleLogout}>Logout</button>
+          <div className="pd-header-actions">
+            <button className="pd-logout-btn" onClick={handleLogout}>Logout</button>
+          </div>
         </div>
       </header>
 
-      {/* Main content */}
-      <div className="dashboard-content">
-        <div className="welcome-section">
-          <h1>Welcome, {user?.name || 'Emergency Personnel'}</h1>
-          <p className="subtitle">Crisis Response Dashboard</p>
+      <main className="pd-main">
+        <div className="pd-home">
+          <div className="pd-welcome">
+            <p className="pd-welcome-greeting">Welcome back</p>
+            <h2 className="pd-welcome-name">{user?.name || 'Emergency Personnel'}</h2>
+            <p className="pd-welcome-sub">Crisis Response Dashboard</p>
+          </div>
+
+          <div className="pd-tiles-grid pd-tiles-grid--home">
+            <button className="pd-tile" onClick={() => navigate('/emergency/chat')}>
+              <span className="pd-tile-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <span className="pd-tile-label">Chat</span>
+              <span className="pd-tile-sub">Message patients &amp; therapists</span>
+            </button>
+
+            <button className="pd-tile" onClick={() => navigate('/emergency/chat?tab=group')}>
+              <span className="pd-tile-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="9" cy="7" r="4" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <span className="pd-tile-label">Group Chat</span>
+              <span className="pd-tile-sub">Coordinate with your team</span>
+            </button>
+
+            <button className="pd-tile pd-tile--ai" onClick={() => navigate('/emergency/chat?tab=patients')}>
+              <span className="pd-tile-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M22 12h-4l-3 9L9 3l-3 9H2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <span className="pd-tile-label">Patient Status</span>
+              <span className="pd-tile-sub">Monitor active cases</span>
+            </button>
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };

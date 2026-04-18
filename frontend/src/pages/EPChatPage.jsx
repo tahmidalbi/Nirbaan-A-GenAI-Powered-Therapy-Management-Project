@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import {
   getMyTherapistForEP,
@@ -19,9 +19,11 @@ import {
 } from '../api/chat.api';
 import { getOrCreateKeyPair, deriveSharedKey, encryptMsg, decryptMessageContent } from '../utils/epCrypto';
 import './EPChatPage.css';
+import '../dashboards/PatientDashboard.css';
 
 export default function EPChatPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const user = useAuthStore((s) => s.user);
   const token = useAuthStore((s) => s.token);
 
@@ -31,7 +33,8 @@ export default function EPChatPage() {
     try { return JSON.parse(atob(token.split('.')[1])).id; } catch { return null; }
   }, [token]);
 
-  const [activeTab, setActiveTab] = useState('direct'); // 'direct' | 'group' | 'patients'
+  const initialTab = new URLSearchParams(location.search).get('tab') || 'direct';
+  const [activeTab, setActiveTab] = useState(initialTab); // 'direct' | 'group' | 'patients'
 
   const [therapistInfo, setTherapistInfo] = useState(null); // { id, name, ep_id }
   const [loading, setLoading] = useState(true);
@@ -319,11 +322,11 @@ export default function EPChatPage() {
   const dotColor = wsStatus === 'open' ? '#4ade80' : wsStatus === 'connecting' ? '#fbbf24' : '#6b7280';
 
   const getMeBubbleStyle = () => ({
-    background: 'linear-gradient(135deg, rgba(34,120,60,0.92), rgba(20,90,48,0.96))',
-    border: '1px solid rgba(52,168,83,0.4)',
+    background: 'linear-gradient(135deg, rgba(34,120,100,0.92), rgba(20,90,75,0.96))',
+    border: '1px solid rgba(90,184,154,0.4)',
     color: '#e8f5e9',
     borderBottomRightRadius: '3px',
-    boxShadow: '0 2px 12px rgba(52,168,83,0.12)',
+    boxShadow: '0 2px 12px rgba(90,184,154,0.12)',
   });
 
   const getThemBubbleStyle = () => ({
@@ -349,33 +352,47 @@ export default function EPChatPage() {
       <div className="ecp-bg-dots" />
 
       {/* ── Header ── */}
-      <header className="ecp-header">
-        <button className="ecp-back-btn" onClick={() => navigate('/emergency/dashboard')}>
-          ← Back
-        </button>
-        <div className="ecp-header-title">
-          <span className="ecp-header-icon">🤝</span>
-          <span className="ecp-header-text">
-            {activeTab === 'direct' ? 'Chat with Your Therapist'
-              : activeTab === 'group' ? 'Human Helper Group'
-              : 'Patient Chats'}
-          </span>
-          {therapistInfo && activeTab === 'direct' && (
-            <span className="ecp-header-sub">/ {therapistInfo.name}</span>
-          )}
-          {activeTab === 'patients' && selectedPatient && (
-            <span className="ecp-header-sub">/ {selectedPatient.name}</span>
-          )}
-        </div>
-        <div className="ecp-header-right">
-          <span className="ecp-ws-dot"
-            style={{ background: activeTab === 'direct'
-              ? (wsStatus === 'open' ? '#4ade80' : wsStatus === 'connecting' ? '#fbbf24' : '#6b7280')
-              : activeTab === 'group'
-              ? (groupWsStatus === 'open' ? '#4ade80' : groupWsStatus === 'connecting' ? '#fbbf24' : '#6b7280')
-              : (patientWsStatus === 'open' ? '#4ade80' : patientWsStatus === 'connecting' ? '#fbbf24' : '#6b7280')
-            }}
-          />
+      <header className="pd-header">
+        <div className="pd-header-inner">
+          <div className="pd-brand">
+            <span className="pd-brand-logo">Nirbaan</span>
+            <div className="pd-brand-breadcrumb">
+              <span className="pd-brand-sep">&rsaquo;</span>
+              <span>
+                {activeTab === 'direct' ? 'Chat with Your Therapist'
+                  : activeTab === 'group' ? 'Human Helper Group'
+                  : 'Patient Chats'}
+              </span>
+            </div>
+            {therapistInfo && activeTab === 'direct' && (
+              <div className="pd-brand-breadcrumb">
+                <span className="pd-brand-sep">&rsaquo;</span>
+                <span>{therapistInfo.name}</span>
+              </div>
+            )}
+            {activeTab === 'patients' && selectedPatient && (
+              <div className="pd-brand-breadcrumb">
+                <span className="pd-brand-sep">&rsaquo;</span>
+                <span>{selectedPatient.name}</span>
+              </div>
+            )}
+          </div>
+          <div className="pd-header-actions">
+            <span className="ecp-ws-dot"
+              style={{ background: activeTab === 'direct'
+                ? (wsStatus === 'open' ? '#4ade80' : wsStatus === 'connecting' ? '#fbbf24' : '#6b7280')
+                : activeTab === 'group'
+                ? (groupWsStatus === 'open' ? '#4ade80' : groupWsStatus === 'connecting' ? '#fbbf24' : '#6b7280')
+                : (patientWsStatus === 'open' ? '#4ade80' : patientWsStatus === 'connecting' ? '#fbbf24' : '#6b7280')
+              }}
+            />
+            <button className="pd-back-btn" onClick={() => navigate('/emergency-personnel/dashboard')}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="15 18 9 12 15 6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Back
+            </button>
+          </div>
         </div>
       </header>
 
@@ -385,19 +402,19 @@ export default function EPChatPage() {
           className={`ecp-tab-btn ${activeTab === 'direct' ? 'active' : ''}`}
           onClick={() => setActiveTab('direct')}
         >
-          💬 Direct Message
+          Direct Message
         </button>
         <button
           className={`ecp-tab-btn ${activeTab === 'group' ? 'active' : ''}`}
           onClick={() => setActiveTab('group')}
         >
-          👥 Group Chat
+          Group Chat
         </button>
         <button
           className={`ecp-tab-btn ${activeTab === 'patients' ? 'active' : ''}`}
           onClick={() => setActiveTab('patients')}
         >
-          🧑‍⚕️ Patients
+          Patients
         </button>
       </div>
 
@@ -443,7 +460,6 @@ export default function EPChatPage() {
 
               {!messagesLoading && messages.length === 0 && (
                 <div className="ecp-empty-msg">
-                  <span style={{ fontSize: '2.5rem', opacity: 0.4 }}>💬</span>
                   <p>No messages yet. Say hello to your therapist!</p>
                 </div>
               )}
@@ -515,7 +531,6 @@ export default function EPChatPage() {
               )}
               {!groupMessagesLoading && groupMessages.length === 0 && (
                 <div className="ecp-empty-msg">
-                  <span style={{ fontSize: '2.5rem', opacity: 0.4 }}>👥</span>
                   <p>No messages yet. The AI agent will post patient alerts here for the group to act on.</p>
                 </div>
               )}
@@ -532,7 +547,7 @@ export default function EPChatPage() {
                     {!mine && (
                       <div className="ecp-avatar ecp-avatar-therapist"
                         style={isAI ? { background: 'linear-gradient(135deg,#6d28d9,#4c1d95)' } : {}}>
-                        {isAI ? '🤖' : (msg.sender_name || '?').charAt(0).toUpperCase()}
+                        {isAI ? 'AI' : (msg.sender_name || '?').charAt(0).toUpperCase()}
                       </div>
                     )}
                     <div className="ecp-bubble-wrap">
@@ -545,13 +560,13 @@ export default function EPChatPage() {
                       <div className="ecp-bubble" style={bubbleStyle}>
                         {msg.patient_name && (
                           <div className="ecp-patient-ref">
-                            👤 Patient: <strong>{msg.patient_name}</strong>
+                            Patient: <strong>{msg.patient_name}</strong>
                           </div>
                         )}
                         {msg.content}
                         {msg.is_claimed && (
                           <div className="ecp-claim-badge">
-                            ✅ Being visited by <strong>{msg.claimed_by_name}</strong>
+                            Being visited by <strong>{msg.claimed_by_name}</strong>
                           </div>
                         )}
                         {!msg.is_claimed && (msg.sender_role === 'ai_agent' || msg.patient_name) && !mine && (
@@ -663,7 +678,6 @@ export default function EPChatPage() {
                   )}
                   {!patientMessagesLoading && patientMessages.length === 0 && (
                     <div className="ecp-empty-msg">
-                      <span style={{ fontSize: '2.5rem', opacity: 0.4 }}>👋</span>
                       <p>Session started. Say hello to {selectedPatient.name}!</p>
                     </div>
                   )}
@@ -723,7 +737,6 @@ export default function EPChatPage() {
               </div>
             ) : (
               <div className="ecp-no-group">
-                <span className="ecp-no-group-icon">🧑‍⚕️</span>
                 <p>Select a patient to start a direct chat.</p>
               </div>
             )}
