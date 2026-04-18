@@ -4,6 +4,7 @@ import { useAuthStore } from '../store/authStore';
 import PatientHomework from '../components/PatientHomework';
 import PatientResourceLibrary from '../components/PatientResourceLibrary';
 import IncomingCallModal from '../components/IncomingCallModal';
+import MindfulnessPlayer from '../components/MindfulnessPlayer';
 import './PatientDashboard.css';
 
 const BACK_MAP = {
@@ -246,19 +247,7 @@ const PatientDashboard = () => {
 
         {view === 'mindfulness' && (
           <div className="pd-content-panel">
-            <div className="pd-coming-soon">
-              <span className="pd-coming-soon-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" width="64" height="64">
-                  <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M8 14s1.5 2 4 2 4-2 4-2" strokeLinecap="round" strokeLinejoin="round" />
-                  <line x1="9" y1="9" x2="9.01" y2="9" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" />
-                  <line x1="15" y1="9" x2="15.01" y2="9" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" />
-                </svg>
-              </span>
-              <h3>Mindfulness</h3>
-              <p>Guided meditation and relaxation exercises coming soon.</p>
-              <span className="pd-coming-soon-badge">Coming Soon</span>
-            </div>
+            <MindfulnessPlayer />
           </div>
         )}
 
