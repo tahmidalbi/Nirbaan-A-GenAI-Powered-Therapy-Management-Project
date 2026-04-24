@@ -1,0 +1,58 @@
+name: CI/CD
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main, hosting]
+
+jobs:
+  backend-build:
+    name: Backend Docker build check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build backend Docker image
+        run: docker build -t nirbaan-backend ./backend
+
+  frontend-build:
+    name: Frontend build check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build
+        working-directory: frontend
+        run: npm run build
+        env:
+          VITE_API_URL: http://localhost:8000
+
+  deploy:
+    name: Deploy to Render
+    runs-on: ubuntu-latest
+    needs: [backend-build, frontend-build]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/hosting'
+    steps:
+      - name: Deploy backend
+        run: curl -X POST "${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}"
+
+      - name: Deploy celery worker
+        run: curl -X POST "${{ secrets.RENDER_CELERY_WORKER_DEPLOY_HOOK }}"
+
+      - name: Deploy celery beat
+        run: curl -X POST "${{ secrets.RENDER_CELERY_BEAT_DEPLOY_HOOK }}"
+
+      - name: Deploy frontend
+        run: curl -X POST "${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}"

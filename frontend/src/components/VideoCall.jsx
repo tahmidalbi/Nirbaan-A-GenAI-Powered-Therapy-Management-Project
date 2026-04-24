@@ -360,7 +360,7 @@ const VideoCall = ({
     }
 
     let cancelled = false;
-    const wsUrl = `ws://localhost:8000/api/therapy-sessions/ws/signaling/${sessionId}`;
+    const wsUrl = `${(import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000').replace(/^http/, 'ws')}/api/therapy-sessions/ws/signaling/${sessionId}`;
     console.log(`[VideoCall] Opening WebSocket: ${wsUrl}`);
     const ws = new WebSocket(wsUrl);
 
