@@ -1,6 +1,9 @@
 # ── Build stage ───────────────────────────────────────────────────────────────
 FROM node:20-alpine AS build
 
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+
 WORKDIR /app
 
 COPY package*.json ./
