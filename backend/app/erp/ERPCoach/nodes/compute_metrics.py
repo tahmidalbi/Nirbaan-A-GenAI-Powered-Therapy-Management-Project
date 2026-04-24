@@ -80,31 +80,24 @@ def compute_metrics_node(state: Dict[str, Any]) -> Dict[str, Any]:
     suds_slope_per_min: Optional[float] = getattr(suds_stats, "slope_per_min", None) if suds_stats else None
 
     # ── Spike detection with deduplication ───────────────────────────────────
-    # Step 1: detect a raw spike from the latest readings
-    raw_spike = False
-    if suds_delta is not None and suds_delta >= spike_delta_threshold:
-        raw_spike = True
-    if suds_slope_per_min is not None and suds_slope_per_min >= spike_slope_threshold:
-        raw_spike = True
+    # A spike is purely delta-based: the latest reading jumped >= threshold points
+    # above the previous reading. Slope-based detection is intentionally excluded
+    # — it re-fires on every call using stale readings.
+    raw_spike = bool(suds_delta is not None and suds_delta >= spike_delta_threshold)
 
-    # Step 2: deduplicate — suppress if we already notified for this SUDS level.
-    # A new spike notification is warranted only when suds_latest has risen above
-    # the level we last notified about (i.e. a genuinely new / higher spike).
+    # Deduplicate: only fire once per new SUDS peak.
+    # spike_flag stays False if suds_latest <= the level we already notified about.
     spike_flag = False
     if raw_spike:
         last_spike_notified_suds = state.get("last_spike_notified_suds")
         if last_spike_notified_suds is None:
-            # Never notified before → allow first spike message
+            # Never notified before → fire for the first spike.
             spike_flag = True
-        elif suds_previous is not None and suds_previous <= last_spike_notified_suds - 15:
-            # SUDS dropped significantly below the last notified level before rising again.
-            # The patient's anxiety came down and has spiked fresh — treat as a new event.
+        elif suds_latest is not None and suds_latest > last_spike_notified_suds:
+            # SUDS reached a new higher peak → genuinely new spike event.
             spike_flag = True
-        elif suds_latest is not None and suds_latest >= last_spike_notified_suds + 10:
-            # SUDS climbed at least 10 points above the last notification level → new spike
-            # A smaller rise (e.g. +1 or +2) does not warrant another message
-            spike_flag = True
-        # else: same or lower SUDS, or rise too small → suppress
+        # else: suds_latest == last_spike_notified_suds (same reading re-evaluated)
+        #       or suds_latest < last_spike_notified_suds (SUDS came down) → suppress.
 
     # ── Trend hint ────────────────────────────────────────────────────────────
     trend = "stable"

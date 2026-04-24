@@ -1,0 +1,14 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.bat
+*.bak
+*.dat
+*.dir
+*.log
+*.html
+*.wav
+*.png
+.env
