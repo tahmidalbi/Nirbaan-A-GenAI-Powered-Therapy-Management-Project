@@ -90,6 +90,7 @@ def create_app() -> FastAPI:
             "http://127.0.0.1:5174",
             "http://127.0.0.1:5175",
             "http://127.0.0.1:5176",
+            "https://nirbaan-frontend-6vu7.onrender.com",
         ],
         allow_credentials=True,
         allow_methods=["*"],
