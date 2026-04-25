@@ -48,11 +48,5 @@ jobs:
       - name: Deploy backend
         run: curl -X POST "${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}"
 
-      - name: Deploy celery worker
-        run: curl -X POST "${{ secrets.RENDER_CELERY_WORKER_DEPLOY_HOOK }}"
-
-      - name: Deploy celery beat
-        run: curl -X POST "${{ secrets.RENDER_CELERY_BEAT_DEPLOY_HOOK }}"
-
       - name: Deploy frontend
         run: curl -X POST "${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}"
