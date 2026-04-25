@@ -223,7 +223,32 @@ export default function EPChatPage() {
       setPatientWsStatus('connecting');
       const ws = openEPPatientSocket(sess.id);
       patientWsRef.current = ws;
-      ws.onopen = () => setPatientWsStatus('open');
+      ws.onopen = async () => {
+        setPatientWsStatus('open');
+        // Patient is now live — if we have no shared key yet, try to derive it now
+        // (patient may have just uploaded their public key when they loaded their page)
+        if (!patientSharedKeyRef.current && epKeyPairRef.current) {
+          try {
+            const peerJwk = await getPeerPublicKey(sess.id);
+            patientSharedKeyRef.current = await deriveSharedKey(epKeyPairRef.current.privateKey, peerJwk);
+            // Re-decrypt existing messages now that we have the key
+            setPatientMessages((prev) =>
+              prev.map((m) => {
+                if (!m.content) return m;
+                try {
+                  const p = JSON.parse(m.content);
+                  if (p?.e2ee) return { ...m, content: '🔒 [Reloading…]' }; // will decrypt on next fetch
+                } catch { /* plain text */ }
+                return m;
+              })
+            );
+            // Reload history with the new key
+            const msgs = await getEPPatientSessionMessages(sess.id);
+            const decrypted = await Promise.all(msgs.map((m) => decryptMessageContent(m, patientSharedKeyRef.current)));
+            setPatientMessages(decrypted);
+          } catch { /* key still not available */ }
+        }
+      };
       ws.onmessage = async (e) => {
         const data = JSON.parse(e.data);
         if (data.type === 'session_closed') {
