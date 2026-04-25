@@ -49,13 +49,18 @@ class CallConnectionManager:
     
     async def send_message(self, user_id: int, message: dict):
         """Send a message to a specific user."""
-        if user_id in self.active_connections:
-            try:
-                websocket = self.active_connections[user_id]
-                await websocket.send_json(message)
-            except Exception as e:
-                logger.error(f"Error sending message to user {user_id}: {e}")
-                self.disconnect(user_id)
+        if user_id not in self.active_connections:
+            logger.warning(
+                f"[call_manager] Cannot send '{message.get('type')}' to user {user_id} "
+                f"— not connected. Connected user IDs: {list(self.active_connections.keys())}"
+            )
+            return
+        try:
+            websocket = self.active_connections[user_id]
+            await websocket.send_json(message)
+        except Exception as e:
+            logger.error(f"Error sending message to user {user_id}: {e}")
+            self.disconnect(user_id)
     
     def _send_sync(self, user_id: int, message: dict):
         """Synchronous send for cleanup operations."""

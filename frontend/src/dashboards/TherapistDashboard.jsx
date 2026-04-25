@@ -198,7 +198,7 @@ const TherapistDashboard = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/select-role');
   };
 
   const goTo = (v) => setView(v);

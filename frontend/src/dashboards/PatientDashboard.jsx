@@ -41,8 +41,9 @@ const PatientDashboard = () => {
   useEffect(() => {
     if (!user?.id) return;
     const connect = () => {
+      const wsBase = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000').replace(/^http/, 'ws');
       const ws = new WebSocket(
-        `ws://127.0.0.1:8000/api/therapy-sessions/ws/call/${user.id}?user_type=patient`
+        `${wsBase}/api/therapy-sessions/ws/call/${user.id}?user_type=patient`
       );
       ws.onopen = () => clearTimeout(reconnectRef.current);
       ws.onmessage = (event) => {
@@ -69,7 +70,7 @@ const PatientDashboard = () => {
 
   const goTo = (v) => setView(v);
   const handleBack = () => setView(BACK_MAP[view] ?? null);
-  const handleLogout = () => { logout(); navigate('/'); };
+  const handleLogout = () => { logout(); navigate('/select-role'); };
   const showBack = view !== null && BACK_MAP[view] !== undefined;
 
   return (

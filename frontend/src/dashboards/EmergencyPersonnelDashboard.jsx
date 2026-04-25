@@ -9,7 +9,7 @@ const EmergencyPersonnelDashboard = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/select-role');
   };
 
   return (

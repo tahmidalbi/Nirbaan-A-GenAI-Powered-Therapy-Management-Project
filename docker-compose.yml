@@ -87,6 +87,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:5174
     ports:
       - "5174:80"
     depends_on:

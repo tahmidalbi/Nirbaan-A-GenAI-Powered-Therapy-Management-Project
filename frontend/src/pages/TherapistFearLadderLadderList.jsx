@@ -40,7 +40,7 @@ const TherapistFearLadderLadderList = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/select-role');
   };
 
   const handleOpenLadder = () => {

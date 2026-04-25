@@ -56,7 +56,7 @@ const ERPAIReport = () => {
 
   const endedWithReport = sessions.filter((s) => s.status === 'ended');
 
-  const handleLogout = () => { logout(); navigate('/'); };
+  const handleLogout = () => { logout(); navigate('/select-role'); };
 
   return (
     <div className="air-root">

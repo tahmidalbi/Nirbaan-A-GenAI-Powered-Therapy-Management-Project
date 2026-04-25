@@ -45,7 +45,7 @@ const TherapistFearLadderPatientList = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/select-role');
   };
 
   const handlePatientClick = (ladder) => {

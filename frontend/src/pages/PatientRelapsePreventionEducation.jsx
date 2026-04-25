@@ -48,7 +48,7 @@ const PatientRelapsePreventionEducation = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/select-role');
   };
 
   const handleBack = () => {

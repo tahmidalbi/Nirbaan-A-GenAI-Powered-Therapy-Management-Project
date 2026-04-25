@@ -58,7 +58,7 @@ const PatientImaginalScripts = () => {
             ← Back
           </button>
           <h1 className="pis-logo">Imaginal Scripts</h1>
-          <button className="pis-ghost-btn" onClick={() => { logout(); navigate('/login'); }}>
+          <button className="pis-ghost-btn" onClick={() => { logout(); navigate('/select-role'); }}>
             Logout
           </button>
         </div>

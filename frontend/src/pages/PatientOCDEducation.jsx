@@ -77,7 +77,7 @@ const PatientOCDEducation = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/select-role');
   };
 
   const handleBack = () => {

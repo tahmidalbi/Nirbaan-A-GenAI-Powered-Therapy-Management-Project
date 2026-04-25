@@ -48,7 +48,7 @@ const PatientSelfMonitoring = ({ isEmbedded = false }) => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/select-role');
   };
 
   const handleBack = () => {
