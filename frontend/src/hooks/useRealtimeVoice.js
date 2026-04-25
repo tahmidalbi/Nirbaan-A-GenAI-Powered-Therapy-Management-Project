@@ -72,7 +72,9 @@ export const useRealtimeVoice = (sessionId, onCoachText, onUserText) => {
 
   // ================= SEND =================
   const sendAudio = useCallback(async (blob) => {
+    console.log("📤 Sending audio...");
     if (isProcessingRef.current) return;
+    if (!sessionId) { console.warn("⚠️ Voice: sessionId not ready, skipping send"); return; }
 
     isProcessingRef.current = true;
 
@@ -106,6 +108,7 @@ export const useRealtimeVoice = (sessionId, onCoachText, onUserText) => {
 
   // ================= RECORD =================
   const stopRecording = () => {
+    console.log("🔴 STOP RECORDING");
     if (!isRecordingRef.current) return;
 
     isRecordingRef.current = false;
@@ -137,6 +140,7 @@ export const useRealtimeVoice = (sessionId, onCoachText, onUserText) => {
 
   // ================= VAD =================
   const startVAD = useCallback(() => {
+    console.log("🎤 startVoice called");
     clearInterval(vadTimerRef.current);
 
     vadTimerRef.current = setInterval(() => {
@@ -145,10 +149,11 @@ export const useRealtimeVoice = (sessionId, onCoachText, onUserText) => {
       if (isProcessingRef.current) return;
 
       const rms = getRMS(analyserRef.current);
+      console.log("RMS:", rms);
 
       if (!isRecordingRef.current && rms > SPEECH_THRESHOLD) {
-        if (rms < 28) return;
-
+        //if (rms < 28) return;
+        console.log("🟢 START RECORDING, RMS:", rms);
         isRecordingRef.current = true;
         speechStartRef.current = Date.now();
         chunksRef.current = [];

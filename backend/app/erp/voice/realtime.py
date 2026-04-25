@@ -71,6 +71,10 @@ async def transcribe_and_respond(
     audio: UploadFile = File(...),
     session_id: str = Form(...),
 ):
+    print("🔥 VOICE ENDPOINT HIT")
+    if not session_id or session_id == "undefined":
+        from fastapi import HTTPException
+        raise HTTPException(status_code=400, detail="session_id is required")
     """
     1. Transcribe audio via Groq whisper (free) or OpenAI whisper-1 as fallback.
     2. Send transcript to ERP coach (xAI Grok).
