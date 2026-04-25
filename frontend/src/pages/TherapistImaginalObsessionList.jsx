@@ -59,7 +59,7 @@ const TherapistImaginalObsessionList = () => {
             <h1 className="terp-logo">Imaginal — {patientName}</h1>
             {patientEmail && <p className="terp-header-sub">{patientEmail}</p>}
           </div>
-          <button className="terp-ghost-btn" onClick={() => { logout(); navigate('/login'); }}>
+          <button className="terp-ghost-btn" onClick={() => { logout(); navigate('/select-role'); }}>
             Logout
           </button>
         </div>

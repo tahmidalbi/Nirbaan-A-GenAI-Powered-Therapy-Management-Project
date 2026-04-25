@@ -20,21 +20,18 @@ const RoleSelection = () => {
 
         <div className="role-cards">
           <div className="role-card" onClick={() => navigate('/login')}>
-            <div className="role-icon">🩺</div>
             <h2>Login as Therapist</h2>
             <p>Access your practice dashboard and manage patient care</p>
             <button className="role-btn">Continue as Therapist</button>
           </div>
 
           <div className="role-card" onClick={() => navigate('/patient/login')}>
-            <div className="role-icon">👤</div>
             <h2>Login as Patient</h2>
             <p>Access your personalized therapy and wellness dashboard</p>
             <button className="role-btn">Continue as Patient</button>
           </div>
 
           <div className="role-card" onClick={() => navigate('/emergency-personnel/login')}>
-            <div className="role-icon">🚨</div>
             <h2>Login as Emergency Personnel</h2>
             <p>Access crisis response and emergency management tools</p>
             <button className="role-btn">Continue as Personnel</button>

@@ -18,8 +18,8 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   }
 
   if (!isAuthenticated) {
-    console.log('ProtectedRoute - Not authenticated, redirecting to /login');
-    return <Navigate to="/login" replace />;
+    console.log('ProtectedRoute - Not authenticated, redirecting to /select-role');
+    return <Navigate to="/select-role" replace />;
   }
 
   if (allowedRoles && !allowedRoles.includes(user?.role)) {

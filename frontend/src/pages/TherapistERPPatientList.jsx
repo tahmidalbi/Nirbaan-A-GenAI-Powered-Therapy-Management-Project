@@ -34,7 +34,7 @@ const TherapistERPPatientList = () => {
             ← Back
           </button>
           <h1 className="terp-logo">ERP Workspace</h1>
-          <button className="terp-ghost-btn" onClick={() => { logout(); navigate('/login'); }}>
+          <button className="terp-ghost-btn" onClick={() => { logout(); navigate('/select-role'); }}>
             Logout
           </button>
         </div>

@@ -9,7 +9,7 @@ const PatientFearLadderHub = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/select-role');
   };
 
   const handleBack = () => {

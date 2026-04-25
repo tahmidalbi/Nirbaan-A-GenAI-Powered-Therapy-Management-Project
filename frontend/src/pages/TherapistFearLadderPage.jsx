@@ -102,7 +102,7 @@ const TherapistFearLadderPage = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/select-role');
   };
 
   const handleBack = () => {

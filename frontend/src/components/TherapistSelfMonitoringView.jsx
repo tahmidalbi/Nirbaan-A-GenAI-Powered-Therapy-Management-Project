@@ -57,7 +57,7 @@ const TherapistSelfMonitoringView = ({ isEmbedded = false }) => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/select-role');
   };
 
   const handleBack = () => {

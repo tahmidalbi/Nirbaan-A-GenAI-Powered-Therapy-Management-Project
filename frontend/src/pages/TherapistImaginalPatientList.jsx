@@ -32,7 +32,7 @@ const TherapistImaginalPatientList = () => {
             ← Back
           </button>
           <h1 className="terp-logo">Imaginal Exposures</h1>
-          <button className="terp-ghost-btn" onClick={() => { logout(); navigate('/login'); }}>
+          <button className="terp-ghost-btn" onClick={() => { logout(); navigate('/select-role'); }}>
             Logout
           </button>
         </div>

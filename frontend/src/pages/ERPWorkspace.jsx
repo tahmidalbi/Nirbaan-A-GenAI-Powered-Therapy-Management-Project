@@ -9,7 +9,7 @@ const ERPWorkspace = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/select-role');
   };
 
   return (

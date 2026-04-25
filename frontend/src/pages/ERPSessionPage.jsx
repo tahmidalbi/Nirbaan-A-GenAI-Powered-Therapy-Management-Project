@@ -454,7 +454,7 @@ const ERPSessionPage = () => {
     );
   }
 
-  const handleLogout = () => { logout(); navigate('/'); };
+  const handleLogout = () => { logout(); navigate('/select-role'); };
 
   return (
     <div className="session-root">

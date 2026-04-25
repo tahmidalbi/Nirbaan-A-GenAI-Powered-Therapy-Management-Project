@@ -133,7 +133,7 @@ const ERPPlanRecovery = () => {
     }
   };
 
-  const handleLogout = () => { logout(); navigate('/'); };
+  const handleLogout = () => { logout(); navigate('/select-role'); };
 
   /* ─── render ─── */
   return (

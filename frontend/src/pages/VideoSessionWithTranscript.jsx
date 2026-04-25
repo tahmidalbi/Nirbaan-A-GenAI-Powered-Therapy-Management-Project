@@ -4,7 +4,7 @@ import TranscriptDisplay from '../components/TranscriptDisplay';
 import { startSession, endSession, getSessionAnalysis } from '../api/therapy-session.api';
 import './VideoSessionWithTranscript.css';
 
-const WS_BASE = 'ws://127.0.0.1:8000/api/therapy-sessions';
+const WS_BASE = `${(import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000').replace(/^http/, 'ws')}/api/therapy-sessions`;
 
 /**
  * Video call with WebSocket-streamed live transcription and post-session analysis.

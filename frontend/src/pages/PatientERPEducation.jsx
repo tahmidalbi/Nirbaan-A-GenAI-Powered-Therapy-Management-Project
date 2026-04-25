@@ -49,7 +49,7 @@ const PatientERPEducation = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/select-role');
   };
 
   const renderKeyPoints = (points) => {

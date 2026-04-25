@@ -74,9 +74,11 @@ export async function getChatMessages(groupId) {
 
 // ─── WebSocket helper ──────────────────────────────────────
 
+const WS_BASE_URL = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000').replace(/^http/, 'ws');
+
 export function openChatSocket(groupId) {
   const token = getToken();
-  return new WebSocket(`ws://127.0.0.1:8000/chat/ws/${groupId}?token=${token}`);
+  return new WebSocket(`${WS_BASE_URL}/chat/ws/${groupId}?token=${token}`);
 }
 
 // ─── EP (Emergency Personnel) Direct Chat ─────────────────
@@ -101,7 +103,7 @@ export async function getEPMessages(epId) {
 
 export function openEPChatSocket(epId) {
   const token = getToken();
-  return new WebSocket(`ws://127.0.0.1:8000/chat/ep/ws/${epId}?token=${token}`);
+  return new WebSocket(`${WS_BASE_URL}/chat/ep/ws/${epId}?token=${token}`);
 }
 
 // ─── EP Group Chat (shared group for all human helpers of a therapist) ────────
@@ -134,7 +136,7 @@ export async function claimEPGroupMessage(groupId, messageId) {
 
 export function openEPGroupSocket(groupId) {
   const token = getToken();
-  return new WebSocket(`ws://127.0.0.1:8000/chat/ep-group/ws/${groupId}?token=${token}`);
+  return new WebSocket(`${WS_BASE_URL}/chat/ep-group/ws/${groupId}?token=${token}`);
 }
 
 // ─── EP-Patient Direct Chat ────────────────────────────────
@@ -177,7 +179,7 @@ export async function getPatientEPSessions() {
 /** WS for a session (used by both EP and patient) */
 export function openEPPatientSocket(sessionId) {
   const token = getToken();
-  return new WebSocket(`ws://127.0.0.1:8000/chat/ep-patient/ws/${sessionId}?token=${token}`);
+  return new WebSocket(`${WS_BASE_URL}/chat/ep-patient/ws/${sessionId}?token=${token}`);
 }
 
 // ─── E2EE Public Key Exchange ───────────────────────────────────────────────
