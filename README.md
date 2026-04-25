@@ -1,9 +1,13 @@
 # Nirbaan — AI-Powered Therapy Management Platform
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-nirbaan--frontend-blue?style=flat-square)](https://nirbaan-frontend-6vu7.onrender.com)
+[![Python](https://img.shields.io/badge/Python-3.11-blue?style=flat-square&logo=python)](https://www.python.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)](https://react.dev/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16+pgvector-336791?style=flat-square&logo=postgresql)](https://github.com/pgvector/pgvector)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker)](https://www.docker.com/)
 
-**Live Demo:** [https://nirbaan-frontend-6vu7.onrender.com](https://nirbaan-frontend-6vu7.onrender.com)
-
-> **Nirbaan** is a full-stack, AI-first therapy management platform built for OCD and anxiety treatment. It combines evidence-based clinical workflows (ERP, Fear Ladders, Imaginal Scripting) with cutting-edge AI tooling — LangGraph agents, RAG knowledge retrieval, real-time video sessions, and a fine-tuned local LLM — all orchestrated inside a HIPAA-conscious architecture.
+> **Nirbaan** is a full-stack, AI-first therapy management platform purpose-built for OCD and anxiety treatment. It unifies evidence-based clinical workflows — Exposure & Response Prevention, Fear Ladders, and Imaginal Scripting — with production-grade AI infrastructure: stateful LangGraph agents, retrieval-augmented generation over a pgvector knowledge base, real-time WebRTC video sessions, live Whisper transcription, and a locally fine-tuned LLM. Every subsystem is designed inside a security-conscious, multi-role architecture serving therapists, patients, and emergency personnel.
 
 ---
 
@@ -11,16 +15,16 @@
 
 - [Features](#features)
 - [Architecture Overview](#architecture-overview)
-- [Folder Structure](#folder-structure)
+- [Project Structure](#project-structure)
 - [Tech Stack](#tech-stack)
 - [Prerequisites](#prerequisites)
 - [Quick Start (Docker)](#quick-start-docker)
 - [Local Development](#local-development)
 - [Environment Variables](#environment-variables)
-- [Key API Modules](#key-api-modules)
+- [API Reference](#api-reference)
 - [AI & LLM Subsystems](#ai--llm-subsystems)
-- [WebRTC Video Calls](#webrtc-video-calls)
-- [Background Jobs (Celery)](#background-jobs-celery)
+- [WebRTC Video Sessions](#webrtc-video-sessions)
+- [Background Jobs](#background-jobs)
 - [Federated QLoRA Fine-Tuning](#federated-qlora-fine-tuning)
 - [Contributing](#contributing)
 
@@ -93,7 +97,7 @@
 
 ---
 
-## Folder Structure
+## Project Structure
 
 ```
 Nirbaan- A Therapy Management Project/
@@ -164,7 +168,7 @@ Nirbaan- A Therapy Management Project/
 | Auth | JWT (python-jose) |
 | AI Orchestration | LangGraph 0.2+, LangChain |
 | LLM | OpenAI-compatible (configurable via `LLM_MODEL`) |
-| Embeddings | OpenAI `text-embedding-3-small` |
+| Embeddings | OpenAI `text-embedding-3-large` |
 | Task Queue | Celery 5 + Redis 7 |
 | Audio | OpenAI Whisper API |
 | File Storage | Cloudflare R2 / local filesystem |
@@ -289,7 +293,7 @@ OPENAI_API_KEY=sk-...
 LLM_MODEL=gpt-4o                 # or any OpenAI-compatible model name
 
 # ── Embeddings ────────────────────────────────────────────
-EMBEDDING_MODEL=text-embedding-3-small
+EMBEDDING_MODEL=text-embedding-3-large
 
 # ── LangSmith (optional tracing) ─────────────────────────
 LANGCHAIN_TRACING_V2=true
@@ -310,7 +314,7 @@ VITE_API_URL=http://localhost:8000
 
 ---
 
-## Key API Modules
+## API Reference
 
 | Prefix | Module | Description |
 |---|---|---|
@@ -359,7 +363,7 @@ pgvector is used to store and retrieve embeddings from the clinical resource lib
 
 ---
 
-## WebRTC Video Calls
+## WebRTC Video Sessions
 
 - **Signaling**: FastAPI WebSocket at `/api/therapy-sessions/ws/signal/{session_id}`
 - **Call notification**: Therapist triggers `incoming_call` WebSocket event to patient dashboard
@@ -369,7 +373,7 @@ pgvector is used to store and retrieve embeddings from the clinical resource lib
 
 ---
 
-## Background Jobs (Celery)
+## Background Jobs
 
 Celery workers handle all long-running AI tasks to keep API responses fast:
 
