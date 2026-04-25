@@ -386,6 +386,50 @@ Celery workers handle all long-running AI tasks to keep API responses fast:
 
 Nirbaan includes a privacy-preserving fine-tuning pipeline that adapts **Meta-Llama-3.1-8B-Instruct** to the therapy domain using **QLoRA** (4-bit NF4 quantisation) inside a simulated federated learning setup.
 
+The fine-tuned model is used by the **Imaginal Script Generator** for local, private inference. It requires [Ollama](https://ollama.com) to be running on the host machine.
+
+### Setup (one-time)
+
+**Option 1 — Automatic (pulls from HuggingFace):**
+```bash
+# Windows
+FTSLM\setup_model.bat
+
+# Linux / macOS
+bash FTSLM/setup_model.sh
+```
+
+**Option 2 — Manual:**
+```bash
+# 1. Install Ollama from https://ollama.com
+
+# 2. Pull and register the model
+cd FTSLM
+ollama create nirbaan-erp-federated -f Modelfile
+```
+
+### Run the model
+
+```bash
+# Start Ollama server (runs in background automatically on most systems)
+ollama serve
+
+# Test the model directly
+ollama run nirbaan-erp-federated "Write a brief imaginal script for contamination OCD."
+```
+
+### Environment variable
+
+Set this in `backend/.env` (or `.env.docker`) so the backend can reach Ollama:
+
+```env
+OLLAMA_BASE_URL=http://localhost:11434    # local
+OLLAMA_BASE_URL=http://host.docker.internal:11434  # inside Docker on Windows/Mac
+OLLAMA_MODEL=nirbaan-erp-federated
+```
+
+> **Hosted deployment**: Ollama cannot run on Render's free tier. Set `OLLAMA_BASE_URL=http://disabled` to gracefully skip imaginal script generation while keeping all other features working.
+
 ---
 
 ## Contributing
