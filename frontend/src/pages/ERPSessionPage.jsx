@@ -861,20 +861,6 @@ const ERPSessionPage = () => {
                   rows={2}
                   disabled={chatSending}
                 />
-                {/* 🎤 / ⏹ Voice mode button */}
-                {!isVoiceMode ? (
-                  <button
-                    title="Start voice mode"
-                    onClick={handleStartVoice}
-                  >🎤</button>
-                ) : (
-                  <button
-                    title="Exit voice mode"
-                    onClick={handleStopVoice}
-                    style={{ animation: 'pulse 1.2s infinite' }}
-                  >⏹</button>
-                )}
-
 {/* Existing send button */}
 <button
   className="sc-chat-send-btn"
