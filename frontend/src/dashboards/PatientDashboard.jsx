@@ -41,7 +41,9 @@ const PatientDashboard = () => {
   useEffect(() => {
     if (!user?.id) return;
     const connect = () => {
-      const wsBase = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000').replace(/^http/, 'ws');
+      const wsBase = import.meta.env.VITE_API_URL
+        ? import.meta.env.VITE_API_URL.replace(/^http/, 'ws')
+        : `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}`;
       const ws = new WebSocket(
         `${wsBase}/api/therapy-sessions/ws/call/${user.id}?user_type=patient`
       );

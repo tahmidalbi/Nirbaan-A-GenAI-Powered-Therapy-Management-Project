@@ -74,7 +74,9 @@ export async function getChatMessages(groupId) {
 
 // ─── WebSocket helper ──────────────────────────────────────
 
-const WS_BASE_URL = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000').replace(/^http/, 'ws');
+const WS_BASE_URL = import.meta.env.VITE_API_URL
+  ? import.meta.env.VITE_API_URL.replace(/^http/, 'ws')
+  : `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}`;
 
 export function openChatSocket(groupId) {
   const token = getToken();

@@ -101,6 +101,7 @@ from app.NirbaanAITherapist.models import (                         # noqa: F401
 from app.education.ocd_core.models import OCDCoreEducationCache     # noqa: F401
 from app.education.fear_ladder.models import FearLadderEducationCache  # noqa: F401
 from app.education.erp.models import ERPEducationCache              # noqa: F401
+from app.education.relapse_prevention.models import RelapsePreventionEducationCache  # noqa: F401
 
 # ── AI Ladder Review v2 RAG (pgvector) ───────────────────────────────────────
 from app.ai_ladder_review_v2.rag.taxonomy_model import TaxonomyChunk  # noqa: F401

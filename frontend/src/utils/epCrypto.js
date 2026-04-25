@@ -145,10 +145,19 @@ export async function encryptMsg(sharedKey, plaintext) {
  * the content is not an E2EE payload (e.g. legacy plain-text messages).
  */
 export async function decryptMessageContent(msg, sharedKey) {
-  if (!sharedKey || !msg?.content) return msg;
+  if (!msg?.content) return msg;
+
+  // Try to detect an E2EE payload regardless of whether we have a key
+  let parsed = null;
+  try { parsed = JSON.parse(msg.content); } catch { return msg; }
+  if (!parsed?.e2ee) return msg; // plain-text message — return as-is
+
+  // We know it's encrypted. If we have no key yet, show a placeholder.
+  if (!sharedKey) {
+    return { ...msg, content: '🔒 [Encrypted — key exchange incomplete]' };
+  }
+
   try {
-    const parsed = JSON.parse(msg.content);
-    if (!parsed.e2ee) return msg;
     const decrypted = await crypto.subtle.decrypt(
       { name: 'AES-GCM', iv: new Uint8Array(b64ToBuf(parsed.iv)) },
       sharedKey,
@@ -156,6 +165,6 @@ export async function decryptMessageContent(msg, sharedKey) {
     );
     return { ...msg, content: new TextDecoder().decode(decrypted) };
   } catch {
-    return msg;
+    return { ...msg, content: '🔒 [Encrypted — decryption failed]' };
   }
 }

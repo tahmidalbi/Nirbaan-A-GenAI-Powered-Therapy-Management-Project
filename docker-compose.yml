@@ -91,6 +91,9 @@ services:
         VITE_API_URL: http://localhost:5174
     ports:
       - "5174:80"
+    environment:
+      - BACKEND_URL=http://backend:8000
+      - BACKEND_HOST=backend
     depends_on:
       - backend
     restart: unless-stopped
