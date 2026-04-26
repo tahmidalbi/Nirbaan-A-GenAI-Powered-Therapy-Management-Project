@@ -38,12 +38,12 @@ Nirbaan solves this by deploying a network of **specialised AI agents** that rem
 - [The Problem We Are Solving](#the-problem-we-are-solving)
 - [Core Architecture](#core-architecture)
 - [Feature Overview](#feature-overview)
-  - [Agentic AI Subsystems](#-agentic-ai-subsystems)
-  - [Clinical Workflows](#-clinical-workflows)
-  - [Real-Time Communication](#-real-time-communication)
-  - [Security & Authentication](#-security--authentication)
-  - [Background Intelligence](#-background-intelligence)
-  - [Federated QLoRA Fine-Tuning](#-federated-qlora-fine-tuning)
+  - [Agentic AI Subsystems](#agentic-ai-subsystems)
+  - [Clinical Workflows](#clinical-workflows)
+  - [Real-Time Communication](#real-time-communication)
+  - [Security & Authentication](#security--authentication)
+  - [Background Intelligence](#background-intelligence)
+  - [Federated QLoRA Fine-Tuning](#federated-qlora-fine-tuning)
 - [Deep-Dive: AI Agent Architectures](#deep-dive-ai-agent-architectures)
   - [Patient AI Agent — NirbaanAIPatient](#1-patient-ai-agent--nirbaanaipatient)
   - [ERP Coach Agent](#2-erp-coach-agent)
@@ -107,7 +107,7 @@ Nirbaan solves this by deploying a network of **specialised AI agents** that rem
 
 ## Feature Overview
 
-### 🤖 Agentic AI Subsystems
+### Agentic AI Subsystems
 
 | Agent | Role | Tech |
 |---|---|---|
@@ -122,7 +122,7 @@ Nirbaan solves this by deploying a network of **specialised AI agents** that rem
 
 ---
 
-### 🏥 Clinical Workflows
+### Clinical Workflows
 
 | Feature | Description |
 |---|---|
@@ -139,7 +139,7 @@ Nirbaan solves this by deploying a network of **specialised AI agents** that rem
 
 ---
 
-### 📡 Real-Time Communication
+### Real-Time Communication
 
 | Feature | Description |
 |---|---|
@@ -153,7 +153,7 @@ Nirbaan solves this by deploying a network of **specialised AI agents** that rem
 
 ---
 
-### 🔐 Security & Authentication
+### Security & Authentication
 
 | Feature | Description |
 |---|---|
@@ -166,7 +166,7 @@ Nirbaan solves this by deploying a network of **specialised AI agents** that rem
 
 ---
 
-### ⚙️ Background Intelligence
+### Background Intelligence
 
 | Celery Task | Trigger | Description |
 |---|---|---|
@@ -179,7 +179,7 @@ Nirbaan solves this by deploying a network of **specialised AI agents** that rem
 
 ---
 
-### 🔬 Federated QLoRA Fine-Tuning
+### Federated QLoRA Fine-Tuning
 
 Nirbaan includes a research-grade federated learning pipeline that fine-tunes **Meta-Llama-3.1-8B-Instruct** on OCD imaginal exposure therapy data using **QLoRA** (4-bit quantisation) inside a privacy-preserving **Flower federated simulation**. The resulting model powers the Imaginal Script Generator via Ollama. See the [full research background](#federated-qlora--research-background) section for details.
 
