@@ -1,0 +1,255 @@
+\documentclass[preprint,12pt,a4paper]{elsarticle}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{xurl}
+\usepackage[left=2cm,right=2cm]{geometry}
+\setlength{\parindent}{0pt}
+\usepackage{float}
+\usepackage{placeins}
+
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\bottomfraction}{0.95}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.85}
+
+\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+
+\newcommand{\paperfig}[2]{
+    \includegraphics[
+        width=\textwidth,
+        height=0.62\textheight,
+        keepaspectratio
+    ]{#1}
+}
+
+\journal{SoftwareX}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Nirbaan: An Open-Source GenAI-Powered Platform for OCD-Focused Therapy Workflow Management}
+
+\author[inst1]{Adit Mugdha Das}
+\author[inst1]{Author Two}
+\author[inst1]{Author Three}
+
+\affiliation[inst1]{
+    organization={Department of Computer Science and Engineering, Khulna University of Engineering \& Technology},
+    city={Khulna},
+    country={Bangladesh}
+}
+
+\begin{abstract}
+Managing obsessive-compulsive disorder (OCD) between clinical sessions remains an important gap in digital health. We present Nirbaan, an open-source, full-stack therapy platform providing role-specific workflows for therapists, patients, and emergency personnel. Built with React, FastAPI, and Docker, Nirbaan replaces traditional single-model chatbots with a stateful LangGraph multi-agent system. It routes patient messages through specialized paths for psychoeducation, support, and urgent escalation, grounding responses via therapist-scoped pgvector retrieval-augmented generation. The system orchestrates clinical workflows---including exposure and response prevention (ERP), SUDS tracking, and AI-driven fear ladder reviews---using a Celery/Redis background pipeline. Furthermore, a human-in-the-loop workflow manages imaginal script generation, supported by an experimental federated QLoRA component for privacy-preserving model specialization. Nirbaan delivers a comprehensive, reproducible open-source infrastructure that balances automated, data-driven insights with deterministic safety guardrails for digital mental health research.
+\end{abstract}
+
+\begin{keyword}
+Digital mental health \sep
+Exposure and response prevention \sep
+Generative AI \sep
+Retrieval-augmented generation \sep
+LangGraph \sep
+Human-in-the-loop systems
+\end{keyword}
+
+\end{frontmatter}
+
+\section*{Metadata}
+
+\begin{table}[!h]
+\centering
+\small
+\begin{tabular}{|l|p{6.5cm}|p{6.5cm}|}
+\hline
+\textbf{Nr.} & \textbf{Code metadata description} & \textbf{Metadata} \\
+\hline
+C1 & Current code version & v1.0 \\
+\hline
+C2 & Permanent link to code/repository used for this code version & \url{https://github.com/your-username/Nirbaan-A-GenAI-Powered-Therapy-Management-Project} \\
+\hline
+C3 & Permanent link to Reproducible Capsule & N/A \\
+\hline
+C4 & Legal Code License & MIT License \\
+\hline
+C5 & Code versioning system used & git \\
+\hline
+C6 & Software code languages, tools, and services used 
+& Python, JavaScript, React, Vite, FastAPI, PostgreSQL, pgvector, Redis, Celery, LangGraph, LangChain, WebSockets, WebRTC, Docker, Docker Compose, Ollama, Piper TTS \\
+\hline
+C7 & Compilation requirements, operating environments \& dependencies 
+& Python 3.10+, Node.js 18+, npm, PostgreSQL, pgvector, Redis, Docker, Docker Compose, modern web browser, FastAPI, Uvicorn, SQLAlchemy, SQLModel, Celery, LangGraph, LangChain, bcrypt, JWT, React, Vite, React Router, Zustand, Axios, Recharts \\
+\hline
+C8 & If available Link to developer documentation/manual & \url{https://github.com/your-username/Nirbaan-A-GenAI-Powered-Therapy-Management-Project/blob/main/README.md} \\
+\hline
+C9 & Support email for questions & aditmughdas@gmail.com \\
+\hline
+\end{tabular}
+\caption{Code metadata (mandatory)}
+\label{codeMetadata}
+\end{table}
+
+\section{Motivation and significance}
+
+Obsessive-Compulsive Disorder (OCD) affects 2--3\% of the global population and is characterised by distressing intrusive thoughts (obsessions) and repetitive behaviours or mental acts (compulsions) performed to neutralise anxiety \cite{ruscio2010}. The gold-standard behavioural intervention is Exposure and Response Prevention (ERP) therapy \cite{foa2012}, in which patients systematically confront anxiety-provoking stimuli while resisting compulsions, monitoring distress via the Subjective Units of Distress Scale (SUDS). ERP efficacy is strongly dependent on between-session practice; however, patients spend fewer than one hour per week in direct clinical contact. During the remaining unsupervised hours---precisely when compulsive urges peak---adherence rates drop and attrition remains a persistent challenge in digital mental health delivery \cite{simpson2011, linardon2020}.
+
+Existing digital tools fail to bridge this inter-session gap. Passive logging applications capture symptom data but offer no therapeutic interaction. General-purpose large language model (LLM) chatbots, while conversationally capable, process messages without an underlying clinical state machine: they cannot distinguish a therapeutic SUDS spike from a reassurance-seeking request (which must be actively blocked during ERP), nor detect genuine psychiatric crises requiring human intervention. They generate responses ungoverned by therapist-uploaded clinical context, expose patients to hallucination risk in high-stakes situations, and provide no mechanism for the multi-tenant data isolation that mental health settings require.
+
+Nirbaan addresses these limitations through three specific contributions. First, it replaces generic chatbot design with a clinically modelled nine-node LangGraph state graph for live ERP coaching. Seven specialised handlers govern distinct therapeutic scenarios---reassurance-blocking, compulsion urge management, avoidance intervention, and SUDS spike response---mirroring the structured decision-making of a trained ERP therapist. Second, a RAG-powered hidden symptom detector autonomously audits patient self-monitoring logs against a curated OCD taxonomy embedded in pgvector. It surfaces obsession--compulsion patterns absent from the patient's current fear ladder, providing the therapist with actionable clinical decision support unavailable in any existing open-source platform. Third, the imaginal exposure script generator enforces a hard human-in-the-loop gate: every AI-generated script is held in a PostgreSQL-checkpointed LangGraph state until the therapist explicitly approves it. This deterministic safety control is complemented by a federated QLoRA pipeline for privacy-preserving, OCD-specific model specialisation.
+
+Beyond immediate clinical utility, Nirbaan serves as a reusable, fully containerised open-source reference implementation for researchers building agentic AI systems in safety-critical, human-supervised domains. Its architecture demonstrates concrete engineering patterns for stateful multi-agent orchestration, therapist-scoped RAG isolation, crash-safe LangGraph checkpointing, and federated fine-tuning under institutional privacy constraints. These components are independently extensible to adjacent digital mental health domains---anxiety, PTSD, and depression---where the same between-session gap persists, lowering the barrier for reproducible clinical AI research.
+
+\section{Software description}
+
+This section describes the design and implementation of Nirbaan. Section~2.1 presents the role-aware software architecture, including the frontend, backend, AI processing, and persistence layers. Section~2.2 describes the main software functionalities, including role-based access control, clinical workflow management, ERP and imaginal exposure support, AI-assisted knowledge retrieval, real-time communication, and escalation workflows.
+
+
+
+\subsection{System architecture}
+
+The architecture of Nirbaan is organized into four layers, as shown in Fig.~\ref{fig:system-architecture}: role-based interfaces, core application services, AI and processing services, and persistent data storage. This organization separates user interaction, clinical workflow orchestration, AI-enabled processing, and data persistence while allowing components to communicate through REST APIs, WebSocket connections, asynchronous task queues, and database queries.
+The first layer is the role-based interface layer. It is implemented as a React frontend and provides separate portals for therapists, patients, and emergency personnel. The therapist portal supports patient review, ERP and fear ladder monitoring, AI-generated reports, and resource management. The patient portal supports self-monitoring logs, ERP participation, fear ladder construction, psychoeducation access, and AI support. The emergency personnel portal provides access to escalation messages, chat, and response workflows.
+
+\begin{figure}[H]
+    \centering
+    \paperfig{system_architecture}{}
+    \caption{System architecture of Nirbaan.}
+    \label{fig:system-architecture}
+\end{figure}
+\FloatBarrier
+
+
+
+The second layer is the core application services layer, implemented using FastAPI. This layer exposes REST endpoints and WebSocket services for authentication, authorization, patient management, intake handling, self-monitoring, fear ladders, ERP sessions, homework, progress tracking, communication, and live session functionality. JWT-based authentication, bcrypt password hashing, and role-based access control are handled in this layer. The application services also coordinate requests between the user interface, AI workflows, background workers, and persistent storage.
+
+The third layer is the AI and processing layer. This layer contains LangGraph-based agent workflows, retrieval-augmented generation components, and asynchronous background processing services. Nirbaan uses AI assistants for patient support, therapist-facing assistance, intake summarization, AI ladder review, ERP coaching, report generation, and imaginal exposure script generation. Long-running tasks such as resource ingestion, education generation, and report generation are dispatched through Celery workers using Redis as the task broker and result backend. This layer also integrates external and local model services, including large language model providers and Piper TTS for audio generation.
+
+The fourth layer is the persistent data layer. PostgreSQL stores relational data such as users, patient records, intake forms, self-monitoring logs, fear ladders, ERP sessions, chat messages, homework records, and reports. The pgvector extension stores vector embeddings for retrieval-augmented generation, enabling therapist-scoped retrieval from uploaded clinical resources. Cloudflare R2 is used for uploaded files and generated media, including clinical resources and approved audio scripts. Redis supports task coordination for the asynchronous processing layer rather than long-term clinical storage.
+
+\subsection{System functionalities}
+
+\subsubsection{User roles and access control}
+
+Nirbaan supports three roles: therapist, patient, and emergency personnel. Therapists create patient and emergency personnel accounts within their own workspace, while each role accesses a dedicated dashboard. The backend uses bcrypt password hashing, JWT access tokens, and FastAPI role-specific dependencies to restrict protected endpoints. Therapist-facing data access is additionally scoped by \texttt{therapist\_id}, preventing cross-workspace access.
+
+\begin{quote}
+\small
+\begin{verbatim}
+procedure AUTHORIZE(token, allowed_roles, resource)
+    claims <- decode_and_verify_jwt(token)
+    if claims invalid then reject
+
+    user <- load_user_by_role(claims.role, claims.id)
+    if user missing or claims.role not in allowed_roles then reject
+
+    if resource is therapist-scoped then
+        if not belongs_to_authorized_workspace(resource, user) then
+            reject
+        end if
+    end if
+
+    allow request
+end procedure
+\end{verbatim}
+\end{quote}
+
+\subsubsection{Clinical workflow management}
+
+The clinical workflow modules provide the structured non-AI foundation of the platform. On the therapist side, Nirbaan supports patient registration, intake review, self-monitoring review, fear ladder supervision, homework assignment, weekly progress review, and clinical resource management. These tools allow therapists to observe between-session patient activity and organize relevant clinical information before formal appointments.
+
+On the patient side, the platform supports structured intake submission, daily self-monitoring logs, fear ladder construction with SUDS scores, homework completion, psychoeducation access, and progress visualization. Patient-generated data are stored longitudinally and made available to the therapist through scoped dashboard views. This design allows patient activity between appointments to become part of the therapist's review workflow rather than remaining isolated in separate logs or informal communication channels.
+
+Representative clinical workflow interfaces are shown in Fig.~\ref{fig:clinical-interfaces}, including therapist-side patient review, patient-side therapy tools, structured patient logging, and fear ladder construction.
+
+\begin{figure}[H]
+    \centering
+    \paperfig{clinical_workflow_interfaces}{}
+    \caption{Clinical workflow interfaces.}
+    \label{fig:clinical-interfaces}
+\end{figure}
+\FloatBarrier
+
+\subsubsection{ERP and imaginal exposure workspace}
+
+The ERP workspace supports exposure practice as a structured session workflow, as shown in Fig.~\ref{fig:erp-imaginal}. A therapist or patient creates an ERP item with the exposure target and related clinical context. During a live session, the patient records SUDS ratings and interacts with the ERP Coach, which provides response-prevention-oriented guidance during the exercise. When the session ends, an asynchronous Celery task generates a structured report containing session summary information, SUDS history, and review material for the therapist.
+
+\begin{figure}[H]
+    \centering
+    \paperfig{erp_imaginal_workflow}{}
+    \caption{ERP and imaginal exposure workflow.}
+    \label{fig:erp-imaginal}
+\end{figure}
+\FloatBarrier
+
+The imaginal exposure component extends the ERP workflow by generating patient-specific scripts from ERP context and related patient information. Generated scripts are not delivered directly to the patient; they pass through a therapist review and revision loop. Once approved, the system converts the script into audio using Piper TTS and makes the approved version available to the patient for guided imaginal exposure practice.
+
+Representative ERP and imaginal exposure interfaces are included in Fig.~\ref{fig:ai-erp-interfaces}, including live ERP support and therapist-supervised script review.
+
+\subsubsection{AI-assisted support and knowledge retrieval}
+
+Nirbaan integrates AI support through graph-based workflows rather than a single unrestricted chatbot, as shown in Fig.~\ref{fig:ai-routing}. The patient-facing assistant uses a LangGraph router to direct each message to one of three paths: psychoeducation, general support, or human escalation. The psychoeducation path can retrieve therapist-scoped material from the pgvector knowledge base before generating a response, while the escalation path verifies whether human support is needed and can notify emergency personnel. The same AI layer also supports therapist-facing assistance, intake summarization, fear ladder review, and generated psychoeducation content.
+
+\begin{figure}[H]
+    \centering
+    \paperfig{ai_agent_routing}{}
+    \caption{AI agent routing and retrieval workflow.}
+    \label{fig:ai-routing}
+\end{figure}
+\FloatBarrier
+
+The retrieval design is scoped by therapist ownership. Uploaded resources are processed into embeddings and stored with metadata that identifies the therapist workspace. During AI response generation, retrieval queries filter candidate chunks by this scope before adding them to the model context. This limits patient-facing and therapist-facing AI responses to materials associated with the appropriate clinical workspace, reducing cross-tenant leakage and making the generated output easier to audit.
+
+Representative AI and ERP interfaces are shown in Fig.~\ref{fig:ai-erp-interfaces}, including AI ladder review results, live ERP support, imaginal script review, and the NirbaanAI patient chatbot.
+
+\begin{figure}[H]
+    \centering
+    \paperfig{ai_erp_interfaces}{}
+    \caption{AI and ERP interfaces.}
+    \label{fig:ai-erp-interfaces}
+\end{figure}
+\FloatBarrier
+
+\subsubsection{Real-time communication and escalation}
+
+Nirbaan includes real-time communication channels for therapist--patient coordination and emergency support. WebSocket services support therapist--patient chat, emergency personnel group chat, and direct emergency personnel--patient conversations. The live session module also provides WebRTC signaling for video sessions, with transcript capture available for later review and analysis.
+
+Escalation is treated as a communication workflow rather than a standalone chatbot response. When the AI workflow identifies a message that may require human support, the system can generate a structured alert for the emergency personnel group and preserve the event in the chat record. This design keeps urgent support connected to human responders while maintaining an auditable communication history within the same clinical workspace.
+
+\section{Illustrative examples}
+
+To better demonstrate the major functions of Nirbaan, an explanatory video has been provided as a supplementary file. The video illustrates the key workflows and features described in the article.
+
+\FloatBarrier
+\begin{thebibliography}{4}
+
+\bibitem{ruscio2010}
+Ruscio AM, Stein DJ, Chiu WT, Kessler RC.
+The epidemiology of obsessive-compulsive disorder in the National Comorbidity Survey Replication.
+\textit{Molecular Psychiatry}. 2010;15(1):53--63.
+\newblock doi:10.1038/mp.2008.94
+
+\bibitem{foa2012}
+Foa EB, Yadin E, Lichner TK.
+\textit{Exposure and Response (Ritual) Prevention for Obsessive Compulsive Disorder: Therapist Guide}.
+2nd~ed. New York: Oxford University Press; 2012.
+
+\bibitem{simpson2011}
+Simpson HB, Maher MJ, Wang Y, Bao Y, Foa EB, Franklin M.
+Patient adherence predicts outcome from cognitive behavioral therapy in obsessive-compulsive disorder.
+\textit{Journal of Consulting and Clinical Psychology}. 2011;79(4):557--563.
+\newblock doi:10.1037/a0023153
+
+\bibitem{linardon2020}
+Linardon J, Fuller-Tyszkiewicz M.
+Attrition and adherence in smartphone-delivered interventions for mental health problems: A systematic and meta-analytic review.
+\textit{Journal of Consulting and Clinical Psychology}. 2020;88(1):1--13.
+\newblock doi:10.1037/ccp0000459
+
+\end{thebibliography}
+
+\end{document}
