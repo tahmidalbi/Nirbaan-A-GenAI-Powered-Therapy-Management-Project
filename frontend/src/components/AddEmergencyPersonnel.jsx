@@ -1,75 +1,124 @@
 import { useState } from 'react';
-import { registerEmergencyPersonnel } from '../api/emergency-personnel.api';
-import './AddPatient.css'; // Reuse the same styles
+import { registerEmergencyPersonnel, createEPInvitation, sendEPInviteEmail } from '../api/emergency-personnel.api';
+import './AddPatient.css';
+
+const EMPTY_FORM = {
+  name: '', email: '', password: '', confirmPassword: '',
+  education: '', experience: '', details: '', address: '',
+};
 
 const AddEmergencyPersonnel = ({ onPersonnelAdded }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    education: '',
-    experience: '',
-    details: '',
-    address: ''
-  });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm]   = useState(false);
+  const [activeTab, setActiveTab] = useState('direct');
+
+  // Direct tab state
+  const [formData, setFormData]   = useState(EMPTY_FORM);
+  const [error, setError]         = useState('');
+  const [loading, setLoading]     = useState(false);
+  const [createdCreds, setCreatedCreds] = useState(null);
+  const [credsCopied, setCredsCopied]   = useState(false);
+
+  // Invite tab state
+  const [inviteEmail, setInviteEmail]   = useState('');
+  const [inviteResult, setInviteResult] = useState(null);
+  const [inviteError, setInviteError]   = useState('');
+  const [inviteLoading, setInviteLoading] = useState(false);
+  const [inviteCopied, setInviteCopied]   = useState(false);
+
+  // Email sending state
+  const [sendEmail, setSendEmail]       = useState('');
+  const [emailSending, setEmailSending] = useState(false);
+  const [emailSent, setEmailSent]       = useState(false);
+  const [emailError, setEmailError]     = useState('');
+
+  // ── helpers ──────────────────────────────────────────────────────────────
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
     setError('');
   };
+
+  const handleClose = () => {
+    setShowForm(false);
+    setActiveTab('direct');
+    setFormData(EMPTY_FORM);
+    setError('');
+    setCreatedCreds(null);
+    setCredsCopied(false);
+    setInviteEmail('');
+    setInviteResult(null);
+    setInviteError('');
+    setSendEmail('');
+    setEmailSent(false);
+    setEmailError('');
+  };
+
+  const copyToClipboard = (text, setCopiedFn) => {
+    navigator.clipboard.writeText(text);
+    setCopiedFn(true);
+    setTimeout(() => setCopiedFn(false), 2000);
+  };
+
+  // ── direct registration ───────────────────────────────────────────────────
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-
-    if (formData.password.length < 8) {
-      setError('Password must be at least 8 characters long');
-      return;
-    }
+    if (formData.password !== formData.confirmPassword) { setError('Passwords do not match'); return; }
+    if (formData.password.length < 8) { setError('Password must be at least 8 characters long'); return; }
 
     setLoading(true);
-
     try {
       const { confirmPassword, ...registrationData } = formData;
       const personnel = await registerEmergencyPersonnel(registrationData);
-      
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        education: '',
-        experience: '',
-        details: '',
-        address: ''
-      });
-      
-      setShowForm(false);
-      if (onPersonnelAdded) {
-        onPersonnelAdded(personnel);
-      }
+      setCreatedCreds({ name: formData.name, email: formData.email, password: formData.password });
+      setFormData(EMPTY_FORM);
+      if (onPersonnelAdded) onPersonnelAdded(personnel);
     } catch (err) {
-      console.error('Emergency personnel registration error:', err);
-      const errorMsg = err.response?.data?.detail || err.message || 'Registration failed. Please check your details and try again.';
-      setError(errorMsg);
-      alert(`Registration Error: ${errorMsg}`);
+      setError(err.response?.data?.detail || err.message || 'Registration failed.');
     } finally {
       setLoading(false);
     }
   };
+
+  // ── invite generation ─────────────────────────────────────────────────────
+
+  const handleGenerateInvite = async () => {
+    setInviteError('');
+    setInviteResult(null);
+    setInviteCopied(false);
+    setSendEmail('');
+    setEmailSent(false);
+    setEmailError('');
+    setInviteLoading(true);
+    try {
+      const data = await createEPInvitation(inviteEmail.trim() || null);
+      setInviteResult(data);
+      if (inviteEmail.trim()) setSendEmail(inviteEmail.trim());
+    } catch (err) {
+      setInviteError(err?.response?.data?.detail || err || 'Failed to generate invitation.');
+    } finally {
+      setInviteLoading(false);
+    }
+  };
+
+  // ── email sending ─────────────────────────────────────────────────────────
+
+  const handleSendEmail = async () => {
+    if (!sendEmail.trim()) return;
+    setEmailError('');
+    setEmailSending(true);
+    try {
+      await sendEPInviteEmail(inviteResult.token, sendEmail.trim());
+      setEmailSent(true);
+    } catch (err) {
+      setEmailError(err?.response?.data?.detail || err?.message || 'Failed to send email.');
+    } finally {
+      setEmailSending(false);
+    }
+  };
+
+  // ── render ────────────────────────────────────────────────────────────────
 
   if (!showForm) {
     return (
@@ -79,150 +128,190 @@ const AddEmergencyPersonnel = ({ onPersonnelAdded }) => {
     );
   }
 
+  const loginUrl = `${window.location.origin}/emergency-personnel/login`;
+
   return (
     <div className="add-patient-overlay" onClick={(e) => {
-      if (e.target.className === 'add-patient-overlay') setShowForm(false);
+      if (e.target.className === 'add-patient-overlay') handleClose();
     }}>
       <div className="add-patient-modal">
         <div className="modal-header">
           <h2>Add Emergency Personnel</h2>
-          <button className="close-btn" onClick={() => setShowForm(false)}>×</button>
+          <button className="close-btn" onClick={handleClose}>×</button>
         </div>
 
-        {error && <div className="error-message">{error}</div>}
+        <div className="invite-tabs">
+          <button className={`invite-tab-btn${activeTab === 'direct' ? ' active' : ''}`} onClick={() => setActiveTab('direct')}>
+            Create Account
+          </button>
+          <button className={`invite-tab-btn${activeTab === 'invite' ? ' active' : ''}`} onClick={() => setActiveTab('invite')}>
+            Send Invitation Link
+          </button>
+        </div>
 
-        <form onSubmit={handleSubmit} className="patient-form">
-          <div className="form-group">
-            <label htmlFor="name">Full Name *</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Enter full name"
-              required
-              disabled={loading}
-            />
-          </div>
+        {/* ── MODE 1: Therapist creates account ── */}
+        {activeTab === 'direct' && !createdCreds && (
+          <>
+            {error && <div className="error-message">{error}</div>}
+            <form onSubmit={handleSubmit} className="patient-form">
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Full Name *</label>
+                  <input name="name" value={formData.name} onChange={handleChange} required placeholder="Enter full name" />
+                </div>
+                <div className="form-group">
+                  <label>Email Address *</label>
+                  <input type="email" name="email" value={formData.email} onChange={handleChange} required placeholder="Enter email address" />
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Password *</label>
+                  <input type="password" name="password" value={formData.password} onChange={handleChange} required placeholder="Minimum 8 characters" />
+                </div>
+                <div className="form-group">
+                  <label>Confirm Password *</label>
+                  <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required placeholder="Re-enter password" />
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Education *</label>
+                <input name="education" value={formData.education} onChange={handleChange} required placeholder="e.g., MD, Psychiatry" />
+              </div>
+              <div className="form-group">
+                <label>Experience *</label>
+                <input name="experience" value={formData.experience} onChange={handleChange} required placeholder="e.g., 5 years in crisis intervention" />
+              </div>
+              <div className="form-group">
+                <label>Additional Details</label>
+                <textarea name="details" value={formData.details} onChange={handleChange} rows={3} placeholder="Certifications, specializations, etc." />
+              </div>
+              <div className="form-group">
+                <label>Address *</label>
+                <textarea name="address" value={formData.address} onChange={handleChange} required rows={2} placeholder="Enter full address" />
+              </div>
+              <div className="form-actions">
+                <button type="button" className="cancel-btn" onClick={handleClose}>Cancel</button>
+                <button type="submit" className="submit-btn" disabled={loading}>
+                  {loading ? 'Creating Account…' : 'Create Account & Get Credentials'}
+                </button>
+              </div>
+            </form>
+          </>
+        )}
 
-          <div className="form-group">
-            <label htmlFor="email">Email Address *</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter email address"
-              required
-              disabled={loading}
-            />
-          </div>
+        {/* ── MODE 1 success: shareable credentials card ── */}
+        {activeTab === 'direct' && createdCreds && (() => {
+          const shareText =
+`Your Nirbaan emergency personnel account is ready.
 
-          <div className="form-row">
+Name: ${createdCreds.name}
+Email: ${createdCreds.email}
+Password: ${createdCreds.password}
+Login at: ${loginUrl}
+
+You can change your password after logging in.`;
+          return (
+            <div className="invite-panel">
+              <p className="invite-result-label" style={{ color: '#4ecdc4', fontWeight: 600, marginBottom: '0.8rem' }}>
+                ✓ Account created for {createdCreds.name}
+              </p>
+              <p className="invite-description">
+                Copy the credentials below and share them with the personnel via any channel.
+              </p>
+              <div className="creds-card">
+                <div className="creds-row"><span className="creds-label">Name</span><span className="creds-value">{createdCreds.name}</span></div>
+                <div className="creds-row"><span className="creds-label">Email</span><span className="creds-value">{createdCreds.email}</span></div>
+                <div className="creds-row"><span className="creds-label">Password</span><span className="creds-value creds-password">{createdCreds.password}</span></div>
+                <div className="creds-row"><span className="creds-label">Login URL</span><span className="creds-value" style={{ fontSize: '0.78rem' }}>{loginUrl}</span></div>
+              </div>
+              <div className="form-actions" style={{ marginTop: '1rem' }}>
+                <button type="button" className="cancel-btn" onClick={() => setCreatedCreds(null)}>
+                  Add Another
+                </button>
+                <button type="button" className="submit-btn" onClick={() => copyToClipboard(shareText, setCredsCopied)}>
+                  {credsCopied ? 'Copied!' : 'Copy Credentials'}
+                </button>
+              </div>
+              <button type="button" className="close-text-btn" onClick={handleClose}>Done — close window</button>
+            </div>
+          );
+        })()}
+
+        {/* ── MODE 2: Invite link ── */}
+        {activeTab === 'invite' && (
+          <div className="invite-panel">
+            <p className="invite-description">
+              Generate a one-time link. The personnel opens it and fills in their own details.
+              Their account is automatically linked to your workspace. Link expires in 7 days.
+            </p>
             <div className="form-group">
-              <label htmlFor="password">Password *</label>
+              <label>Restrict to email address <span style={{ color: '#8aa8a8' }}>(optional)</span></label>
               <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Minimum 8 characters"
-                required
-                disabled={loading}
+                type="email"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                placeholder="personnel@example.com — leave blank for open invite"
               />
             </div>
+            {inviteError && <div className="error-message">{inviteError}</div>}
 
-            <div className="form-group">
-              <label htmlFor="confirmPassword">Confirm Password *</label>
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                placeholder="Re-enter password"
-                required
-                disabled={loading}
-              />
-            </div>
-          </div>
+            {!inviteResult ? (
+              <div className="form-actions">
+                <button type="button" className="cancel-btn" onClick={handleClose}>Cancel</button>
+                <button type="button" className="submit-btn" onClick={handleGenerateInvite} disabled={inviteLoading}>
+                  {inviteLoading ? 'Generating…' : 'Generate Invite Link'}
+                </button>
+              </div>
+            ) : (
+              <div className="invite-result">
+                <p className="invite-result-label">Share this link with the personnel:</p>
+                <div className="invite-link-row">
+                  <input type="text" readOnly value={inviteResult.invite_url} className="invite-link-input" />
+                  <button type="button" className="submit-btn" onClick={() => copyToClipboard(inviteResult.invite_url, setInviteCopied)}>
+                    {inviteCopied ? 'Copied!' : 'Copy'}
+                  </button>
+                </div>
+                <p className="invite-expiry">
+                  Expires: {new Date(inviteResult.expires_at).toLocaleString()}
+                  {inviteResult.invited_email && ` · Locked to: ${inviteResult.invited_email}`}
+                </p>
 
-          <div className="form-group">
-            <label htmlFor="education">Education *</label>
-            <input
-              type="text"
-              id="education"
-              name="education"
-              value={formData.education}
-              onChange={handleChange}
-              placeholder="e.g., MD, Psychiatry"
-              required
-              disabled={loading}
-            />
-          </div>
+                {/* Email sending section */}
+                <div className="invite-send-email">
+                  <p className="invite-result-label" style={{ marginBottom: '0.5rem' }}>Or send directly to their email:</p>
+                  <div className="invite-link-row">
+                    <input
+                      type="email"
+                      className="invite-link-input"
+                      placeholder="personnel@example.com"
+                      value={sendEmail}
+                      onChange={(e) => { setSendEmail(e.target.value); setEmailSent(false); setEmailError(''); }}
+                      disabled={emailSent}
+                    />
+                    <button
+                      type="button"
+                      className="submit-btn"
+                      onClick={handleSendEmail}
+                      disabled={emailSending || emailSent || !sendEmail.trim()}
+                    >
+                      {emailSending ? 'Sending…' : emailSent ? 'Sent!' : 'Send Email'}
+                    </button>
+                  </div>
+                  {emailError && <p style={{ color: '#f87171', fontSize: '0.82rem', marginTop: '0.4rem' }}>{emailError}</p>}
+                  {emailSent && <p style={{ color: '#4ecdc4', fontSize: '0.82rem', marginTop: '0.4rem' }}>Invitation email delivered successfully.</p>}
+                </div>
 
-          <div className="form-group">
-            <label htmlFor="experience">Experience *</label>
-            <input
-              type="text"
-              id="experience"
-              name="experience"
-              value={formData.experience}
-              onChange={handleChange}
-              placeholder="e.g., 5 years in crisis intervention"
-              required
-              disabled={loading}
-            />
+                <div className="form-actions">
+                  <button type="button" className="cancel-btn" onClick={() => { setInviteResult(null); setInviteEmail(''); setSendEmail(''); setEmailSent(false); setEmailError(''); }}>
+                    Generate Another
+                  </button>
+                  <button type="button" className="submit-btn" onClick={handleClose}>Done</button>
+                </div>
+              </div>
+            )}
           </div>
-
-          <div className="form-group">
-            <label htmlFor="details">Additional Details</label>
-            <textarea
-              id="details"
-              name="details"
-              value={formData.details}
-              onChange={handleChange}
-              placeholder="Certifications, specializations, etc."
-              rows="3"
-              disabled={loading}
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="address">Address *</label>
-            <textarea
-              id="address"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              placeholder="Enter full address"
-              rows="2"
-              required
-              disabled={loading}
-            />
-          </div>
-
-          <div className="form-actions">
-            <button 
-              type="button" 
-              className="cancel-btn" 
-              onClick={() => setShowForm(false)}
-              disabled={loading}
-            >
-              Cancel
-            </button>
-            <button 
-              type="submit" 
-              className="submit-btn"
-              disabled={loading}
-            >
-              {loading ? 'Adding...' : 'Add Personnel'}
-            </button>
-          </div>
-        </form>
+        )}
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ import Signup from '../auth/Signup';
 import PatientLogin from '../auth/PatientLogin';
 import EmergencyPersonnelLogin from '../auth/EmergencyPersonnelLogin';
 import InviteRegister from '../pages/InviteRegister';
+import EPInviteRegister from '../pages/EPInviteRegister';
 import ProtectedRoute from '../auth/ProtectedRoute';
 import PatientDashboard from '../dashboards/PatientDashboard';
 import OCDTools from '../dashboards/OCDPatientDashboard';
@@ -60,6 +61,7 @@ const AppRoutes = () => {
       <Route path="/patient/login" element={<PatientLogin />} />
       <Route path="/emergency-personnel/login" element={<EmergencyPersonnelLogin />} />
       <Route path="/invite/:token" element={<InviteRegister />} />
+      <Route path="/ep-invite/:token" element={<EPInviteRegister />} />
 
       {/* Protected Routes - Patient */}
       <Route

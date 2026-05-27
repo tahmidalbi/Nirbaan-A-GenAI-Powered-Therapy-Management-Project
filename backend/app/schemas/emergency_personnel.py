@@ -37,3 +37,36 @@ class EmergencyPersonnelResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+# ── Invitation schemas ────────────────────────────────────────────────────────
+
+class EPInviteCreate(BaseModel):
+    invited_email: Optional[EmailStr] = None
+
+
+class EPInviteCreateResponse(BaseModel):
+    token: str
+    invite_url: str
+    expires_at: datetime
+    invited_email: Optional[str]
+
+
+class EPInviteValidateResponse(BaseModel):
+    valid: bool
+    therapist_name: str
+    invited_email: Optional[str]
+
+
+class EPInviteRegisterRequest(BaseModel):
+    name: str = Field(..., min_length=2, max_length=100)
+    email: EmailStr
+    password: str = Field(..., min_length=8, max_length=100)
+    education: str = Field(..., min_length=2, max_length=200)
+    experience: str = Field(..., min_length=2, max_length=200)
+    details: Optional[str] = Field(None, max_length=2000)
+    address: str = Field(..., min_length=5, max_length=500)
+
+
+class EPInviteSendEmailRequest(BaseModel):
+    recipient_email: EmailStr

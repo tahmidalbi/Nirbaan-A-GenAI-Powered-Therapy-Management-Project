@@ -59,3 +59,29 @@ export const getCurrentEmergencyPersonnel = async () => {
     throw error.response?.data?.detail || 'Failed to fetch profile';
   }
 };
+
+// ── Invitation API ────────────────────────────────────────────────────────────
+
+export const createEPInvitation = async (invitedEmail = null) => {
+  const response = await axiosInstance.post('/emergency-personnel/invite', {
+    invited_email: invitedEmail || null,
+  });
+  return response.data;
+};
+
+export const validateEPInvitation = async (token) => {
+  const response = await axiosInstance.get(`/emergency-personnel/invite/${token}`);
+  return response.data;
+};
+
+export const registerViaEPInvitation = async (token, personnelData) => {
+  const response = await axiosInstance.post(`/emergency-personnel/invite/${token}/register`, personnelData);
+  return response.data;
+};
+
+export const sendEPInviteEmail = async (token, recipientEmail) => {
+  const response = await axiosInstance.post(`/emergency-personnel/invite/${token}/send-email`, {
+    recipient_email: recipientEmail,
+  });
+  return response.data;
+};

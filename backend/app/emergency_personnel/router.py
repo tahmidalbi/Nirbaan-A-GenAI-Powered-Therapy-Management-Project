@@ -2,16 +2,20 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from typing import List
+from datetime import datetime
 
 from app.database.deps import get_db
 from app.schemas.emergency_personnel import (
     EmergencyPersonnelRegister,
     EmergencyPersonnelLogin,
     EmergencyPersonnelResponse,
-    EmergencyPersonnelUpdate
+    EmergencyPersonnelUpdate,
+    EPInviteCreate, EPInviteCreateResponse, EPInviteValidateResponse,
+    EPInviteRegisterRequest, EPInviteSendEmailRequest,
 )
 from app.schemas.auth import Token
 from app.emergency_personnel.models import EmergencyPersonnel
+from app.emergency_personnel.invitation_model import EPInvitation
 from app.therapists.models import Therapist
 from app.auth.utils import (
     get_password_hash,
@@ -20,6 +24,8 @@ from app.auth.utils import (
     get_current_therapist,
     get_current_emergency_personnel
 )
+from app.core.config import settings
+from app.core.email_utils import send_ep_invite_email
 
 router = APIRouter(prefix="/emergency-personnel", tags=["Emergency Personnel"])
 
@@ -198,3 +204,127 @@ async def get_current_emergency_personnel_info(
     Get current emergency personnel information (for authenticated personnel)
     """
     return current_personnel
+
+
+# ── Invitation endpoints ──────────────────────────────────────────────────────
+
+@router.post("/invite", response_model=EPInviteCreateResponse, status_code=status.HTTP_201_CREATED)
+async def create_ep_invitation(
+    body: EPInviteCreate,
+    db: Session = Depends(get_db),
+    current_therapist: Therapist = Depends(get_current_therapist),
+):
+    invitation = EPInvitation(
+        therapist_id=current_therapist.id,
+        invited_email=body.invited_email,
+    )
+    db.add(invitation)
+    db.commit()
+    db.refresh(invitation)
+
+    invite_url = f"{settings.FRONTEND_URL}/ep-invite/{invitation.token}"
+    return EPInviteCreateResponse(
+        token=invitation.token,
+        invite_url=invite_url,
+        expires_at=invitation.expires_at,
+        invited_email=invitation.invited_email,
+    )
+
+
+@router.get("/invite/{token}", response_model=EPInviteValidateResponse)
+async def validate_ep_invitation(
+    token: str,
+    db: Session = Depends(get_db),
+):
+    invitation = db.query(EPInvitation).filter(EPInvitation.token == token).first()
+
+    if not invitation or invitation.status != "pending" or invitation.expires_at < datetime.utcnow():
+        return EPInviteValidateResponse(valid=False, therapist_name="", invited_email=None)
+
+    therapist = db.get(Therapist, invitation.therapist_id)
+    return EPInviteValidateResponse(
+        valid=True,
+        therapist_name=therapist.name if therapist else "",
+        invited_email=invitation.invited_email,
+    )
+
+
+@router.post("/invite/{token}/register", response_model=EmergencyPersonnelResponse, status_code=status.HTTP_201_CREATED)
+async def register_via_ep_invitation(
+    token: str,
+    personnel_data: EPInviteRegisterRequest,
+    db: Session = Depends(get_db),
+):
+    invitation = db.query(EPInvitation).filter(EPInvitation.token == token).first()
+
+    if not invitation:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invalid invitation link.")
+    if invitation.status != "pending":
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="This invitation has already been used.")
+    if invitation.expires_at < datetime.utcnow():
+        invitation.status = "expired"
+        db.commit()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="This invitation has expired.")
+    if invitation.invited_email and invitation.invited_email.lower() != personnel_data.email.lower():
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="This invitation was sent to a different email address.")
+
+    existing = db.query(EmergencyPersonnel).filter(EmergencyPersonnel.email == personnel_data.email).first()
+    if existing:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered.")
+
+    new_personnel = EmergencyPersonnel(
+        name=personnel_data.name,
+        email=personnel_data.email,
+        hashed_password=get_password_hash(personnel_data.password),
+        education=personnel_data.education,
+        experience=personnel_data.experience,
+        details=personnel_data.details,
+        address=personnel_data.address,
+        therapist_id=invitation.therapist_id,
+    )
+
+    try:
+        db.add(new_personnel)
+        invitation.status = "used"
+        db.commit()
+        db.refresh(new_personnel)
+        return new_personnel
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Registration failed.")
+
+
+@router.post("/invite/{token}/send-email", status_code=status.HTTP_200_OK)
+async def send_ep_invite_email_endpoint(
+    token: str,
+    body: EPInviteSendEmailRequest,
+    db: Session = Depends(get_db),
+    current_therapist: Therapist = Depends(get_current_therapist),
+):
+    invitation = db.query(EPInvitation).filter(
+        EPInvitation.token == token,
+        EPInvitation.therapist_id == current_therapist.id,
+    ).first()
+
+    if not invitation:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invitation not found.")
+    if invitation.status != "pending":
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="This invitation has already been used or expired.")
+    if invitation.expires_at < datetime.utcnow():
+        invitation.status = "expired"
+        db.commit()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="This invitation has expired.")
+
+    invite_url = f"{settings.FRONTEND_URL}/ep-invite/{token}"
+
+    try:
+        send_ep_invite_email(
+            recipient_email=body.recipient_email,
+            therapist_name=current_therapist.name,
+            invite_url=invite_url,
+        )
+    except RuntimeError as exc:
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(exc))
+
+    return {"message": f"Invitation email sent to {body.recipient_email}."}
+
