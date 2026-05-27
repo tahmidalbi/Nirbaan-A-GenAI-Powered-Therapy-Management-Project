@@ -135,7 +135,7 @@ The fourth layer is the persistent data layer. PostgreSQL stores relational data
 
 \subsubsection{User roles and access control}
 
-Nirbaan supports three roles: therapist, patient, and emergency personnel. Therapists create patient and emergency personnel accounts within their own workspace, while each role accesses a dedicated dashboard. The backend uses bcrypt password hashing, JWT access tokens, and FastAPI role-specific dependencies to restrict protected endpoints. Therapist-facing data access is additionally scoped by \texttt{therapist\_id}, preventing cross-workspace access.
+Nirbaan supports three roles: therapist, patient, and emergency personnel. Therapists onboard patients and emergency personnel through two modes. In direct creation mode, the therapist fills in the account details and receives a shareable credentials card. In invitation mode, the therapist generates a one-time UUID token (valid for seven days) and either copies the resulting URL or dispatches it directly to the recipient's email address via the platform's SMTP integration; the recipient self-registers through a dedicated public route, and their account is automatically scoped to the inviting therapist's workspace. Invitation links may optionally be locked to a specific email address to prevent misuse. Each role accesses a dedicated dashboard. The backend uses bcrypt password hashing, JWT access tokens, and FastAPI role-specific dependencies to restrict protected endpoints. Therapist-facing data access is additionally scoped by \texttt{therapist\_id}, preventing cross-workspace access.
 
 \begin{quote}
 \small
