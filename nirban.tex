@@ -168,12 +168,12 @@ Representative clinical workflow interfaces are shown in Fig.~\ref{fig:clinical-
 
 \begin{figure}[H]
     \centering
-    \begin{minipage}[t]{0.48\textwidth}
+    \begin{minipage}[t]{0.495\textwidth}
         \centering
         \includegraphics[width=\textwidth]{therapist_dashboard}\\[-0.2em]
         {\small (a)}
-    \end{minipage}\hfill
-    \begin{minipage}[t]{0.48\textwidth}
+    \end{minipage}\hspace{0.005\textwidth}
+    \begin{minipage}[t]{0.495\textwidth}
         \centering
         \includegraphics[width=\textwidth]{patient_dashboard}\\[-0.2em]
         {\small (b)}
@@ -181,17 +181,17 @@ Representative clinical workflow interfaces are shown in Fig.~\ref{fig:clinical-
 
     \vspace{0.4em}
 
-    \begin{minipage}[t]{0.48\textwidth}
+    \begin{minipage}[t]{0.495\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{patient_log}\\[-0.2em]
+        \includegraphics[width=\textwidth]{patient_intake}\\[-0.2em]
         {\small (c)}
-    \end{minipage}\hfill
-    \begin{minipage}[t]{0.48\textwidth}
+    \end{minipage}\hspace{0.005\textwidth}
+    \begin{minipage}[t]{0.495\textwidth}
         \centering
         \includegraphics[width=\textwidth]{fear_ladder_workspace}\\[-0.2em]
         {\small (d)}
     \end{minipage}
-    \caption{Clinical workflow interfaces. (a) Therapist dashboard. (b) Patient dashboard. (c) Patient intake or self-monitoring log. (d) Fear ladder workspace.}
+    \caption{Clinical workflow interfaces. (a) Therapist dashboard. (b) Patient dashboard. (c) Patient intake form. (d) Fear ladder workspace.}
     \label{fig:clinical-interfaces}
 \end{figure}
 \FloatBarrier
@@ -226,16 +226,16 @@ Nirbaan integrates AI support through graph-based workflows rather than a single
 
 The retrieval design is scoped by therapist ownership. Uploaded resources are processed into embeddings and stored with metadata that identifies the therapist workspace. During AI response generation, retrieval queries filter candidate chunks by this scope before adding them to the model context. This limits patient-facing and therapist-facing AI responses to materials associated with the appropriate clinical workspace, reducing cross-tenant leakage and making the generated output easier to audit.
 
-Representative AI and ERP interfaces are shown in Fig.~\ref{fig:ai-erp-interfaces}, including AI ladder review results, live ERP support, imaginal script review, and the NirbaanAI patient chatbot.
+Representative AI and ERP interfaces are shown in Fig.~\ref{fig:ai-erp-interfaces}, including therapist-side AI reporting, live ERP support, therapist-managed resources, and the NirbaanAI patient chatbot.
 
 \begin{figure}[H]
     \centering
-    \begin{minipage}[t]{0.48\textwidth}
+    \begin{minipage}[t]{0.495\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{ai_ladder_review}\\[-0.2em]
+        \includegraphics[width=\textwidth]{ai_clinical_report}\\[-0.2em]
         {\small (a)}
-    \end{minipage}\hfill
-    \begin{minipage}[t]{0.48\textwidth}
+    \end{minipage}\hspace{0.005\textwidth}
+    \begin{minipage}[t]{0.495\textwidth}
         \centering
         \includegraphics[width=\textwidth]{live_erp_session}\\[-0.2em]
         {\small (b)}
@@ -243,17 +243,17 @@ Representative AI and ERP interfaces are shown in Fig.~\ref{fig:ai-erp-interface
 
     \vspace{0.4em}
 
-    \begin{minipage}[t]{0.48\textwidth}
+    \begin{minipage}[t]{0.495\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{imaginal_script_review}\\[-0.2em]
+        \includegraphics[width=\textwidth]{resource_library}\\[-0.2em]
         {\small (c)}
-    \end{minipage}\hfill
-    \begin{minipage}[t]{0.48\textwidth}
+    \end{minipage}\hspace{0.005\textwidth}
+    \begin{minipage}[t]{0.495\textwidth}
         \centering
         \includegraphics[width=\textwidth]{nirbaanai_chatbot}\\[-0.2em]
         {\small (d)}
     \end{minipage}
-    \caption{AI and ERP interfaces. (a) AI ladder review results. (b) Live ERP session. (c) Imaginal script review. (d) NirbaanAI patient chatbot.}
+    \caption{AI and ERP interfaces. (a) Therapist-side AI clinical report. (b) Live ERP session. (c) Resource library for therapist-scoped knowledge retrieval. (d) NirbaanAI patient chatbot.}
     \label{fig:ai-erp-interfaces}
 \end{figure}
 \FloatBarrier
