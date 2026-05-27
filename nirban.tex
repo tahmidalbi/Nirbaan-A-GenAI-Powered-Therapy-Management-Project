@@ -9,6 +9,8 @@
 \setlength{\parindent}{0pt}
 \usepackage{float}
 \usepackage{placeins}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 \renewcommand{\topfraction}{0.95}
 \renewcommand{\bottomfraction}{0.95}
@@ -137,26 +139,36 @@ The fourth layer is the persistent data layer. PostgreSQL stores relational data
 
 Nirbaan supports three roles: therapist, patient, and emergency personnel. Therapists onboard patients and emergency personnel through two modes. In direct creation mode, the therapist fills in the account details and receives a shareable credentials card. In invitation mode, the therapist generates a one-time UUID token (valid for seven days) and either copies the resulting URL or dispatches it directly to the recipient's email address via the platform's SMTP integration; the recipient self-registers through a dedicated public route, and their account is automatically scoped to the inviting therapist's workspace. Invitation links may optionally be locked to a specific email address to prevent misuse. Each role accesses a dedicated dashboard. The backend uses bcrypt password hashing, JWT access tokens, and FastAPI role-specific dependencies to restrict protected endpoints. Therapist-facing data access is additionally scoped by \texttt{therapist\_id}, preventing cross-workspace access.
 
-\begin{quote}
+\begin{algorithm}[H]
+\caption{Role-based authorization workflow}
+\label{alg:authorization}
 \small
-\begin{verbatim}
-procedure AUTHORIZE(token, allowed_roles, resource)
-    claims <- decode_and_verify_jwt(token)
-    if claims invalid then reject
+\begin{algorithmic}[1]
+\Procedure{Authorize}{$token, allowedRoles, resource$}
 
-    user <- load_user_by_role(claims.role, claims.id)
-    if user missing or claims.role not in allowed_roles then reject
+\State $claims \gets$ DecodeAndVerifyJWT($token$)
 
-    if resource is therapist-scoped then
-        if not belongs_to_authorized_workspace(resource, user) then
-            reject
-        end if
-    end if
+\If{$claims$ invalid}
+    \State Reject request
+\EndIf
 
-    allow request
-end procedure
-\end{verbatim}
-\end{quote}
+\State $user \gets$ LoadUser($claims.role, claims.id$)
+
+\If{$user$ missing OR $claims.role \notin allowedRoles$}
+    \State Reject request
+\EndIf
+
+\If{$resource$ is therapist-scoped}
+    \If{resource not associated with authorized workspace}
+        \State Reject request
+    \EndIf
+\EndIf
+
+\State Allow request
+
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
 
 \subsubsection{Clinical workflow management}
 
