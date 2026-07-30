@@ -257,7 +257,7 @@ Open http://localhost:5174, click **Sign Up**, and register as a therapist. You'
 
 If you use this software in your research, please cite:
 
-> Das AM, Islam MT, Abdullah AN, Shuvo MB. *tahmidalbi/Nirbaan-A-GenAI-Powered-Therapy-Management-Project: Nirbaan v1.0*. Zenodo; 2026. doi:10.5281/zenodo.21220833
+> Das AM, Islam MT, Abdullah AN. *tahmidalbi/Nirbaan-A-GenAI-Powered-Therapy-Management-Project: Nirbaan v1.0*. Zenodo; 2026. doi:10.5281/zenodo.21220833
 
 A citation to the accompanying SoftwareX article will be added here upon publication.
 
