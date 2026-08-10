@@ -225,6 +225,7 @@ celery -A app.core.celery_app beat --loglevel=info
 # Install from https://ollama.com if not already installed
 ollama create nirbaan-erp-federated -f FTSLM/Modelfile
 ollama list   # should show nirbaan-erp-federated
+ollama run nirbaan-erp-federated "Write a brief imaginal exposure script for contamination OCD."
 ```
 
 Then set in `backend/.env`:
