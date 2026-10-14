@@ -225,6 +225,7 @@ celery -A app.core.celery_app beat --loglevel=info
 # Install from https://ollama.com if not already installed
 ollama create nirbaan-erp-federated -f FTSLM/Modelfile
 ollama list   # should show nirbaan-erp-federated
+ollama run nirbaan-erp-federated "Write a brief imaginal exposure script for contamination OCD."
 ```
 
 Then set in `backend/.env`:
@@ -257,7 +258,7 @@ Open http://localhost:5174, click **Sign Up**, and register as a therapist. You'
 
 If you use this software in your research, please cite:
 
-> Das AM, Islam MT, Abdullah AN, Shuvo MB. *tahmidalbi/Nirbaan-A-GenAI-Powered-Therapy-Management-Project: Nirbaan v1.0*. Zenodo; 2026. doi:10.5281/zenodo.21220833
+> Das AM, Islam MT, Abdullah AN. *tahmidalbi/Nirbaan-A-GenAI-Powered-Therapy-Management-Project: Nirbaan v1.0*. Zenodo; 2026. doi:10.5281/zenodo.21220833
 
 A citation to the accompanying SoftwareX article will be added here upon publication.
 

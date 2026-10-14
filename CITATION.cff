@@ -2,31 +2,22 @@ cff-version: 1.2.0
 title: "Nirbaan: A GenAI-Powered Therapy Management Platform"
 message: "If you use this software, please cite it using the metadata below."
 type: software
-
 authors:
-  - family-names: "Islam"
-    given-names: "Mohammad Tahmidul"
-    affiliation: "Department of Computer Science and Engineering, Khulna University of Engineering & Technology, Bangladesh"
-    orcid: ""
-
-  - family-names: "Abdullah"
-    given-names: "Abu Nayeem"
-    affiliation: "Department of Computer Science and Engineering, Khulna University of Engineering & Technology, Bangladesh"
-    orcid: ""
-
   - family-names: "Das"
     given-names: "Adit Mugdha"
     affiliation: "Department of Computer Science and Engineering, Khulna University of Engineering & Technology, Bangladesh"
+    orcid: "https://orcid.org/0009-0001-6145-751X"
+  - family-names: "Islam"
+    given-names: "Md. Tahmid"
+    affiliation: "Department of Computer Science and Engineering, Khulna University of Engineering & Technology, Bangladesh"
     orcid: ""
-
+  - family-names: "Abdullah"
+    given-names: "Al Noman"
+    affiliation: "Department of Computer Science and Engineering, Khulna University of Engineering & Technology, Bangladesh"
+    orcid: ""
 repository-code: "https://github.com/tahmidalbi/Nirbaan-A-GenAI-Powered-Therapy-Management-Project"
-
 url: "https://github.com/tahmidalbi/Nirbaan-A-GenAI-Powered-Therapy-Management-Project"
-
 doi: "10.5281/zenodo.21220833"
-
 license: "MIT"
-
 version: "v1.0"
-
 date-released: "2026-07-06"
