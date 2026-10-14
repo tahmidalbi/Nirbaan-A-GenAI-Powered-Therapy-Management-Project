@@ -3,7 +3,7 @@
 # Nirbaan
 ### A Multi-Agent Platform for Therapist-Supervised OCD Therapy
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21220833.svg)](https://doi.org/10.5281/zenodo.21220833)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23369837.svg)](https://doi.org/10.5281/zenodo.23369837)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
@@ -258,7 +258,7 @@ Open http://localhost:5174, click **Sign Up**, and register as a therapist. You'
 
 If you use this software in your research, please cite:
 
-> Das AM, Islam MT, Abdullah AN. *tahmidalbi/Nirbaan-A-GenAI-Powered-Therapy-Management-Project: Nirbaan v1.0*. Zenodo; 2026. doi:10.5281/zenodo.21220833
+> Das AM, Islam MT, Abdullah AN. *tahmidalbi/Nirbaan-A-GenAI-Powered-Therapy-Management-Project: Nirbaan v1.1*. Zenodo; 2026. doi:10.5281/zenodo.23369837
 
 A citation to the accompanying SoftwareX article will be added here upon publication.
 
