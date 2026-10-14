@@ -1,0 +1,43 @@
+{
+  "source": "FTSLM/federated_QLoRA.ipynb (Flower simulation run, outputs saved in the notebook)",
+  "framework": {"flower": "1.27.0", "strategy": "FedAvg", "unsloth": "2026.3.8", "transformers": "5.3.0", "trl": "0.24.0", "peft": "0.18.1"},
+  "hardware": "1x NVIDIA A100-SXM4-80GB (Google Colab)",
+  "base_model": {
+    "huggingface_id": "mlabonne/Meta-Llama-3.1-8B-Instruct-abliterated",
+    "revision": "368c8ed94ce4c986e7b9ca5c159651ef753908ce",
+    "quantisation": "4-bit (bitsandbytes NF4 via Unsloth)"
+  },
+  "lora": {"rank": 16, "alpha": 16, "dropout": 0.0,
+           "target_modules": ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]},
+  "training": {"rounds": 5, "local_epochs_per_round": 1, "learning_rate": 0.0002,
+               "batch_size": 4, "gradient_accumulation_steps": 2, "max_seq_length": 2048, "seed": 42},
+  "data": {
+    "train_examples": 797, "held_out_dev_examples": 100, "test_examples": 100,
+    "split": "non-IID: clients 0-2 each hold 80% of one dominant OCD subtype; remaining examples shared out",
+    "clients": [
+      {"client": 0, "examples": 223, "dominant_subtype": "harm OCD"},
+      {"client": 1, "examples": 211, "dominant_subtype": "contamination OCD"},
+      {"client": 2, "examples": 216, "dominant_subtype": "checking / hit-and-run OCD"},
+      {"client": 3, "examples": 147, "dominant_subtype": "mixed"}
+    ]
+  },
+  "rounds": [
+    {"round": 0, "held_out_loss": 1.975, "mean_client_train_loss": null},
+    {"round": 1, "held_out_loss": 1.098, "mean_client_train_loss": 1.332, "client_train_loss": [1.336, 1.294, 1.295, 1.403]},
+    {"round": 2, "held_out_loss": 0.979, "mean_client_train_loss": 1.024, "client_train_loss": [1.035, 1.013, 0.993, 1.057]},
+    {"round": 3, "held_out_loss": 0.900, "mean_client_train_loss": 0.920, "client_train_loss": [0.928, 0.912, 0.886, 0.954]},
+    {"round": 4, "held_out_loss": 0.860, "mean_client_train_loss": 0.846, "client_train_loss": [0.853, 0.840, 0.812, 0.880]},
+    {"round": 5, "held_out_loss": 0.843, "mean_client_train_loss": 0.799, "client_train_loss": [0.804, 0.792, 0.764, 0.837]}
+  ],
+  "total_runtime_seconds": 1946,
+  "communication": {
+    "measured_with": "same LoRA configuration rebuilt on a Colab T4 (Unsloth 2026.10.5), weights extracted as in get_lora_ndarrays()",
+    "lora_tensors": 448,
+    "lora_parameters": 41943040,
+    "dtype": "float32",
+    "mb_per_client_per_direction": 167.8,
+    "gb_per_round_four_clients_both_directions": 1.34,
+    "gb_whole_run_five_rounds": 6.7,
+    "note": "Per-round and total figures are calculated from the measured per-client payload; Flower protocol overhead is not included."
+  }
+}

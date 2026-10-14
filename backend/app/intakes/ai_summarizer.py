@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Tuple, Optional
 from openai import OpenAI
 
 
-DEFAULT_MODEL = os.getenv("LLM_MODEL", "gpt-5.3")
+DEFAULT_MODEL = os.getenv("LLM_MODEL", "gpt-5.4-2026-03-05")
 
 
 class IntakeSummarizerAgent:

@@ -1,0 +1,362 @@
+[
+  {
+    "workspace": "A",
+    "question": "Why does repeatedly asking for certainty or searching online about violent intrusive thoughts tend to make harm-related OCD worse, and why is evaluation by an OCD-trained clinician important?",
+    "gold_resource_id": 9001,
+    "gold_chunk_index": 25
+  },
+  {
+    "workspace": "A",
+    "question": "How can someone with intrusive fears of hurting their child use exposure therapy safely without crossing personal parenting boundaries or turning it into a dangerous test?",
+    "gold_resource_id": 9001,
+    "gold_chunk_index": 82
+  },
+  {
+    "workspace": "A",
+    "question": "How can someone do exposure for harm-related OCD without turning it into checking or trying to get certainty about their reactions?",
+    "gold_resource_id": 9001,
+    "gold_chunk_index": 52
+  },
+  {
+    "workspace": "A",
+    "question": "How can I decide what counts as a reasonable effort to keep my children safe when I can\u2019t eliminate every possible danger?",
+    "gold_resource_id": 9001,
+    "gold_chunk_index": 46
+  },
+  {
+    "workspace": "A",
+    "question": "What are the main types of violent intrusive fears in harm-focused OCD, including worries about hurting a child?",
+    "gold_resource_id": 9001,
+    "gold_chunk_index": 14
+  },
+  {
+    "workspace": "A",
+    "question": "Why might sharing intrusive violent thoughts with trusted people be helpful in recovery, and are others likely to see you as dangerous for having them?",
+    "gold_resource_id": 9001,
+    "gold_chunk_index": 94
+  },
+  {
+    "workspace": "A",
+    "question": "How can I respond to upsetting OCD thoughts with kindness and honesty instead of self-criticism?",
+    "gold_resource_id": 9001,
+    "gold_chunk_index": 75
+  },
+  {
+    "workspace": "A",
+    "question": "How can someone with harm-related OCD stop feeling uniquely broken and begin moving toward happiness even after years of disturbing thoughts?",
+    "gold_resource_id": 9001,
+    "gold_chunk_index": 104
+  },
+  {
+    "workspace": "A",
+    "question": "How can someone with intrusive violent thoughts stop trying to prove they are safe and instead live with not being completely sure?",
+    "gold_resource_id": 9001,
+    "gold_chunk_index": 27
+  },
+  {
+    "workspace": "A",
+    "question": "How can someone with harm-related OCD create an exposure script that faces feared outcomes, resists reassurance rituals, and reconnects with their values as a parent?",
+    "gold_resource_id": 9001,
+    "gold_chunk_index": 83
+  },
+  {
+    "workspace": "A",
+    "question": "How can someone tell whether upsetting thoughts about causing injury are part of obsessive-compulsive disorder?",
+    "gold_resource_id": 9001,
+    "gold_chunk_index": 19
+  },
+  {
+    "workspace": "A",
+    "question": "How can someone with harm-related OCD handle disturbing violent thoughts without judging themselves or feeling driven to do compulsions?",
+    "gold_resource_id": 9001,
+    "gold_chunk_index": 57
+  },
+  {
+    "workspace": "A",
+    "question": "How can exposure practice help someone with harm OCD act according to their values without getting trapped in moral perfectionism?",
+    "gold_resource_id": 9001,
+    "gold_chunk_index": 53
+  },
+  {
+    "workspace": "A",
+    "question": "How can I remind myself of the key reasons to resist compulsions and tolerate uncertainty when working on OCD?",
+    "gold_resource_id": 9001,
+    "gold_chunk_index": 36
+  },
+  {
+    "workspace": "A",
+    "question": "Why does OCD make me think that feeling anxious or guilty means I\u2019m likely to hurt someone?",
+    "gold_resource_id": 9001,
+    "gold_chunk_index": 30
+  },
+  {
+    "workspace": "A",
+    "question": "How can someone tell if unwanted thoughts about hurting themselves are part of OCD, and can this be treated like other forms of OCD?",
+    "gold_resource_id": 9001,
+    "gold_chunk_index": 77
+  },
+  {
+    "workspace": "A",
+    "question": "How can I tell if I\u2019m doing mindfulness correctly when intrusive thoughts keep showing up?",
+    "gold_resource_id": 9001,
+    "gold_chunk_index": 41
+  },
+  {
+    "workspace": "A",
+    "question": "How can exposure therapy for self-harm OCD help someone face uncertainty and stop safety rituals without using risky \u201ctests\u201d?",
+    "gold_resource_id": 9001,
+    "gold_chunk_index": 69
+  },
+  {
+    "workspace": "A",
+    "question": "How can I talk to myself in a compassionate, helpful way when upsetting thoughts about hurting myself show up as part of OCD?",
+    "gold_resource_id": 9001,
+    "gold_chunk_index": 76
+  },
+  {
+    "workspace": "A",
+    "question": "How can someone with harm-related OCD stop treating their moral identity as something fragile that must be perfectly protected?",
+    "gold_resource_id": 9001,
+    "gold_chunk_index": 100
+  },
+  {
+    "workspace": "B",
+    "question": "How should I handle the urge to seek reassurance or mentally check during OCD exposure practice when anxiety feels intense?",
+    "gold_resource_id": 9102,
+    "gold_chunk_index": 5
+  },
+  {
+    "workspace": "B",
+    "question": "How should I build exposure practice so I can tolerate difficult thoughts or feelings without doing rituals?",
+    "gold_resource_id": 9102,
+    "gold_chunk_index": 7
+  },
+  {
+    "workspace": "B",
+    "question": "How can someone with OCD use ongoing exposure and response prevention after treatment to notice relapse early and handle hidden compulsions?",
+    "gold_resource_id": 9105,
+    "gold_chunk_index": 4
+  },
+  {
+    "workspace": "B",
+    "question": "Why can repeatedly asking for comfort about fears make anxiety worse and strain close relationships?",
+    "gold_resource_id": 9101,
+    "gold_chunk_index": 1
+  },
+  {
+    "workspace": "B",
+    "question": "Why does repeatedly asking others or yourself for certainty make OCD worse over time?",
+    "gold_resource_id": 9101,
+    "gold_chunk_index": 0
+  },
+  {
+    "workspace": "B",
+    "question": "How do I plan response prevention exercises so they match my safety needs and progress from easier to harder situations?",
+    "gold_resource_id": 9103,
+    "gold_chunk_index": 2
+  },
+  {
+    "workspace": "B",
+    "question": "What should I do if distress gets stronger at the start of exposure, and how long should I stay with the exercise?",
+    "gold_resource_id": 9103,
+    "gold_chunk_index": 5
+  },
+  {
+    "workspace": "B",
+    "question": "How can sleep, eating regularly, exercise, daily routine, and avoiding substances help make exposure-based treatment for OCD more effective, especially under stress?",
+    "gold_resource_id": 9105,
+    "gold_chunk_index": 7
+  },
+  {
+    "workspace": "B",
+    "question": "How can someone with OCD cut back on seeking reassurance in a supportive way, and what can family members do to help without reinforcing the problem?",
+    "gold_resource_id": 9101,
+    "gold_chunk_index": 4
+  },
+  {
+    "workspace": "B",
+    "question": "How can changing what family members do around a loved one\u2019s symptoms unintentionally make OCD harder to overcome?",
+    "gold_resource_id": 9104,
+    "gold_chunk_index": 0
+  },
+  {
+    "workspace": "B",
+    "question": "How do I make a list of my OCD triggers and rituals and score how upsetting each one is so I can decide where to start?",
+    "gold_resource_id": 9102,
+    "gold_chunk_index": 3
+  },
+  {
+    "workspace": "B",
+    "question": "How can I respond to intrusive thoughts and cut back on subtle checking or reassurance habits without needing complete certainty?",
+    "gold_resource_id": 9103,
+    "gold_chunk_index": 6
+  },
+  {
+    "workspace": "B",
+    "question": "When should someone with OCD seek professional support again during relapse prevention?",
+    "gold_resource_id": 9105,
+    "gold_chunk_index": 9
+  },
+  {
+    "workspace": "B",
+    "question": "What are some ways relatives may unknowingly change their behavior to fit OCD, and why does that make the problem continue?",
+    "gold_resource_id": 9104,
+    "gold_chunk_index": 1
+  },
+  {
+    "workspace": "B",
+    "question": "How can family members support someone doing response-prevention practice at home without reinforcing rituals or reassurance-seeking?",
+    "gold_resource_id": 9103,
+    "gold_chunk_index": 9
+  },
+  {
+    "workspace": "B",
+    "question": "How can family members support someone with OCD without reinforcing compulsions or reassurance habits?",
+    "gold_resource_id": 9104,
+    "gold_chunk_index": 5
+  },
+  {
+    "workspace": "B",
+    "question": "How can family members trying to comfort someone with OCD end up making the problem worse?",
+    "gold_resource_id": 9101,
+    "gold_chunk_index": 2
+  },
+  {
+    "workspace": "B",
+    "question": "How can I respond to OCD urges when I feel uncertain and not yet confident enough to do exposure practice?",
+    "gold_resource_id": 9105,
+    "gold_chunk_index": 6
+  },
+  {
+    "workspace": "B",
+    "question": "How does an exposure ladder in ERP help someone with OCD face triggers without using rituals?",
+    "gold_resource_id": 9102,
+    "gold_chunk_index": 1
+  },
+  {
+    "workspace": "B",
+    "question": "How can someone with OCD tell whether a temporary worsening is happening, and what should they aim for to keep it from becoming a bigger setback?",
+    "gold_resource_id": 9105,
+    "gold_chunk_index": 2
+  },
+  {
+    "workspace": "C",
+    "question": "How can excessive worrying turn into a loop that raises anxiety and leads to behaviors like checking, avoidance, or difficulty deciding?",
+    "gold_resource_id": 9201,
+    "gold_chunk_index": 1
+  },
+  {
+    "workspace": "C",
+    "question": "How can changing unhelpful interpretations of a situation improve emotions and behavior?",
+    "gold_resource_id": 9203,
+    "gold_chunk_index": 1
+  },
+  {
+    "workspace": "C",
+    "question": "What can I do if my feelings are too intense to challenge my thoughts, especially if trauma makes those thoughts trigger painful memories?",
+    "gold_resource_id": 9203,
+    "gold_chunk_index": 10
+  },
+  {
+    "workspace": "C",
+    "question": "How can I tell whether my worry about illness means I should get therapy, a medical evaluation, or both?",
+    "gold_resource_id": 9204,
+    "gold_chunk_index": 8
+  },
+  {
+    "workspace": "C",
+    "question": "What are the common signs of generalized anxiety disorder, and how is it different from ordinary stress?",
+    "gold_resource_id": 9201,
+    "gold_chunk_index": 0
+  },
+  {
+    "workspace": "C",
+    "question": "Why can repeatedly examining your body for signs of illness actually make health-related worry worse?",
+    "gold_resource_id": 9204,
+    "gold_chunk_index": 3
+  },
+  {
+    "workspace": "C",
+    "question": "How can I improve sleep when anxiety is keeping me awake, and when should I talk to a doctor about it?",
+    "gold_resource_id": 9205,
+    "gold_chunk_index": 7
+  },
+  {
+    "workspace": "C",
+    "question": "What should I do if I\u2019ve been lying awake in bed for a while and can\u2019t fall asleep?",
+    "gold_resource_id": 9205,
+    "gold_chunk_index": 5
+  },
+  {
+    "workspace": "C",
+    "question": "How can someone with generalized anxiety start questioning fearful thoughts without just trying to \u201cthink positive\u201d?",
+    "gold_resource_id": 9201,
+    "gold_chunk_index": 4
+  },
+  {
+    "workspace": "C",
+    "question": "What can I do to calm my body and stop habits like avoiding things or constantly seeking reassurance when anxiety is taking over?",
+    "gold_resource_id": 9201,
+    "gold_chunk_index": 6
+  },
+  {
+    "workspace": "C",
+    "question": "How do worry and poor rest reinforce each other, and what signs suggest that stress is interfering with sleep?",
+    "gold_resource_id": 9205,
+    "gold_chunk_index": 0
+  },
+  {
+    "workspace": "C",
+    "question": "How can I respond to panic symptoms and fearful thoughts without trying to force them away?",
+    "gold_resource_id": 9202,
+    "gold_chunk_index": 7
+  },
+  {
+    "workspace": "C",
+    "question": "How can someone with ongoing insomnia and anxiety gradually rebuild healthier sleep habits?",
+    "gold_resource_id": 9205,
+    "gold_chunk_index": 8
+  },
+  {
+    "workspace": "C",
+    "question": "Why do panic episodes keep coming back, and how can avoidance habits make them worse?",
+    "gold_resource_id": 9202,
+    "gold_chunk_index": 1
+  },
+  {
+    "workspace": "C",
+    "question": "How does interoceptive exposure in therapy help reduce panic by changing my response to bodily sensations and avoidance habits?",
+    "gold_resource_id": 9202,
+    "gold_chunk_index": 3
+  },
+  {
+    "workspace": "C",
+    "question": "What habits can help me sleep better if I\u2019m having trouble falling asleep or staying asleep?",
+    "gold_resource_id": 9205,
+    "gold_chunk_index": 1
+  },
+  {
+    "workspace": "C",
+    "question": "What should I do if my anxiety feels so intense that I\u2019m not sure I can keep myself safe?",
+    "gold_resource_id": 9201,
+    "gold_chunk_index": 9
+  },
+  {
+    "workspace": "C",
+    "question": "How can I calm down when I get a vague message from my supervisor and start assuming the worst?",
+    "gold_resource_id": 9203,
+    "gold_chunk_index": 7
+  },
+  {
+    "workspace": "C",
+    "question": "What does a panic episode feel like, and is it actually harmful?",
+    "gold_resource_id": 9202,
+    "gold_chunk_index": 0
+  },
+  {
+    "workspace": "C",
+    "question": "How can someone with generalized anxiety start getting more comfortable with uncertainty in everyday situations?",
+    "gold_resource_id": 9201,
+    "gold_chunk_index": 5
+  }
+]

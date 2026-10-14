@@ -1,9 +1,44 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List
+import os
+import re
+from typing import Any, Dict, List, Optional
 
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, Field
+
+
+# Explicit requests for a person and clear crisis wording always escalate, without the LLM.
+# Ambiguous OCD-style content (e.g. "what if I hurt someone?") is left to the LLM verifier.
+_HUMAN_REQUEST_PATTERNS = [
+    r"\b(real|actual)\s+(person|human|helper|people)\b",
+    r"\bhuman\s+(help|helper|support)\b",
+    r"\b(talk|speak)\s+(to|with)\s+(a\s+)?(human|person|real person)\b",
+    r"\bneed\s+a\s+(human|person)\b",
+    r"\bnot\s+(a\s+)?(chatbot|bot|ai)\b",
+    r"\bescalate\b",
+    r"\b(send|get|bring)\s+(me\s+)?(someone|somebody|a\s+(human|person|helper)|help)\b",
+    r"\b(contact|alert|notify|connect|call)\b[^.?!]*\b(care\s+team|support\s+team|support\s+people|emergency|human|helper)\b",
+    r"\b(someone|somebody|a\s+person)\b[^.?!]*\b(come|be\s+here|check\s+on\s+me|call\s+me|see\s+me)\b",
+]
+_CRISIS_PATTERNS = [
+    r"\b(i'?m|i\s+am)\s+in\s+(a\s+)?crisis\b",
+    r"\bemergency\b",
+    r"\b(not|don'?t\s+feel|do\s+not\s+feel)\s+safe\b",
+    r"\bsuicid",
+    r"\bkill\s+myself\b",
+    r"\bend\s+my\s+life\b",
+    r"\bwant\s+to\s+die\b",
+]
+
+
+def explicit_escalation_reason(message: str) -> Optional[str]:
+    text = message.lower().replace("’", "'")
+    if any(re.search(p, text) for p in _CRISIS_PATTERNS):
+        return "clear crisis wording"
+    if any(re.search(p, text) for p in _HUMAN_REQUEST_PATTERNS):
+        return "explicit request for a human or emergency help"
+    return None
 
 
 class VerifierOutput(BaseModel):
@@ -29,22 +64,30 @@ def _format_history(chat_history: List[Dict[str, str]]) -> str:
 
 def verifier_node(state: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Strict verifier node:
-    - Human handover is triggered only for intense distress / immediate inability to cope /
-      need for real-world intervention.
-    - Asking for help alone is NOT enough.
+    Verifier node:
+    - Explicit requests for a human and clear crisis wording escalate by rule.
+    - Everything else goes to a strict LLM check: escalate only for intense distress,
+      immediate inability to cope, or need for real-world intervention.
     - Harm OCD / self-harm OCD intrusive thoughts should NOT be treated as genuine self-harm risk
       unless there are explicit indicators of real intent, plan, or immediate danger.
     """
 
     user_message = state.get("user_message", "") or ""
+
+    reason = explicit_escalation_reason(user_message)
+    if reason:
+        return {
+            "needs_human_help": True,
+            "verifier_reasoning": f"Escalated by rule: {reason}.",
+        }
+
     chat_history = state.get("recent_chat_history", []) or []
     patient_conditions = state.get("patient_conditions", "") or ""
 
     history_text = _format_history(chat_history)
 
     llm = ChatOpenAI(
-        model="gpt-5.3-chat-latest",
+        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.4-2026-03-05"),
       
     ).with_structured_output(VerifierOutput)
 

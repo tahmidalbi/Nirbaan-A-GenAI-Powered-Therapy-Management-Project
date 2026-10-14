@@ -5,8 +5,8 @@ import {
   startImaginalRun,
   reviewImaginalRun,
   listApprovedByItem,
-  getAudioUrl,
 } from '../api/imaginal-generator.api';
+import AuthAudio from '../components/AuthAudio';
 import './TherapistERPPatientList.css';
 import './TherapistImaginalScriptPage.css';
 
@@ -32,6 +32,8 @@ const TherapistImaginalScriptPage = () => {
   const [sgError, setSgError] = useState('');
   const [sgFeedback, setSgFeedback] = useState('');
   const [sgFeedbackVisible, setSgFeedbackVisible] = useState(false);
+  const [sgEditVisible, setSgEditVisible] = useState(false);
+  const [sgEditText, setSgEditText] = useState('');
 
   // ── Past Scripts state ──
   const [pastScripts, setPastScripts] = useState([]);
@@ -82,15 +84,17 @@ const TherapistImaginalScriptPage = () => {
     }
   };
 
-  const handleApprove = async () => {
+  const handleApprove = async (editedScript = null) => {
     setSgError('');
     setSgLoading(true);
     try {
       const { data } = await reviewImaginalRun({
         thread_id: sgRun.thread_id,
         approved: true,
+        edited_script: editedScript,
       });
       setSgRun(data);
+      setSgEditVisible(false);
     } catch (err) {
       setSgError(typeof err === 'string' ? err : 'Failed to approve script.');
     } finally {
@@ -124,8 +128,18 @@ const TherapistImaginalScriptPage = () => {
     setSgSubtype('');
     setSgFeedback('');
     setSgFeedbackVisible(false);
+    setSgEditVisible(false);
+    setSgEditText('');
     setSgError('');
   };
+
+  const openManualEdit = () => {
+    setSgEditText(sgRun.script_text || '');
+    setSgFeedbackVisible(false);
+    setSgEditVisible(true);
+  };
+
+  const aiRevisionsLeft = sgRun?.ai_revisions_remaining ?? 0;
 
   return (
     <div className="tisp-container">
@@ -240,7 +254,37 @@ const TherapistImaginalScriptPage = () => {
             {sgRun && !sgLoading && sgRun.interrupt_required && (
               <div className="tisp-review">
                 <h3 className="tisp-review-title">Generated Script — Version {sgRun.version_no}</h3>
-                <pre className="tisp-script-pre">{sgRun.script_text}</pre>
+                <p className="tisp-form-intro">
+                  {aiRevisionsLeft > 0
+                    ? `AI revisions left: ${aiRevisionsLeft}`
+                    : 'AI revision limit reached. Edit the script manually, then approve it.'}
+                </p>
+
+                {sgEditVisible ? (
+                  <div className="tisp-feedback">
+                    <label className="tisp-label">Edit the script</label>
+                    <textarea
+                      className="tisp-textarea"
+                      rows={14}
+                      value={sgEditText}
+                      onChange={(e) => setSgEditText(e.target.value)}
+                    />
+                    <div className="tisp-actions">
+                      <button
+                        className="tisp-btn tisp-btn--primary"
+                        disabled={!sgEditText.trim()}
+                        onClick={() => handleApprove(sgEditText.trim())}
+                      >
+                        Save &amp; Approve
+                      </button>
+                      <button className="tisp-btn" onClick={() => setSgEditVisible(false)}>
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <pre className="tisp-script-pre">{sgRun.script_text}</pre>
+                )}
 
                 {sgFeedbackVisible && (
                   <div className="tisp-feedback">
@@ -262,17 +306,22 @@ const TherapistImaginalScriptPage = () => {
                   </div>
                 )}
 
-                {!sgFeedbackVisible && (
+                {!sgFeedbackVisible && !sgEditVisible && (
                   <div className="tisp-actions">
-                    <button className="tisp-btn tisp-btn--primary" onClick={handleApprove}>
+                    <button className="tisp-btn tisp-btn--primary" onClick={() => handleApprove()}>
                       ✓ Approve
                     </button>
-                    <button
-                      className="tisp-btn tisp-btn--reject"
-                      onClick={() => setSgFeedbackVisible(true)}
-                    >
-                      ✕ Reject
+                    <button className="tisp-btn" onClick={openManualEdit}>
+                      ✎ Edit manually
                     </button>
+                    {aiRevisionsLeft > 0 && (
+                      <button
+                        className="tisp-btn tisp-btn--reject"
+                        onClick={() => setSgFeedbackVisible(true)}
+                      >
+                        ✕ Reject
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
@@ -287,12 +336,7 @@ const TherapistImaginalScriptPage = () => {
                 {sgRun.approved_script_id && (
                   <div className="tisp-audio-box">
                     <span className="tisp-label">Preview Audio</span>
-                    {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-                    <audio
-                      controls
-                      src={getAudioUrl(sgRun.approved_script_id)}
-                      className="tisp-audio-player"
-                    />
+                    <AuthAudio scriptId={sgRun.approved_script_id} className="tisp-audio-player" />
                   </div>
                 )}
                 <button className="tisp-btn tisp-btn--primary" style={{ marginTop: '1.5rem' }} onClick={resetGenerator}>
@@ -341,12 +385,7 @@ const TherapistImaginalScriptPage = () => {
                         {/* Audio */}
                         <div className="tisp-audio-box">
                           <span className="tisp-label">Audio</span>
-                          {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-                          <audio
-                            controls
-                            src={getAudioUrl(script.id)}
-                            className="tisp-audio-player"
-                          />
+                          <AuthAudio scriptId={script.id} className="tisp-audio-player" />
                         </div>
                         {/* Script text */}
                         <div className="tisp-past-script-text">

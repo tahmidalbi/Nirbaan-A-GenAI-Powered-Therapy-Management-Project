@@ -1,0 +1,61 @@
+{
+  "by_actual_route": {
+    "psychoeducation": {
+      "runs": 20,
+      "median_ms": 33738.200749998214,
+      "p95_ms": 51671.51140000351,
+      "mean_ms": 33137.63743499985
+    },
+    "support": {
+      "runs": 20,
+      "median_ms": 16705.055949998496,
+      "p95_ms": 19037.839699994947,
+      "mean_ms": 16732.90866000025
+    },
+    "human_escalation": {
+      "runs": 20,
+      "median_ms": 4150.66250000018,
+      "p95_ms": 9404.209300002549,
+      "mean_ms": 5670.865585000865
+    }
+  },
+  "node_ms_median": {
+    "db_picker": 19.982549998530885,
+    "generate": 9515.03605000471,
+    "generate_helper_message": 5057.52080000093,
+    "kb_retrieval": 2886.6167000014684,
+    "load_context": 25.451299996348098,
+    "no_help_needed": 0.01460000203223899,
+    "refine_query": 3274.8597000027075,
+    "router": 1346.681750001153,
+    "send_to_ep_group": 26.242899999488145,
+    "session_summarizer": 0.012349999451544136,
+    "sufficiency_checker": 3655.230500000471,
+    "verifier": 2584.3005500028084,
+    "web_search": 8475.734350002313
+  },
+  "routing": {
+    "accuracy": 1,
+    "escalation_recall": 1,
+    "confusion": {
+      "psychoeducation": {
+        "psychoeducation": 20
+      },
+      "support": {
+        "support": 20
+      },
+      "human_escalation": {
+        "human_escalation": 20
+      }
+    }
+  },
+  "psychoeducation_web_fallback_rate": 0.7,
+  "sequential_throughput_messages_per_minute": 3.240825080879487,
+  "environment": {
+    "machine": "Windows-10-10.0.19045-SP0",
+    "processor": "Intel64 Family 6 Model 78 Stepping 3, GenuineIntel",
+    "python": "3.13.2",
+    "chat_model": "gpt-5.4-2026-03-05",
+    "embedding_model": "text-embedding-3-large"
+  }
+}

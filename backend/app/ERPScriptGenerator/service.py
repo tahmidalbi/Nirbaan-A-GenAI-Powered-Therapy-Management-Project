@@ -3,7 +3,12 @@ from __future__ import annotations
 from uuid import uuid4
 from langgraph.types import Command
 
+from .config import settings
 from .schemas import StartImaginalRunRequest, ReviewImaginalRunRequest
+
+
+def ai_revisions_remaining(version_no: int) -> int:
+    return max(0, settings.IMAGINAL_MAX_AI_REVISIONS - (version_no - 1))
 
 
 def start_run(graph, payload: StartImaginalRunRequest):
@@ -30,6 +35,7 @@ def resume_run(graph, payload: ReviewImaginalRunRequest):
     decision = {
         "approved": payload.approved,
         "feedback": payload.feedback,
+        "edited_script": payload.edited_script,
     }
     graph.invoke(Command(resume=decision), config=config)
     return config

@@ -30,7 +30,7 @@ class LLMClient:
         timeout: int = 30,
         max_retries: int = 0,
     ) -> None:
-        self.model = model or os.getenv("LLM_MODEL", "gpt-5.3-chat-latest")
+        self.model = model or os.getenv("LLM_MODEL", "gpt-5.4-2026-03-05")
         api_key    = os.getenv("OPENAI_API_KEY")
         base_url   = None
 

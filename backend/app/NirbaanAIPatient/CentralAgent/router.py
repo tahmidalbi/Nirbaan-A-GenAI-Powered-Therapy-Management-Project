@@ -12,8 +12,7 @@ class RouterOutput(BaseModel):
 def router_node(state: Dict):
 
     llm = ChatOpenAI(
-        model=("gpt-5.3-chat-latest"),
-        
+        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.4-2026-03-05"),
     ).with_structured_output(RouterOutput)
 
     prompt = f"""

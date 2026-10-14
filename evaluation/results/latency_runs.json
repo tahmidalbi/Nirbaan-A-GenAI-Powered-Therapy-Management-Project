@@ -1,0 +1,2627 @@
+[
+  {
+    "route": "psychoeducation",
+    "total_ms": 23671.111100004055,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 6652.571200000239
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 229.83290000411216
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.011600001016631722
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 4914.659099995333
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 1763.1712000002153
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 10110.05429999932
+      },
+      {
+        "node": "psychoeducation",
+        "nested": false,
+        "ms": 0.00839999847812578
+      }
+    ],
+    "expected": "psychoeducation",
+    "message": "What is exposure and response prevention?"
+  },
+  {
+    "route": "psychoeducation",
+    "total_ms": 19283.899199996085,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1205.5115999974078
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 20.728399998915847
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.014099998224992305
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 4015.9319000013056
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 1423.7639999992098
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 12617.006000000401
+      },
+      {
+        "node": "psychoeducation",
+        "nested": false,
+        "ms": 0.013299999409355223
+      }
+    ],
+    "expected": "psychoeducation",
+    "message": "Why does doing a compulsion make my anxiety worse in the long run?"
+  },
+  {
+    "route": "psychoeducation",
+    "total_ms": 56938.821200004895,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1286.079299999983
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 17.241500005184207
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.012099997547920793
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3513.549299997976
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 4371.967500002938
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3349.547599995276
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 4817.782900005113
+      },
+      {
+        "node": "web_search",
+        "nested": true,
+        "ms": 22416.5823000003
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 17164.45399999793
+      },
+      {
+        "node": "psychoeducation",
+        "nested": false,
+        "ms": 0.7478999978047796
+      }
+    ],
+    "expected": "psychoeducation",
+    "message": "How is OCD different from just being a perfectionist?"
+  },
+  {
+    "route": "psychoeducation",
+    "total_ms": 51671.51140000351,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1174.5487000007415
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 18.09789999970235
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.012299999070819467
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3309.8523000007845
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 3261.7365999976755
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2813.978300000599
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 3339.183600000979
+      },
+      {
+        "node": "web_search",
+        "nested": true,
+        "ms": 23821.805500003393
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 13930.486599994765
+      },
+      {
+        "node": "psychoeducation",
+        "nested": false,
+        "ms": 0.9442000009585172
+      }
+    ],
+    "expected": "psychoeducation",
+    "message": "What does SUDS mean and how should I rate it?"
+  },
+  {
+    "route": "psychoeducation",
+    "total_ms": 18330.05779999803,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1537.1689000021433
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 18.97359999566106
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.013700002455152571
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2633.2305000032648
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 1509.8094999993918
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 12629.936599994835
+      },
+      {
+        "node": "psychoeducation",
+        "nested": false,
+        "ms": 0.0132000059238635
+      }
+    ],
+    "expected": "psychoeducation",
+    "message": "Why does my therapist say I should not ask for reassurance?"
+  },
+  {
+    "route": "psychoeducation",
+    "total_ms": 31124.829799999134,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1229.2218000002322
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 17.59680000395747
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.012399999832268804
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2751.3809999945806
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 3067.001200004597
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2579.8649999996996
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 3320.8430000013323
+      },
+      {
+        "node": "web_search",
+        "nested": true,
+        "ms": 5569.039999994857
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 12589.100000004692
+      },
+      {
+        "node": "psychoeducation",
+        "nested": false,
+        "ms": 0.0202999945031479
+      }
+    ],
+    "expected": "psychoeducation",
+    "message": "How long does ERP usually take to work?"
+  },
+  {
+    "route": "psychoeducation",
+    "total_ms": 44815.920499997446,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1169.6214000039618
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 16.850699998030905
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.010799994925037026
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2823.8509000002523
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 3247.519300006388
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2740.7934999937424
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 3304.5383999997284
+      },
+      {
+        "node": "web_search",
+        "nested": true,
+        "ms": 10433.35030000162
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 21078.03490000515
+      },
+      {
+        "node": "psychoeducation",
+        "nested": false,
+        "ms": 0.3422999943722971
+      }
+    ],
+    "expected": "psychoeducation",
+    "message": "What is a fear ladder and how do I build one?"
+  },
+  {
+    "route": "psychoeducation",
+    "total_ms": 19192.552699998487,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1720.149599997967
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 18.26460000302177
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.010700001439545304
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3288.586899994698
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 1573.0059000052279
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 12591.692199996032
+      },
+      {
+        "node": "psychoeducation",
+        "nested": false,
+        "ms": 0.013900003978051245
+      }
+    ],
+    "expected": "psychoeducation",
+    "message": "Can intrusive thoughts mean I secretly want to act on them?"
+  },
+  {
+    "route": "psychoeducation",
+    "total_ms": 30522.803699997894,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1327.2838999982923
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 17.169699996884447
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.012100004823878407
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3437.724999996135
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 4639.514499998768
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2673.779700002342
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 4076.7713000022923
+      },
+      {
+        "node": "web_search",
+        "nested": true,
+        "ms": 6258.133800001815
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 8091.401999998197
+      },
+      {
+        "node": "psychoeducation",
+        "nested": false,
+        "ms": 0.026299996534362435
+      }
+    ],
+    "expected": "psychoeducation",
+    "message": "What is the difference between an obsession and a compulsion?"
+  },
+  {
+    "route": "psychoeducation",
+    "total_ms": 16359.325999997964,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1243.6029999953462
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 17.627799999900162
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.011900003300979733
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2686.2880999979097
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 1454.7784000023967
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 10956.114100001287
+      },
+      {
+        "node": "psychoeducation",
+        "nested": false,
+        "ms": 0.013899996702093631
+      }
+    ],
+    "expected": "psychoeducation",
+    "message": "Why do I have to stay in the anxiety instead of escaping it?"
+  },
+  {
+    "route": "psychoeducation",
+    "total_ms": 28587.417400005506,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1560.2730000027805
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 17.94730000256095
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.01049999991664663
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3219.684199997573
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 2853.906199998164
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2650.5959999994957
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 3639.889600002789
+      },
+      {
+        "node": "web_search",
+        "nested": true,
+        "ms": 6652.985100001388
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 7991.139699995983
+      },
+      {
+        "node": "psychoeducation",
+        "nested": false,
+        "ms": 0.029400005587376654
+      }
+    ],
+    "expected": "psychoeducation",
+    "message": "What is imaginal exposure?"
+  },
+  {
+    "route": "psychoeducation",
+    "total_ms": 32454.050699998334,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1676.9946999993408
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 17.99580000079004
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.011900003300979733
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3464.86189999996
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 3743.7445999967167
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2620.335100000375
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 2929.7549999973853
+      },
+      {
+        "node": "web_search",
+        "nested": true,
+        "ms": 8993.4854000021
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 9006.047100003343
+      },
+      {
+        "node": "psychoeducation",
+        "nested": false,
+        "ms": 0.02119999408023432
+      }
+    ],
+    "expected": "psychoeducation",
+    "message": "Is OCD caused by something in the brain?"
+  },
+  {
+    "route": "psychoeducation",
+    "total_ms": 14484.060299997509,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1433.2304999988992
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 17.378399999870453
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.01410000550094992
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3161.445099998673
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 1340.4596999971545
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 8530.646100000013
+      },
+      {
+        "node": "psychoeducation",
+        "nested": false,
+        "ms": 0.013299999409355223
+      }
+    ],
+    "expected": "psychoeducation",
+    "message": "What does habituation mean in exposure therapy?"
+  },
+  {
+    "route": "psychoeducation",
+    "total_ms": 35901.11230000184,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1388.2031999964966
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 17.788800003472716
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.01720000000204891
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2690.1931000029435
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 4059.8315999959596
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3290.640400002303
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 4178.2878000012715
+      },
+      {
+        "node": "web_search",
+        "nested": true,
+        "ms": 7469.277799995325
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 12805.775200002245
+      },
+      {
+        "node": "psychoeducation",
+        "nested": false,
+        "ms": 0.029299997549969703
+      }
+    ],
+    "expected": "psychoeducation",
+    "message": "How do mental compulsions work?"
+  },
+  {
+    "route": "psychoeducation",
+    "total_ms": 35532.23230000003,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1122.9891999973916
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 17.537699997774325
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.012399999832268804
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3041.552100003173
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 4214.056600001641
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2834.450799993647
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 4747.527200001059
+      },
+      {
+        "node": "web_search",
+        "nested": true,
+        "ms": 6668.326500002877
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 12884.888799999317
+      },
+      {
+        "node": "psychoeducation",
+        "nested": false,
+        "ms": 0.030000002880115062
+      }
+    ],
+    "expected": "psychoeducation",
+    "message": "Why does avoidance keep OCD going?"
+  },
+  {
+    "route": "psychoeducation",
+    "total_ms": 49870.827700004156,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1331.7109999989043
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 32.87780000391649
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.01189999602502212
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3309.1132000045036
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 4342.5225999963
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2622.5593000053777
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 3728.9454999990994
+      },
+      {
+        "node": "web_search",
+        "nested": true,
+        "ms": 21125.824299997475
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 13375.861900000018
+      },
+      {
+        "node": "psychoeducation",
+        "nested": false,
+        "ms": 0.4193999993731268
+      }
+    ],
+    "expected": "psychoeducation",
+    "message": "What are common types of OCD?"
+  },
+  {
+    "route": "psychoeducation",
+    "total_ms": 35022.350799998094,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1225.9441999995033
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 17.368299995723646
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.015700003132224083
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2903.2968999963487
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 3693.4617000006256
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2934.700800004066
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 4382.0639999976265
+      },
+      {
+        "node": "web_search",
+        "nested": true,
+        "ms": 10556.092599996191
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 9308.306900005846
+      },
+      {
+        "node": "psychoeducation",
+        "nested": false,
+        "ms": 0.04419999459059909
+      }
+    ],
+    "expected": "psychoeducation",
+    "message": "Can medication help with OCD, and how does it work with ERP?"
+  },
+  {
+    "route": "psychoeducation",
+    "total_ms": 38843.02149999712,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1175.8073999953922
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 17.943999999260996
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.010700001439545304
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3191.732999999658
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 4213.879299997643
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2959.7947000002023
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 3098.4317000038573
+      },
+      {
+        "node": "web_search",
+        "nested": true,
+        "ms": 14989.421599995694
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 9195.263600006001
+      },
+      {
+        "node": "psychoeducation",
+        "nested": false,
+        "ms": 0.019499995687510818
+      }
+    ],
+    "expected": "psychoeducation",
+    "message": "What is family accommodation in OCD?"
+  },
+  {
+    "route": "psychoeducation",
+    "total_ms": 39920.74439999851,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1804.1404999967199
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 17.568600000231527
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.012200005585327744
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3009.368099999847
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 4866.109499998856
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3237.6460999948904
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 4099.801400006982
+      },
+      {
+        "node": "web_search",
+        "nested": true,
+        "ms": 7054.268099993351
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 15830.872200000158
+      },
+      {
+        "node": "psychoeducation",
+        "nested": false,
+        "ms": 0.03470000228844583
+      }
+    ],
+    "expected": "psychoeducation",
+    "message": "How do I know if an exposure is too hard for me right now?"
+  },
+  {
+    "route": "psychoeducation",
+    "total_ms": 40226.09789999842,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1817.6742999930866
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 17.358000004605856
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.007299997378140688
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3581.0573999988264
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 3372.602300005383
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2725.6746999992174
+      },
+      {
+        "node": "sufficiency_checker",
+        "nested": true,
+        "ms": 3670.5713999981526
+      },
+      {
+        "node": "web_search",
+        "nested": true,
+        "ms": 7957.983300002525
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 17082.23949999956
+      },
+      {
+        "node": "psychoeducation",
+        "nested": false,
+        "ms": 0.027800000680144876
+      }
+    ],
+    "expected": "psychoeducation",
+    "message": "What is a relapse prevention plan?"
+  },
+  {
+    "route": "support",
+    "total_ms": 16958.552500000224,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1225.5270000023302
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 23.387300003378186
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.011099997209385037
+      },
+      {
+        "node": "refine_query",
+        "nested": true,
+        "ms": 3202.552499999001
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2784.414800000377
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 9721.765200003574
+      },
+      {
+        "node": "support",
+        "nested": false,
+        "ms": 0.037099998735357076
+      }
+    ],
+    "expected": "support",
+    "message": "I had a really bad day and I feel like I'm failing at everything."
+  },
+  {
+    "route": "support",
+    "total_ms": 15298.012500003097,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1412.296000002243
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 26.194099998974707
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.013100005162414163
+      },
+      {
+        "node": "refine_query",
+        "nested": true,
+        "ms": 3205.3820000000997
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2778.246699999727
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 7874.960799999826
+      },
+      {
+        "node": "support",
+        "nested": false,
+        "ms": 0.040599996282253414
+      }
+    ],
+    "expected": "support",
+    "message": "I'm so tired of fighting these thoughts all the time."
+  },
+  {
+    "route": "support",
+    "total_ms": 15890.716999994766,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1222.723999999289
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 25.524999997287523
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.01960000372491777
+      },
+      {
+        "node": "refine_query",
+        "nested": true,
+        "ms": 3168.995399995765
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2710.501599998679
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 8762.115400000766
+      },
+      {
+        "node": "support",
+        "nested": false,
+        "ms": 0.03190000279573724
+      }
+    ],
+    "expected": "support",
+    "message": "I did my exposure but I gave in and checked the stove three times. I feel useless."
+  },
+  {
+    "route": "support",
+    "total_ms": 14333.476200001314,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1183.488099995884
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 22.95800000138115
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.011600001016631722
+      },
+      {
+        "node": "refine_query",
+        "nested": true,
+        "ms": 3835.617299999285
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2870.4842000006465
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 6419.827500001702
+      },
+      {
+        "node": "support",
+        "nested": false,
+        "ms": 0.23720000172033906
+      }
+    ],
+    "expected": "support",
+    "message": "Can you just tell me the door is locked so I can stop worrying?"
+  },
+  {
+    "route": "support",
+    "total_ms": 16863.979999994626,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1379.5999999929336
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 26.733700004115235
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.013199998647905886
+      },
+      {
+        "node": "refine_query",
+        "nested": true,
+        "ms": 3565.0949999981094
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3282.3515000054613
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 8609.22899999423
+      },
+      {
+        "node": "support",
+        "nested": false,
+        "ms": 0.03670000296551734
+      }
+    ],
+    "expected": "support",
+    "message": "I feel like ERP is never going to work for me."
+  },
+  {
+    "route": "support",
+    "total_ms": 16079.410099999222,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1350.359899995965
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 25.16710000054445
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.012700002116616815
+      },
+      {
+        "node": "refine_query",
+        "nested": true,
+        "ms": 3106.685600003402
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3217.6420999967377
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 8378.496600002109
+      },
+      {
+        "node": "support",
+        "nested": false,
+        "ms": 0.0411000000895001
+      }
+    ],
+    "expected": "support",
+    "message": "My family is frustrated with me and I feel guilty."
+  },
+  {
+    "route": "support",
+    "total_ms": 16214.134200003173,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1211.3987999982783
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 26.028800006315578
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.01219999830937013
+      },
+      {
+        "node": "refine_query",
+        "nested": true,
+        "ms": 3481.854599995131
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3014.9710000041523
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 8478.998599995975
+      },
+      {
+        "node": "support",
+        "nested": false,
+        "ms": 0.030500006687361747
+      }
+    ],
+    "expected": "support",
+    "message": "I'm anxious and I don't know why, everything feels heavy today."
+  },
+  {
+    "route": "support",
+    "total_ms": 14142.17560000543,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1613.3058000050369
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 28.580899997905362
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.01840000186348334
+      },
+      {
+        "node": "refine_query",
+        "nested": true,
+        "ms": 3067.9902999982005
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2660.304500001075
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 6770.654399995692
+      },
+      {
+        "node": "support",
+        "nested": false,
+        "ms": 0.3682000024127774
+      }
+    ],
+    "expected": "support",
+    "message": "Please promise me nothing bad will happen if I stop washing."
+  },
+  {
+    "route": "support",
+    "total_ms": 18452.2855000032,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1396.0751999984495
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 21.670100002666004
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.011800002539530396
+      },
+      {
+        "node": "refine_query",
+        "nested": true,
+        "ms": 3366.952600001241
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3879.865899994911
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 9786.770800004888
+      },
+      {
+        "node": "support",
+        "nested": false,
+        "ms": 0.03579999611247331
+      }
+    ],
+    "expected": "support",
+    "message": "I skipped my homework this week and I feel ashamed."
+  },
+  {
+    "route": "support",
+    "total_ms": 19040.61389999697,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1275.808500002313
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 27.5437999953283
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.012100004823878407
+      },
+      {
+        "node": "refine_query",
+        "nested": true,
+        "ms": 4176.445999997668
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2634.879800003546
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 10924.838899998576
+      },
+      {
+        "node": "support",
+        "nested": false,
+        "ms": 0.03879999712808058
+      }
+    ],
+    "expected": "support",
+    "message": "I'm burned out from doing exposures every day."
+  },
+  {
+    "route": "support",
+    "total_ms": 17673.28339999949,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1414.0302000014344
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 19.313299999339506
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.01309999788645655
+      },
+      {
+        "node": "refine_query",
+        "nested": true,
+        "ms": 4768.972900004883
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2765.5518999963533
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 8704.52959999966
+      },
+      {
+        "node": "support",
+        "nested": false,
+        "ms": 0.03840000135824084
+      }
+    ],
+    "expected": "support",
+    "message": "I keep comparing myself to people who don't have OCD."
+  },
+  {
+    "route": "support",
+    "total_ms": 16546.131900002365,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1317.6057000018773
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 20.180100000288803
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.043799998820759356
+      },
+      {
+        "node": "refine_query",
+        "nested": true,
+        "ms": 3052.6200999956927
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2852.729000005638
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 9301.547600000049
+      },
+      {
+        "node": "support",
+        "nested": false,
+        "ms": 0.0520999965374358
+      }
+    ],
+    "expected": "support",
+    "message": "I feel lonely because nobody understands what this is like."
+  },
+  {
+    "route": "support",
+    "total_ms": 16226.34570000082,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1337.3084999984712
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 18.58380000339821
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.01219999830937013
+      },
+      {
+        "node": "refine_query",
+        "nested": true,
+        "ms": 3184.9554000000353
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2902.7492000022903
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 8781.825999998546
+      },
+      {
+        "node": "support",
+        "nested": false,
+        "ms": 0.03580000338843092
+      }
+    ],
+    "expected": "support",
+    "message": "I'm scared to start the next step on my ladder."
+  },
+  {
+    "route": "support",
+    "total_ms": 18636.646500002826,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 3826.043799999752
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 24.241899998742156
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.016600002709310502
+      },
+      {
+        "node": "refine_query",
+        "nested": true,
+        "ms": 2999.700499996834
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2848.5005000038655
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 8937.228099995991
+      },
+      {
+        "node": "support",
+        "nested": false,
+        "ms": 0.038700003642588854
+      }
+    ],
+    "expected": "support",
+    "message": "Today was actually a little better, but I'm worried it won't last."
+  },
+  {
+    "route": "support",
+    "total_ms": 15559.206899997662,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1418.7396999986959
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 22.18130000255769
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.01309999788645655
+      },
+      {
+        "node": "refine_query",
+        "nested": true,
+        "ms": 3852.465600000869
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2674.0294999981415
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 7590.889800005243
+      },
+      {
+        "node": "support",
+        "nested": false,
+        "ms": 0.033499993151053786
+      }
+    ],
+    "expected": "support",
+    "message": "Tell me I'm not a bad person for having these thoughts."
+  },
+  {
+    "route": "support",
+    "total_ms": 17494.075700000394,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1355.1810999997542
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 26.463499998499174
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.012399999832268804
+      },
+      {
+        "node": "refine_query",
+        "nested": true,
+        "ms": 3328.2694000008632
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2749.2423000003328
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 10033.79799999675
+      },
+      {
+        "node": "support",
+        "nested": false,
+        "ms": 0.037500001781154424
+      }
+    ],
+    "expected": "support",
+    "message": "I cried after my session today."
+  },
+  {
+    "route": "support",
+    "total_ms": 16913.065699998697,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1345.5826999997953
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 26.054699999804143
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.014899997040629387
+      },
+      {
+        "node": "refine_query",
+        "nested": true,
+        "ms": 3356.5975000019534
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3078.5905000011553
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 9105.23000000103
+      },
+      {
+        "node": "support",
+        "nested": false,
+        "ms": 0.036799996451009065
+      }
+    ],
+    "expected": "support",
+    "message": "I'm frustrated that progress is so slow."
+  },
+  {
+    "route": "support",
+    "total_ms": 17109.606600002735,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1380.8107000004384
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 26.939900002616923
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.012699994840659201
+      },
+      {
+        "node": "refine_query",
+        "nested": true,
+        "ms": 3221.450000004552
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2710.1866000011796
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 9769.238399996539
+      },
+      {
+        "node": "support",
+        "nested": false,
+        "ms": 0.03699999797390774
+      }
+    ],
+    "expected": "support",
+    "message": "I can't sleep because my mind keeps looping."
+  },
+  {
+    "route": "support",
+    "total_ms": 19037.839699994947,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1429.419299995061
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 22.063700002036057
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.01170000177808106
+      },
+      {
+        "node": "refine_query",
+        "nested": true,
+        "ms": 4168.011699999624
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 2698.1821000008495
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 10719.159699998272
+      },
+      {
+        "node": "support",
+        "nested": false,
+        "ms": 0.03339999966556206
+      }
+    ],
+    "expected": "support",
+    "message": "I feel embarrassed talking to my therapist about my thoughts."
+  },
+  {
+    "route": "support",
+    "total_ms": 16188.61360000301,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1371.7725000024075
+      },
+      {
+        "node": "db_picker",
+        "nested": true,
+        "ms": 19.784999996772967
+      },
+      {
+        "node": "session_summarizer",
+        "nested": true,
+        "ms": 0.0318000020342879
+      },
+      {
+        "node": "refine_query",
+        "nested": true,
+        "ms": 3019.323799999256
+      },
+      {
+        "node": "kb_retrieval",
+        "nested": true,
+        "ms": 3038.885800000571
+      },
+      {
+        "node": "generate",
+        "nested": true,
+        "ms": 8737.927599999239
+      },
+      {
+        "node": "support",
+        "nested": false,
+        "ms": 0.037500001781154424
+      }
+    ],
+    "expected": "support",
+    "message": "I'm overwhelmed and need someone to talk to for a minute."
+  },
+  {
+    "route": "human_escalation",
+    "total_ms": 3947.405599996273,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1314.1072999933385
+      },
+      {
+        "node": "load_context",
+        "nested": true,
+        "ms": 37.35220000089612
+      },
+      {
+        "node": "verifier",
+        "nested": true,
+        "ms": 2595.0957000022754
+      },
+      {
+        "node": "no_help_needed",
+        "nested": true,
+        "ms": 0.013800003216601908
+      },
+      {
+        "node": "human_escalation",
+        "nested": false,
+        "ms": 0.007999995432328433
+      }
+    ],
+    "expected": "human_escalation",
+    "message": "I need a real person to help me right now, not a chatbot."
+  },
+  {
+    "route": "human_escalation",
+    "total_ms": 4232.882100004645,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1400.6250000020373
+      },
+      {
+        "node": "load_context",
+        "nested": true,
+        "ms": 25.226999998267274
+      },
+      {
+        "node": "verifier",
+        "nested": true,
+        "ms": 2806.1767000035616
+      },
+      {
+        "node": "no_help_needed",
+        "nested": true,
+        "ms": 0.025499997718725353
+      },
+      {
+        "node": "human_escalation",
+        "nested": false,
+        "ms": 0.008800001523923129
+      }
+    ],
+    "expected": "human_escalation",
+    "message": "Can someone from my care team come to see me in person today?"
+  },
+  {
+    "route": "human_escalation",
+    "total_ms": 3972.035600003437,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1276.735200000985
+      },
+      {
+        "node": "load_context",
+        "nested": true,
+        "ms": 20.600500000000466
+      },
+      {
+        "node": "verifier",
+        "nested": true,
+        "ms": 2673.8927999977022
+      },
+      {
+        "node": "no_help_needed",
+        "nested": true,
+        "ms": 0.013500000932253897
+      },
+      {
+        "node": "human_escalation",
+        "nested": false,
+        "ms": 0.00790000194683671
+      }
+    ],
+    "expected": "human_escalation",
+    "message": "Please contact a human helper for me, I can't handle this alone."
+  },
+  {
+    "route": "human_escalation",
+    "total_ms": 4181.510700000217,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1191.9513000029838
+      },
+      {
+        "node": "load_context",
+        "nested": true,
+        "ms": 21.217499997874256
+      },
+      {
+        "node": "verifier",
+        "nested": true,
+        "ms": 2967.533800001547
+      },
+      {
+        "node": "no_help_needed",
+        "nested": true,
+        "ms": 0.014500001270789653
+      },
+      {
+        "node": "human_escalation",
+        "nested": false,
+        "ms": 0.007700000423938036
+      }
+    ],
+    "expected": "human_escalation",
+    "message": "I'm in crisis and I need emergency help from a real person."
+  },
+  {
+    "route": "human_escalation",
+    "total_ms": 4119.814300000144,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1285.4282000043895
+      },
+      {
+        "node": "load_context",
+        "nested": true,
+        "ms": 28.253500000573695
+      },
+      {
+        "node": "verifier",
+        "nested": true,
+        "ms": 2805.2812999958405
+      },
+      {
+        "node": "no_help_needed",
+        "nested": true,
+        "ms": 0.015199999324977398
+      },
+      {
+        "node": "human_escalation",
+        "nested": false,
+        "ms": 0.008499999239575118
+      }
+    ],
+    "expected": "human_escalation",
+    "message": "Can you connect me to the emergency support team?"
+  },
+  {
+    "route": "human_escalation",
+    "total_ms": 3802.291400003014,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1451.8491999988328
+      },
+      {
+        "node": "load_context",
+        "nested": true,
+        "ms": 20.046500001626555
+      },
+      {
+        "node": "verifier",
+        "nested": true,
+        "ms": 2329.3210999981966
+      },
+      {
+        "node": "no_help_needed",
+        "nested": true,
+        "ms": 0.014800003555137664
+      },
+      {
+        "node": "human_escalation",
+        "nested": false,
+        "ms": 0.007799993909429759
+      }
+    ],
+    "expected": "human_escalation",
+    "message": "I want to talk to a human right now, please send someone."
+  },
+  {
+    "route": "human_escalation",
+    "total_ms": 8503.498000005493,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1225.7116000037058
+      },
+      {
+        "node": "load_context",
+        "nested": true,
+        "ms": 25.967599998693913
+      },
+      {
+        "node": "verifier",
+        "nested": true,
+        "ms": 2136.0220999995363
+      },
+      {
+        "node": "generate_helper_message",
+        "nested": true,
+        "ms": 5057.52080000093
+      },
+      {
+        "node": "send_to_ep_group",
+        "nested": true,
+        "ms": 57.29140000039479
+      },
+      {
+        "node": "human_escalation",
+        "nested": false,
+        "ms": 0.0168999977177009
+      }
+    ],
+    "expected": "human_escalation",
+    "message": "I'm not safe at home right now and I need someone to come."
+  },
+  {
+    "route": "human_escalation",
+    "total_ms": 8564.15669999842,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1400.5776999983937
+      },
+      {
+        "node": "load_context",
+        "nested": true,
+        "ms": 23.008999996818602
+      },
+      {
+        "node": "verifier",
+        "nested": true,
+        "ms": 2573.5054000033415
+      },
+      {
+        "node": "generate_helper_message",
+        "nested": true,
+        "ms": 4536.083400002099
+      },
+      {
+        "node": "send_to_ep_group",
+        "nested": true,
+        "ms": 30.10099999664817
+      },
+      {
+        "node": "human_escalation",
+        "nested": false,
+        "ms": 0.012700002116616815
+      }
+    ],
+    "expected": "human_escalation",
+    "message": "Please alert my support people, I need help immediately."
+  },
+  {
+    "route": "human_escalation",
+    "total_ms": 3621.9173000063165,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1366.6475000063656
+      },
+      {
+        "node": "load_context",
+        "nested": true,
+        "ms": 25.29639999556821
+      },
+      {
+        "node": "verifier",
+        "nested": true,
+        "ms": 2229.1880999982823
+      },
+      {
+        "node": "no_help_needed",
+        "nested": true,
+        "ms": 0.01460000203223899
+      },
+      {
+        "node": "human_escalation",
+        "nested": false,
+        "ms": 0.008299997716676444
+      }
+    ],
+    "expected": "human_escalation",
+    "message": "I need a human helper to call me as soon as possible."
+  },
+  {
+    "route": "human_escalation",
+    "total_ms": 8220.99000000162,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1322.1374999993714
+      },
+      {
+        "node": "load_context",
+        "nested": true,
+        "ms": 239.9312000052305
+      },
+      {
+        "node": "verifier",
+        "nested": true,
+        "ms": 2312.271899994812
+      },
+      {
+        "node": "generate_helper_message",
+        "nested": true,
+        "ms": 4319.741899998917
+      },
+      {
+        "node": "send_to_ep_group",
+        "nested": true,
+        "ms": 26.085900004545692
+      },
+      {
+        "node": "human_escalation",
+        "nested": false,
+        "ms": 0.01340000017080456
+      }
+    ],
+    "expected": "human_escalation",
+    "message": "Get me a real person, I'm panicking and can't calm down."
+  },
+  {
+    "route": "human_escalation",
+    "total_ms": 3965.569799998775,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1294.3597999983467
+      },
+      {
+        "node": "load_context",
+        "nested": true,
+        "ms": 26.763800000480842
+      },
+      {
+        "node": "verifier",
+        "nested": true,
+        "ms": 2643.185499997344
+      },
+      {
+        "node": "no_help_needed",
+        "nested": true,
+        "ms": 0.013500000932253897
+      },
+      {
+        "node": "human_escalation",
+        "nested": false,
+        "ms": 0.007499998901039362
+      }
+    ],
+    "expected": "human_escalation",
+    "message": "I can't do this by myself tonight, please send someone from my team."
+  },
+  {
+    "route": "human_escalation",
+    "total_ms": 8309.166200000618,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1536.4356999998563
+      },
+      {
+        "node": "load_context",
+        "nested": true,
+        "ms": 27.48270000302
+      },
+      {
+        "node": "verifier",
+        "nested": true,
+        "ms": 1918.7468999953126
+      },
+      {
+        "node": "generate_helper_message",
+        "nested": true,
+        "ms": 4799.582600004214
+      },
+      {
+        "node": "send_to_ep_group",
+        "nested": true,
+        "ms": 26.242899999488145
+      },
+      {
+        "node": "human_escalation",
+        "nested": false,
+        "ms": 0.010299998393747956
+      }
+    ],
+    "expected": "human_escalation",
+    "message": "I need emergency personnel, please notify them."
+  },
+  {
+    "route": "human_escalation",
+    "total_ms": 9533.56370000256,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1210.8952999988105
+      },
+      {
+        "node": "load_context",
+        "nested": true,
+        "ms": 24.882899997464847
+      },
+      {
+        "node": "verifier",
+        "nested": true,
+        "ms": 2761.107100006484
+      },
+      {
+        "node": "generate_helper_message",
+        "nested": true,
+        "ms": 5505.937699999777
+      },
+      {
+        "node": "send_to_ep_group",
+        "nested": true,
+        "ms": 29.911699995864183
+      },
+      {
+        "node": "human_escalation",
+        "nested": false,
+        "ms": 0.015300000086426735
+      }
+    ],
+    "expected": "human_escalation",
+    "message": "Someone needs to come here, I'm scared I will hurt myself."
+  },
+  {
+    "route": "human_escalation",
+    "total_ms": 4070.552500001213,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1614.1952000034507
+      },
+      {
+        "node": "load_context",
+        "nested": true,
+        "ms": 25.606199997127987
+      },
+      {
+        "node": "verifier",
+        "nested": true,
+        "ms": 2429.9602000028244
+      },
+      {
+        "node": "no_help_needed",
+        "nested": true,
+        "ms": 0.013999997463542968
+      },
+      {
+        "node": "human_escalation",
+        "nested": false,
+        "ms": 0.007700000423938036
+      }
+    ],
+    "expected": "human_escalation",
+    "message": "Please escalate this to a human, I'm in a really bad place."
+  },
+  {
+    "route": "human_escalation",
+    "total_ms": 4828.319000000192,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 2040.2771000008215
+      },
+      {
+        "node": "load_context",
+        "nested": true,
+        "ms": 27.16579999832902
+      },
+      {
+        "node": "verifier",
+        "nested": true,
+        "ms": 2759.9524000033853
+      },
+      {
+        "node": "no_help_needed",
+        "nested": true,
+        "ms": 0.019999999494757503
+      },
+      {
+        "node": "human_escalation",
+        "nested": false,
+        "ms": 0.010099996870849282
+      }
+    ],
+    "expected": "human_escalation",
+    "message": "Can a person from my care team check on me right now?"
+  },
+  {
+    "route": "human_escalation",
+    "total_ms": 3569.0681999985827,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1123.161199997412
+      },
+      {
+        "node": "load_context",
+        "nested": true,
+        "ms": 25.130000001809094
+      },
+      {
+        "node": "verifier",
+        "nested": true,
+        "ms": 2419.9374000017997
+      },
+      {
+        "node": "no_help_needed",
+        "nested": true,
+        "ms": 0.014699995517730713
+      },
+      {
+        "node": "human_escalation",
+        "nested": false,
+        "ms": 0.00790000194683671
+      }
+    ],
+    "expected": "human_escalation",
+    "message": "I need someone to physically be here with me."
+  },
+  {
+    "route": "human_escalation",
+    "total_ms": 9404.209300002549,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1347.7808000025107
+      },
+      {
+        "node": "load_context",
+        "nested": true,
+        "ms": 35.3973999954178
+      },
+      {
+        "node": "verifier",
+        "nested": true,
+        "ms": 2722.662300002412
+      },
+      {
+        "node": "generate_helper_message",
+        "nested": true,
+        "ms": 5271.434099995531
+      },
+      {
+        "node": "send_to_ep_group",
+        "nested": true,
+        "ms": 26.19010000489652
+      },
+      {
+        "node": "human_escalation",
+        "nested": false,
+        "ms": 0.01679999695625156
+      }
+    ],
+    "expected": "human_escalation",
+    "message": "Connect me with my emergency contact person from the clinic."
+  },
+  {
+    "route": "human_escalation",
+    "total_ms": 3811.238100002811,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1657.0912000024691
+      },
+      {
+        "node": "load_context",
+        "nested": true,
+        "ms": 26.798999999300577
+      },
+      {
+        "node": "verifier",
+        "nested": true,
+        "ms": 2126.6609000012977
+      },
+      {
+        "node": "no_help_needed",
+        "nested": true,
+        "ms": 0.00839999847812578
+      },
+      {
+        "node": "human_escalation",
+        "nested": false,
+        "ms": 0.0040000013541430235
+      }
+    ],
+    "expected": "human_escalation",
+    "message": "This is urgent, I need a human to intervene."
+  },
+  {
+    "route": "human_escalation",
+    "total_ms": 3611.466099995596,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1278.2639999932144
+      },
+      {
+        "node": "load_context",
+        "nested": true,
+        "ms": 24.94470000237925
+      },
+      {
+        "node": "verifier",
+        "nested": true,
+        "ms": 2307.4141000033705
+      },
+      {
+        "node": "no_help_needed",
+        "nested": true,
+        "ms": 0.014699995517730713
+      },
+      {
+        "node": "human_escalation",
+        "nested": false,
+        "ms": 0.008100003469735384
+      }
+    ],
+    "expected": "human_escalation",
+    "message": "I want a real helper, not AI. Please get someone."
+  },
+  {
+    "route": "human_escalation",
+    "total_ms": 9147.65709999483,
+    "steps": [
+      {
+        "node": "router",
+        "nested": false,
+        "ms": 1227.630199995474
+      },
+      {
+        "node": "load_context",
+        "nested": true,
+        "ms": 24.570900000981055
+      },
+      {
+        "node": "verifier",
+        "nested": true,
+        "ms": 2708.5184000025038
+      },
+      {
+        "node": "generate_helper_message",
+        "nested": true,
+        "ms": 5161.395600000105
+      },
+      {
+        "node": "send_to_ep_group",
+        "nested": true,
+        "ms": 24.75609999964945
+      },
+      {
+        "node": "human_escalation",
+        "nested": false,
+        "ms": 0.016999998479150236
+      }
+    ],
+    "expected": "human_escalation",
+    "message": "Please send help, I don't feel safe."
+  }
+]

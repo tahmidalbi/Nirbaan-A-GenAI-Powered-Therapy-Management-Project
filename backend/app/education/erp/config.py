@@ -2,7 +2,7 @@
 from __future__ import annotations
 import os
 
-LLM_MODEL = os.getenv("LLM_MODEL", "gpt-5.3-chat-latest")
+LLM_MODEL = os.getenv("LLM_MODEL", "gpt-5.4-2026-03-05")
 
 KB_TOP_K = int(os.getenv("EDU_KB_TOP_K", "8"))
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from typing import Any, Dict
 
 from langchain_openai import ChatOpenAI
@@ -56,7 +57,7 @@ def generate_helper_message_node(state: Dict[str, Any]) -> Dict[str, Any]:
         progress_text = "No weekly progress report on record."
 
     llm = ChatOpenAI(
-        model="gpt-5.3-chat-latest",
+        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.4-2026-03-05"),
         
     ).with_structured_output(HelperMessageOutput)
 

@@ -19,12 +19,14 @@ class ERPScriptGeneratorSettings(BaseSettings):
 
     LANGGRAPH_CHECKPOINT_DB_URL: str | None = None
 
+    # After this many AI regenerations, the therapist must edit the script manually.
+    IMAGINAL_MAX_AI_REVISIONS: int = 3
+
     R2_ACCOUNT_ID: str | None = None
     R2_ACCESS_KEY_ID: str | None = None
     R2_SECRET_ACCESS_KEY: str | None = None
     R2_BUCKET_NAME: str | None = None
     R2_ENDPOINT_URL: str | None = None
-    R2_PRESIGNED_URL_EXPIRY: int = 3600
 
     @property
     def checkpoint_db_url(self) -> str:

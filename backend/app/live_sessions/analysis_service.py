@@ -90,7 +90,7 @@ def generate_session_analysis(session_id: int, db: Session) -> Optional[LiveSess
 
     transcript_text = _build_transcript_text(transcripts)
 
-    llm_model = os.getenv("LLM_MODEL", "gpt-5.3-chat-latest")
+    llm_model = os.getenv("LLM_MODEL", "gpt-5.4-2026-03-05")
     client = OpenAI(api_key=api_key)
 
     try:

@@ -1,9 +1,12 @@
 import axiosInstance from './axios';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
-
-// Helper: build the backend-proxied audio URL for a given script id
-export const getAudioUrl = (scriptId) => `${API_BASE}/imaginal-generator/audio/${scriptId}`;
+// GET /imaginal-generator/audio/{scriptId} (requires login)
+export const fetchAudioBlob = async (scriptId) => {
+  const response = await axiosInstance.get(`/imaginal-generator/audio/${scriptId}`, {
+    responseType: 'blob',
+  });
+  return response.data;
+};
 
 // POST /imaginal-generator/start
 export const startImaginalRun = async (payload) => {

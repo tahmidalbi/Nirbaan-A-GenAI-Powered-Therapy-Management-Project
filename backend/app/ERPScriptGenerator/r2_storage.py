@@ -63,10 +63,6 @@ def build_r2_public_url(object_key: str) -> str:
     return f"{base}/{bucket}/{object_key}"
 
 
-def generate_presigned_download_url(object_key: str) -> str:
+def open_object_stream(object_key: str):
     client = _get_s3_client()
-    return client.generate_presigned_url(
-        "get_object",
-        Params={"Bucket": settings.R2_BUCKET_NAME, "Key": object_key},
-        ExpiresIn=settings.R2_PRESIGNED_URL_EXPIRY,
-    )
+    return client.get_object(Bucket=settings.R2_BUCKET_NAME, Key=object_key)["Body"]

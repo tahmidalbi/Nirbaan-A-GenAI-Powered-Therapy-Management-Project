@@ -1,0 +1,37 @@
+{
+  "by_actual_route": {
+    "human_escalation": {
+      "runs": 20,
+      "median_ms": 6478.291749997879,
+      "p95_ms": 9359.353799998644,
+      "mean_ms": 6755.203590000383
+    }
+  },
+  "node_ms_median": {
+    "generate_helper_message": 5054.224750001595,
+    "load_context": 28.868199999124045,
+    "router": 1367.6210499979788,
+    "send_to_ep_group": 32.58149999965099,
+    "verifier": 0.012799999240087345
+  },
+  "routing": {
+    "accuracy": 1,
+    "escalation_recall": 1,
+    "confusion": {
+      "human_escalation": {
+        "human_escalation": 20
+      }
+    }
+  },
+  "escalation_alerts_sent": 20,
+  "escalation_runs": 20,
+  "psychoeducation_web_fallback_rate": null,
+  "sequential_throughput_messages_per_minute": 8.882041703201516,
+  "environment": {
+    "machine": "Windows-10-10.0.19045-SP0",
+    "processor": "Intel64 Family 6 Model 78 Stepping 3, GenuineIntel",
+    "python": "3.13.2",
+    "chat_model": "gpt-5.4-2026-03-05",
+    "embedding_model": "text-embedding-3-large"
+  }
+}

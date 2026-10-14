@@ -86,7 +86,7 @@ def analyze_patient_node(state: NirbaanAITherapistState) -> Dict[str, Any]:
 
 def _get_llm() -> ChatOpenAI:
     return ChatOpenAI(
-        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.3-chat-latest"),
+        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.4-2026-03-05"),
         
     )
 

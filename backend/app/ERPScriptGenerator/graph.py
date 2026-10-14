@@ -25,6 +25,7 @@ from .ollama_client import generate_script_with_ollama
 from .piper_tts import synthesize_with_piper
 from .r2_storage import upload_file_to_r2, build_audio_object_key
 from .config import settings
+from .service import ai_revisions_remaining
 
 
 def load_case_context(state: ImaginalGraphState) -> ImaginalGraphState:
@@ -124,7 +125,7 @@ def generate_script_node(state: ImaginalGraphState) -> ImaginalGraphState:
 
 def therapist_review_node(
     state: ImaginalGraphState,
-) -> Command[Literal["finalize_approved_node", "prepare_revision_node"]]:
+) -> Command[Literal["finalize_approved_node", "prepare_revision_node", "therapist_review_node"]]:
     decision = interrupt({
         "action": "review_script",
         "thread_id": state["thread_id"],
@@ -137,20 +138,35 @@ def therapist_review_node(
         "exposure_type": state["exposure_type"],
         "subtype": state.get("subtype"),
         "generated_script": state["generated_script"],
+        "ai_revisions_remaining": ai_revisions_remaining(state["version_no"]),
         "message": "Therapist must approve or reject this imaginal exposure script.",
     })
 
     approved = bool(decision.get("approved", False))
     feedback = decision.get("feedback")
+    edited_script = (decision.get("edited_script") or "").strip()
 
     if approved:
+        update = {
+            "approved": True,
+            "therapist_feedback": None,
+            "status": "approved_pending_audio",
+        }
+        if edited_script:
+            update["generated_script"] = edited_script
+        return Command(update=update, goto="finalize_approved_node")
+
+    if ai_revisions_remaining(state["version_no"]) == 0:
+        db = SessionLocal()
+        try:
+            run = get_run_by_thread_id(db, state["thread_id"])
+            run.status = "manual_edit_required"
+            db.commit()
+        finally:
+            db.close()
         return Command(
-            update={
-                "approved": True,
-                "therapist_feedback": None,
-                "status": "approved_pending_audio",
-            },
-            goto="finalize_approved_node",
+            update={"approved": False, "status": "manual_edit_required"},
+            goto="therapist_review_node",
         )
 
     return Command(
@@ -218,8 +234,19 @@ def finalize_approved_node(state: ImaginalGraphState) -> ImaginalGraphState:
             audio_key=audio_key,
         )
         latest_version = run.versions[-1]
-        latest_version.approved = True
-        db.commit()
+        if latest_version.generated_script == state["generated_script"]:
+            latest_version.approved = True
+            db.commit()
+        else:
+            save_version(
+                db,
+                run_id=run.id,
+                version_no=latest_version.version_no + 1,
+                prompt_text="",
+                generated_script=state["generated_script"],
+                therapist_feedback="Edited manually by therapist",
+                approved=True,
+            )
         # Read the id while the session is still open — accessing it after
         # db.close() raises DetachedInstanceError because SQLAlchemy would
         # try to lazy-reload the expired attribute.

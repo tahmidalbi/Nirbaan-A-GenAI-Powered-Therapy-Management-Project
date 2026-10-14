@@ -1,0 +1,94 @@
+{
+  "settings": {
+    "k": 6,
+    "fetch_k": 20,
+    "lambda_mult": 0.5,
+    "embedding_model": "text-embedding-3-large"
+  },
+  "query_embedding_ms": {
+    "median": 411.5149500030384,
+    "p95": 611.944800002675
+  },
+  "overall": {
+    "scoped": {
+      "queries": 60,
+      "hit_at_6": 0.8833333333333333,
+      "mrr_at_6": 0.8541666666666666,
+      "own_workspace_precision_at_6": 1.0,
+      "queries_with_leakage": 0,
+      "search_ms_median": 191.4281999997911,
+      "search_ms_p95": 234.24290000548353
+    },
+    "unscoped": {
+      "queries": 60,
+      "hit_at_6": 0.9,
+      "mrr_at_6": 0.8513888888888889,
+      "own_workspace_precision_at_6": 0.75,
+      "queries_with_leakage": 0.7666666666666667,
+      "search_ms_median": 196.7955499967502,
+      "search_ms_p95": 241.59590000635944
+    }
+  },
+  "by_workspace": {
+    "A": {
+      "scoped": {
+        "queries": 20,
+        "hit_at_6": 0.75,
+        "mrr_at_6": 0.6875,
+        "own_workspace_precision_at_6": 1.0,
+        "queries_with_leakage": 0,
+        "search_ms_median": 190.89754999731667,
+        "search_ms_p95": 265.1975999979186
+      },
+      "unscoped": {
+        "queries": 20,
+        "hit_at_6": 0.75,
+        "mrr_at_6": 0.6625,
+        "own_workspace_precision_at_6": 0.8416666666666667,
+        "queries_with_leakage": 0.4,
+        "search_ms_median": 197.26749999972526,
+        "search_ms_p95": 232.00009999709437
+      }
+    },
+    "B": {
+      "scoped": {
+        "queries": 20,
+        "hit_at_6": 0.9,
+        "mrr_at_6": 0.875,
+        "own_workspace_precision_at_6": 1.0,
+        "queries_with_leakage": 0,
+        "search_ms_median": 189.26455000109854,
+        "search_ms_p95": 232.66639999928884
+      },
+      "unscoped": {
+        "queries": 20,
+        "hit_at_6": 0.95,
+        "mrr_at_6": 0.8916666666666667,
+        "own_workspace_precision_at_6": 0.6583333333333333,
+        "queries_with_leakage": 1,
+        "search_ms_median": 192.59770000280696,
+        "search_ms_p95": 264.5972000027541
+      }
+    },
+    "C": {
+      "scoped": {
+        "queries": 20,
+        "hit_at_6": 1,
+        "mrr_at_6": 1.0,
+        "own_workspace_precision_at_6": 1.0,
+        "queries_with_leakage": 0,
+        "search_ms_median": 191.9823499993072,
+        "search_ms_p95": 228.97099999681814
+      },
+      "unscoped": {
+        "queries": 20,
+        "hit_at_6": 1,
+        "mrr_at_6": 1.0,
+        "own_workspace_precision_at_6": 0.75,
+        "queries_with_leakage": 0.9,
+        "search_ms_median": 201.68645000376273,
+        "search_ms_p95": 220.96310000051744
+      }
+    }
+  }
+}

@@ -17,6 +17,7 @@ class ReviewImaginalRunRequest(BaseModel):
     thread_id: str
     approved: bool
     feedback: str | None = None
+    edited_script: str | None = None
 
 
 class ImaginalRunResponse(BaseModel):
@@ -26,6 +27,7 @@ class ImaginalRunResponse(BaseModel):
     version_no: int
     script_text: str
     interrupt_required: bool = True
+    ai_revisions_remaining: int
 
 
 class ResumeResult(BaseModel):
@@ -37,6 +39,7 @@ class ResumeResult(BaseModel):
     interrupt_required: bool
     audio_path: str | None = None
     approved_script_id: int | None = None
+    ai_revisions_remaining: int = 0
 
 
 class ApprovedImaginalScriptItem(BaseModel):

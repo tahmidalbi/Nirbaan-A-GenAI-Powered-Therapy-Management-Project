@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { listPatientApprovedScripts, getAudioUrl } from '../api/imaginal-generator.api';
+import { listPatientApprovedScripts } from '../api/imaginal-generator.api';
+import AuthAudio from '../components/AuthAudio';
 import { listERPItems } from '../api/erp.api';
 import './PatientImaginalScripts.css';
 
@@ -126,13 +127,7 @@ const PatientImaginalScripts = () => {
                                 {/* Audio */}
                                 <div className="pis-audio-section">
                                   <span className="pis-section-label">Listen</span>
-                                  {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-                                  <audio
-                                    controls
-                                    src={getAudioUrl(script.id)}
-                                    className="pis-audio-player"
-                                    preload="none"
-                                  />
+                                  <AuthAudio scriptId={script.id} className="pis-audio-player" />
                                 </div>
 
                                 {/* Script text */}
