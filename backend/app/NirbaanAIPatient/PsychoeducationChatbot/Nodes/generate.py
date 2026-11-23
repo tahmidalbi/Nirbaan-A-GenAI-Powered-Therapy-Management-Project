@@ -9,6 +9,18 @@ from langchain_openai import ChatOpenAI
 from app.NirbaanAIPatient.PsychoeducationChatbot.state import PsychoeducationState
 
 
+# Added in code (not by the LLM) so it always appears and is saved with the answer.
+WEB_SOURCE_DISCLOSURE = (
+    "Note: This answer includes information from external health websites, "
+    "not just material provided by your therapist."
+)
+
+INSUFFICIENT_INFORMATION_RESPONSE = (
+    "I don't have enough information to answer that well right now. "
+    "You may want to ask your therapist about this."
+)
+
+
 class GenerateOutput(BaseModel):
     final_response: str = Field(
         ...,
@@ -55,14 +67,17 @@ def generate_node(state: PsychoeducationState) -> Dict[str, Any]:
             "used_sources": [],
         }
 
+    # Therapist passages that the sufficiency check rejected are not used as evidence:
+    # the answer comes from web results if there are any; otherwise the assistant says so.
+    if not state.get("retrieval_sufficient", True):
+        kb_chunks = []
+
     has_kb = bool(kb_chunks)
     has_web = bool(web_used and web_results)
 
     if not has_kb and not has_web:
         return {
-            "final_response": (
-                "I don't have enough information to answer that well right now."
-            ),
+            "final_response": INSUFFICIENT_INFORMATION_RESPONSE,
             "final_grounding_summary": "",
             "used_sources": [],
         }
@@ -85,6 +100,9 @@ def generate_node(state: PsychoeducationState) -> Dict[str, Any]:
     final_response = (result.final_response or "").strip()
     if not final_response:
         final_response = "I don't have enough information to answer that well right now."
+
+    if has_web:
+        final_response = f"{final_response}\n\n{WEB_SOURCE_DISCLOSURE}"
 
     final_grounding_summary = (result.final_grounding_summary or "").strip()
     used_sources = _build_used_sources(

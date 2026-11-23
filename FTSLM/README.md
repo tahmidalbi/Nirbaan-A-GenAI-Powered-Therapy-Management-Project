@@ -1,12 +1,12 @@
 # Nirbaan FTSLM — Federated Fine-Tuning Pipeline
 
-> Parameter-efficient, privacy-preserving fine-tuning of a local LLM on therapy-domain dialogue data using **QLoRA** and a simulated federated learning setup.
+> Experimental, parameter-efficient fine-tuning of a local LLM on synthetic therapy-domain dialogue data using **QLoRA** and a simulated federated learning setup. Raw training data stay with each simulated client, but model updates are shared without secure aggregation or differential privacy, so this pipeline is not privacy-preserving and should not be used with real patient data.
 
 ---
 
 ## Overview
 
-FTSLM (Fine-Tuned Specialised Language Model) adapts **Meta-Llama-3.1-8B-Instruct** to the Nirbaan clinical context without exposing raw patient data to a central server. Training data is generated synthetically, curated through an LLM-based quality pipeline, and then used to fine-tune the model with LoRA adapters at 4-bit quantisation — keeping the entire process runnable on a single consumer GPU.
+FTSLM (Fine-Tuned Specialised Language Model) adapts **Meta-Llama-3.1-8B-Instruct** to the Nirbaan clinical context without sending raw training examples to a central server. No real patient data is used: training data is generated synthetically, curated through an LLM-based quality pipeline, and then used to fine-tune the model with LoRA adapters at 4-bit quantisation — keeping the entire process runnable on a single consumer GPU.
 
 The resulting model is served locally via Ollama and consumed by backend AI modules through a standard OpenAI-compatible API.
 

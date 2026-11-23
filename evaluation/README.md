@@ -107,3 +107,16 @@ Full numbers are in `results/federated_results.json`. In short:
   patient can play the patient's approved script audio, other patients and therapists cannot; a patient cannot approve a
   script; a therapist cannot start or approve a script for another therapist's patient; the AI rewrite limit is enforced.
 - `backend/tests/test_escalation_rule.py` (19 tests): the escalation rules described above.
+- `backend/tests/test_web_fallback_safety.py` (11 tests): web-based psychoeducation answers carry the fixed web-source note
+  and therapist-only answers do not; messages with clear crisis wording go to human escalation before the language-model
+  router; OCD intrusive thoughts are not caught by the fixed rules. All language-model calls are mocked.
+- `backend/tests/test_escalation_failsafe.py` (22 tests): if the verifier fails or times out, the message is escalated
+  as an unconfirmed alert; if the router fails, the verifier still checks the message; if the alert text cannot be
+  generated, a fixed alert is saved; a normal "no" from the verifier sends no alert; during an outage at most one
+  unconfirmed alert per patient is sent in 30 minutes; the patient is told an alert was saved in the care team's support
+  chat only if it was saved, replies never promise that someone will respond soon, and every reply points to local
+  emergency services for immediate danger; the router, verifier, and alert-text calls use the configured time limit
+  and retries (`ESCALATION_LLM_TIMEOUT_SECONDS`, default 8; `ESCALATION_LLM_MAX_RETRIES`, default 0).
+- `backend/tests/test_rejected_evidence.py` (5 tests): therapist passages rejected by the sufficiency check are not used
+  in the answer; with no web results the assistant gives a fixed "not enough information" reply, and with web results it
+  answers from them; answers from sufficient therapist material are unchanged. All language-model calls are mocked. Language models and alert broadcasting are mocked; alerts are saved to an in-memory test database.

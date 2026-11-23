@@ -1,8 +1,17 @@
+import logging
 import os
 from typing import Dict
 
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
+
+from app.NirbaanAIPatient.HumanEscalationAgent.Nodes.verifier import (
+    ESCALATION_LLM_MAX_RETRIES,
+    ESCALATION_LLM_TIMEOUT_SECONDS,
+    explicit_escalation_reason,
+)
+
+log = logging.getLogger(__name__)
 
 
 class RouterOutput(BaseModel):
@@ -11,9 +20,11 @@ class RouterOutput(BaseModel):
 
 def router_node(state: Dict):
 
-    llm = ChatOpenAI(
-        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.4-2026-03-05"),
-    ).with_structured_output(RouterOutput)
+    # Clear crisis wording or an explicit request for a person goes straight to
+    # human escalation, using the same fixed rules as the verifier, so the LLM
+    # router cannot send it to psychoeducation or web search.
+    if explicit_escalation_reason(state.get("user_message", "") or ""):
+        return {"route": "human_escalation"}
 
     prompt = f"""
 You are routing a patient message to the correct AI agent.
@@ -44,7 +55,18 @@ Patient message:
 Return route.
 """
 
-    result = llm.invoke(prompt)
+    try:
+        llm = ChatOpenAI(
+            model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.4-2026-03-05"),
+            timeout=ESCALATION_LLM_TIMEOUT_SECONDS,
+            max_retries=ESCALATION_LLM_MAX_RETRIES,
+        ).with_structured_output(RouterOutput)
+        result = llm.invoke(prompt)
+    except Exception as exc:
+        # Router unavailable is not a crisis: send the message to the escalation
+        # verifier, which decides (and escalates by default if it is also unavailable).
+        log.warning("Router LLM unavailable (%s); sending message to escalation check", type(exc).__name__)
+        return {"route": "human_escalation", "router_unavailable": True}
 
     route = result.route
 

@@ -17,5 +17,6 @@ class CentralState(TypedDict, total=False):
     recent_chat_history: List[ChatTurn]
 
     route: str
+    router_unavailable: bool  # LLM router failed; message sent to the escalation check
 
     final_response: str

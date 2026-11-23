@@ -26,10 +26,12 @@ class HumanEscalationState(TypedDict, total=False):
 
     # ── Router pass-through ──
     route: str
+    router_unavailable: bool  # LLM router failed; this is not a crisis signal
 
     # ── Verifier decision ──
     needs_human_help: bool
     verifier_reasoning: str
+    verification_unavailable: bool  # LLM verifier failed; escalated by default
 
     # ── Generated helper message ──
     helper_message: str

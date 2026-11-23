@@ -1,11 +1,18 @@
 from __future__ import annotations
 
+import logging
 import os
 import re
 from typing import Any, Dict, List, Optional
 
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, Field
+
+log = logging.getLogger(__name__)
+
+# Time limit (seconds) for each LLM call on the safety path: router, verifier, helper alert.
+ESCALATION_LLM_TIMEOUT_SECONDS = float(os.getenv("ESCALATION_LLM_TIMEOUT_SECONDS", "8"))
+ESCALATION_LLM_MAX_RETRIES = int(os.getenv("ESCALATION_LLM_MAX_RETRIES", "0"))
 
 
 # Explicit requests for a person and clear crisis wording always escalate, without the LLM.
@@ -85,11 +92,6 @@ def verifier_node(state: Dict[str, Any]) -> Dict[str, Any]:
     patient_conditions = state.get("patient_conditions", "") or ""
 
     history_text = _format_history(chat_history)
-
-    llm = ChatOpenAI(
-        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.4-2026-03-05"),
-      
-    ).with_structured_output(VerifierOutput)
 
     prompt = f"""
 You are a STRICT clinical triage verifier for an OCD/ERP support system.
@@ -174,7 +176,24 @@ Return:
 2. reasoning
 """.strip()
 
-    result = llm.invoke(prompt)
+    try:
+        llm = ChatOpenAI(
+            model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.4-2026-03-05"),
+            timeout=ESCALATION_LLM_TIMEOUT_SECONDS,
+            max_retries=ESCALATION_LLM_MAX_RETRIES,
+        ).with_structured_output(VerifierOutput)
+        result = llm.invoke(prompt)
+    except Exception as exc:
+        # An unavailable check is not a "no": fail safe and escalate.
+        log.warning("Escalation verifier unavailable (%s); escalating by default", type(exc).__name__)
+        return {
+            "needs_human_help": True,
+            "verification_unavailable": True,
+            "verifier_reasoning": (
+                "Automatic safety check unavailable; escalated by default. "
+                "This is not a confirmed crisis."
+            ),
+        }
 
     return {
         "needs_human_help": result.needs_human_help,

@@ -117,7 +117,7 @@ Nirbaan-A-GenAI-Powered-Therapy-Management-Project/
 - Role-based access (Therapist / Patient / Emergency Personnel) with JWT auth and bcrypt hashing
 - Emergency personnel accounts can only be created by the supervising therapist, so every escalation alert goes to a clinician-vetted responder
 - Therapist-scoped resource library (PDF/text → chunking → embeddings → pgvector) powering all RAG agents
-- Experimental federated QLoRA pipeline: fine-tunes Meta-Llama-3.1-8B-Instruct across simulated clinics via Flower, without centralising raw patient data, exported to Ollama for local inference
+- Experimental federated QLoRA pipeline: fine-tunes Meta-Llama-3.1-8B-Instruct on synthetic data across simulated clinics via Flower, without centralising raw training data (no secure aggregation or differential privacy yet), exported to Ollama for local inference
 
 ---
 

@@ -1,14 +1,43 @@
 from __future__ import annotations
 
+import logging
 import os
 from typing import Any, Dict
 
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 
+from app.NirbaanAIPatient.HumanEscalationAgent.Nodes.verifier import (
+    ESCALATION_LLM_MAX_RETRIES,
+    ESCALATION_LLM_TIMEOUT_SECONDS,
+)
+
+log = logging.getLogger(__name__)
+
 
 class HelperMessageOutput(BaseModel):
     message: str
+
+
+def fixed_alert_message(state: Dict[str, Any]) -> str:
+    """Short alert used when the LLM cannot write one, or when the safety check was unavailable."""
+    if state.get("verification_unavailable"):
+        header = (
+            "Automatic safety check unavailable - this is NOT a confirmed crisis. "
+            "Please check in with the patient."
+        )
+    else:
+        header = "URGENT: a patient needs human support."
+    lines = [
+        header,
+        f"Patient: {state.get('patient_name') or 'Unknown'}",
+        f"Reason: {state.get('verifier_reasoning') or 'Escalation requested.'}",
+        f"Latest message: \"{state.get('user_message', '')}\"",
+    ]
+    if state.get("patient_address"):
+        lines.append(f"Address: {state['patient_address']}")
+    lines.append("Please reply in chat and mark that you are handling it.")
+    return "\n".join(lines)
 
 
 def generate_helper_message_node(state: Dict[str, Any]) -> Dict[str, Any]:
@@ -16,7 +45,13 @@ def generate_helper_message_node(state: Dict[str, Any]) -> Dict[str, Any]:
     LLM node that generates a concise, informative message for the human helpers
     group. Includes patient context and the reason for escalation so helpers can
     quickly decide to intervene.
+
+    Delivery never depends on the LLM: if the safety check was unavailable, or the
+    LLM call fails, a fixed alert is used instead.
     """
+
+    if state.get("verification_unavailable"):
+        return {"helper_message": fixed_alert_message(state)}
 
     patient_name = state.get("patient_name", "Unknown")
     patient_conditions = state.get("patient_conditions", "")
@@ -56,11 +91,6 @@ def generate_helper_message_node(state: Dict[str, Any]) -> Dict[str, Any]:
     else:
         progress_text = "No weekly progress report on record."
 
-    llm = ChatOpenAI(
-        model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.4-2026-03-05"),
-        
-    ).with_structured_output(HelperMessageOutput)
-
     prompt = f"""You are composing an urgent alert message for a group of human helpers (emergency personnel) 
 who assist therapy patients in real-world situations.
 
@@ -96,8 +126,17 @@ Recent conversation excerpt:
 
 Write the helper alert message."""
 
-    result = llm.invoke(prompt)
+    try:
+        llm = ChatOpenAI(
+            model=os.getenv("OPENAI_CHAT_MODEL", "gpt-5.4-2026-03-05"),
+            timeout=ESCALATION_LLM_TIMEOUT_SECONDS,
+            max_retries=ESCALATION_LLM_MAX_RETRIES,
+        ).with_structured_output(HelperMessageOutput)
+        message = (llm.invoke(prompt).message or "").strip()
+    except Exception as exc:
+        log.warning("Helper alert generation failed (%s); using fixed alert", type(exc).__name__)
+        message = ""
 
     return {
-        "helper_message": result.message,
+        "helper_message": message or fixed_alert_message(state),
     }
